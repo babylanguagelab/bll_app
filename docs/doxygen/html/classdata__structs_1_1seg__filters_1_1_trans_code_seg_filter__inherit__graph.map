@@ -1,9 +1,0 @@
-<map id="data_structs.seg_filters.TransCodeSegFilter" name="data_structs.seg_filters.TransCodeSegFilter">
-<area shape="rect" id="node6" href="$classdata__structs_1_1seg__filters_1_1_grammaticality_seg_filter.html" title="This class filters by transcriber code 3 (grammaticality/completeness)." alt="" coords="987,5,1149,46"/>
-<area shape="rect" id="node7" href="$classdata__structs_1_1seg__filters_1_1_speaker_type_seg_filter.html" title="This class filters by transcriber code 1 (speaker type)." alt="" coords="987,70,1149,111"/>
-<area shape="rect" id="node8" href="$classdata__structs_1_1seg__filters_1_1_target_listener_seg_filter.html" title="This class filters by transcriber code 2 (target listener)." alt="" coords="987,135,1149,177"/>
-<area shape="rect" id="node9" href="$classdata__structs_1_1seg__filters_1_1_utterance_type_seg_filter.html" title="This class filters by transcriber code 4 (utterance type)." alt="" coords="987,201,1149,242"/>
-<area shape="rect" id="node2" href="$classdata__structs_1_1seg__filters_1_1_seg_filter.html" title="This class (actually, its subclasses) handles all of the segment/chain filtering operations in the BL..." alt="" coords="566,103,727,145"/>
-<area shape="rect" id="node3" href="$classdata__structs_1_1base__objects_1_1_d_b_object.html" title="Represents an object that can be stored in the database." alt="" coords="339,103,517,145"/>
-<area shape="rect" id="node4" href="$classdata__structs_1_1base__objects_1_1_b_l_l_object.html" title="A custom object that provides some handy debugging routines to subclasses." alt="" coords="112,103,291,145"/>
-</map>

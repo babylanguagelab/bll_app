@@ -1,5 +1,0 @@
-<map id="db.database.Database" name="db.database.Database">
-<area shape="rect" id="node3" href="$classdb_1_1bll__database_1_1_b_l_l_database.html" title="Provides BLL&#45;app&#45;specific data retreival and storage routines, building on the base database class..." alt="" coords="5,155,200,181"/>
-<area shape="rect" id="node4" href="$classdb_1_1mem__database_1_1_mem_database.html" title="This class provides all the functionality of database.py, but using an in&#45;memory database (non&#45;persis..." alt="" coords="225,155,441,181"/>
-<area shape="rect" id="node5" href="$classdb_1_1csv__database_1_1_c_s_v_database.html" title="This class provides a way to convert a csv file into an in&#45;memory database." alt="" coords="231,229,436,256"/>
-</map>

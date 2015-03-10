@@ -1,4 +1,0 @@
-<map id="db.csv_database.CSVDatabase" name="db.csv_database.CSVDatabase">
-<area shape="rect" id="node2" href="$classdb_1_1mem__database_1_1_mem_database.html" title="This class provides all the functionality of database.py, but using an in&#45;memory database (non&#45;persis..." alt="" coords="5,155,221,181"/>
-<area shape="rect" id="node3" href="$classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database." alt="" coords="37,80,189,107"/>
-</map>
