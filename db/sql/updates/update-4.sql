@@ -1,0 +1,3 @@
+--add newly discovered lena notes codes - unfortunately there is no documentation explaining what they refer to...
+INSERT INTO lena_notes_codes(code, speaker_type_id, display_desc) values ('BBL', (SELECT id FROM speaker_types WHERE code_name='NA'), '');
+INSERT INTO lena_notes_codes(code, speaker_type_id, display_desc) values ('xxx', (SELECT id FROM speaker_types WHERE code_name='NA'), '');
