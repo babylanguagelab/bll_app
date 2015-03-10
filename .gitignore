@@ -49,9 +49,6 @@ Temporary Items
 icons/
 *.db
 
-# User Documentation
-docs/
-
 # Log files and custom scripts
 logs/
 custom_scripts/
