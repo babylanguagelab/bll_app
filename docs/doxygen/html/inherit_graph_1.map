@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classparsers_1_1errors_1_1_bll_app_error.html" title="This is an &#39;abstract&#39; base class for custom exception classes." alt="" coords="134,31,306,57"/>
+<area shape="rect" id="node3" href="$classparsers_1_1errors_1_1_parser_error.html" title="The class represents an error that has been detected in a TRS file." alt="" coords="365,5,537,32"/>
+<area shape="rect" id="node4" href="$classparsers_1_1errors_1_1_parser_warning.html" title="This class represents a warning that has been detected in a TRS file." alt="" coords="355,56,547,83"/>
+</map>
