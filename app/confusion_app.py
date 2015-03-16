@@ -21,8 +21,8 @@ class ConfusionApp(App):
         print 'Running confusion.py'
         confusion.run()
         
-        print '\nRunning matrix_adder.py'
-        adder.run()
+        # print '\nRunning matrix_adder.py'
+        # adder.run()
 
-        print '\nRunning matrix_spacer.py'
-        spacer.run()
+        # print '\nRunning matrix_spacer.py'
+        # spacer.run()
