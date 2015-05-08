@@ -4,7 +4,6 @@ var searchData=
   ['rate_5ftypes',['RATE_TYPES',['../classdata__structs_1_1output__calcs_1_1_rate_output_calc.html#afd09baeeee9615a947631a7dcf80650b',1,'data_structs::output_calcs::RateOutputCalc']]],
   ['rateoutputcalc',['RateOutputCalc',['../classdata__structs_1_1output__calcs_1_1_rate_output_calc.html',1,'data_structs::output_calcs']]],
   ['re_5fparse',['re_parse',['../classparsers_1_1trs__parser_1_1_t_r_s_parser.html#a4b73a4220c2778f057f947870e9da3ac',1,'parsers::trs_parser::TRSParser']]],
-  ['read_5ffile',['read_file',['../classdb_1_1csv__database_1_1_c_s_v_database.html#a0d60a035e8ea2a4382d1aeb30ee00dfe',1,'db::csv_database::CSVDatabase']]],
   ['reader',['reader',['../classparsers_1_1reliability2__parser_1_1_reliability2_parser.html#a725b1161421bd4bbb30528266d7fbe00',1,'parsers::reliability2_parser::Reliability2Parser']]],
   ['reliability2_5fapp_2epy',['reliability2_app.py',['../reliability2__app_8py.html',1,'']]],
   ['reliability2_5fexporter_2epy',['reliability2_exporter.py',['../reliability2__exporter_8py.html',1,'']]],

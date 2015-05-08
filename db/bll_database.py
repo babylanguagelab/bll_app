@@ -5,7 +5,6 @@ import os
 import datetime
 import re
 import logging
-import traceback
 
 from db.database import Database
 from data_structs.combo_option import ComboOption

@@ -17,7 +17,6 @@ var classdb_1_1csv__database_1_1_c_s_v_database =
     [ "csv_update_by_name", "classdb_1_1csv__database_1_1_c_s_v_database.html#a645d35c57f32dd81fcdeb9a0a1303abd", null ],
     [ "get_db_col_name", "classdb_1_1csv__database_1_1_c_s_v_database.html#aea8a9605ca4af29fe1d10bba6ac6e16f", null ],
     [ "get_db_col_names", "classdb_1_1csv__database_1_1_c_s_v_database.html#a33d5174170d810edcb2419035cfea46a", null ],
-    [ "read_file", "classdb_1_1csv__database_1_1_c_s_v_database.html#a0d60a035e8ea2a4382d1aeb30ee00dfe", null ],
     [ "set_blanks_to_null", "classdb_1_1csv__database_1_1_c_s_v_database.html#ae1d2f848b8d01b736c3bb7dde5178364", null ],
     [ "write_to_file", "classdb_1_1csv__database_1_1_c_s_v_database.html#aac711776d70db4a531a6dd83762ae11e", null ],
     [ "col_datatypes", "classdb_1_1csv__database_1_1_c_s_v_database.html#a49e188ef164d7feb014848536e1b312f", null ],

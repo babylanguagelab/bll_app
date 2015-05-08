@@ -18,11 +18,11 @@ class ConfusionApp(App):
 
     ## See superclass description. Calling this will start your command line script (if it contains a method called "run").
     def start(self):
-        print 'Running confusion.py'
+        #print 'Running confusion.py'
         confusion.run()
         
-        # print '\nRunning matrix_adder.py'
-        # adder.run()
+        print '\nRunning matrix_adder.py'
+        adder.run()
 
-        # print '\nRunning matrix_spacer.py'
-        # spacer.run()
+        print '\nRunning matrix_spacer.py'
+        spacer.run()

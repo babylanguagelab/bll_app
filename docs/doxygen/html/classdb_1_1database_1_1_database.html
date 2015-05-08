@@ -153,6 +153,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad4cc36793006ad1415ed30cbd280640d"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdb_1_1database_1_1_database.html#ad4cc36793006ad1415ed30cbd280640d">update</a></td></tr>
 <tr class="memdesc:ad4cc36793006ad1415ed30cbd280640d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates rows in a table.  <a href="#ad4cc36793006ad1415ed30cbd280640d">More...</a><br/></td></tr>
 <tr class="separator:ad4cc36793006ad1415ed30cbd280640d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa22b69016575680c4225940d9abd1cc4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdb_1_1database_1_1_database.html#aa22b69016575680c4225940d9abd1cc4">write_to_file</a></td></tr>
+<tr class="memdesc:aa22b69016575680c4225940d9abd1cc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes out all of the data in a table to a csv file.  <a href="#aa22b69016575680c4225940d9abd1cc4">More...</a><br/></td></tr>
+<tr class="separator:aa22b69016575680c4225940d9abd1cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -163,9 +166,9 @@ Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class provides a basic API layer on top of an SQLite database. </p>
-<p>All (well, ok, most) SQL should be restricted to this file. Calling code can form queries using the <a class="el" href="classdb_1_1database_1_1_database.html#af989c0b63e9df1879c82ed08eb7b20b6" title="Selects rows from a table in the database.">select()</a> method. You can also <a class="el" href="classdb_1_1database_1_1_database.html#ad4cc36793006ad1415ed30cbd280640d" title="Updates rows in a table.">update()</a>, <a class="el" href="classdb_1_1database_1_1_database.html#a580ffa7c7ef3a7c038d569f87eff9fac" title="Inserts one or more rows into a table in the database.">insert()</a>, and <a class="el" href="classdb_1_1database_1_1_database.html#a5330b99d309dbdcba101dc517b15a686" title="Deletes rows from a table in the database.">delete()</a>. </p>
+<p>Ideally, all SQL should be restricted to this file. Calling code can form queries using the <a class="el" href="classdb_1_1database_1_1_database.html#af989c0b63e9df1879c82ed08eb7b20b6" title="Selects rows from a table in the database.">select()</a> method. You can also <a class="el" href="classdb_1_1database_1_1_database.html#ad4cc36793006ad1415ed30cbd280640d" title="Updates rows in a table.">update()</a>, <a class="el" href="classdb_1_1database_1_1_database.html#a580ffa7c7ef3a7c038d569f87eff9fac" title="Inserts one or more rows into a table in the database.">insert()</a>, and <a class="el" href="classdb_1_1database_1_1_database.html#a5330b99d309dbdcba101dc517b15a686" title="Deletes rows from a table in the database.">delete()</a>. </p>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00010">10</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00011">11</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ae51ff7ba555a7a011b739c2d9784bee4"></a>
 <div class="memitem">
@@ -200,7 +203,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00014">14</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00015">15</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -227,7 +230,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00028">28</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00029">29</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -279,7 +282,7 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) the number of rows deleted. </dd></dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00134">134</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00136">136</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -316,7 +319,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00050">50</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00051">51</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -354,7 +357,7 @@ Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00037">37</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00038">38</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -406,7 +409,7 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of all the primary key values of the inserted rows </dd></dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00069">69</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00070">70</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -479,12 +482,13 @@ Public Attributes</h2></td></tr>
     <tr><td class="paramname">params</td><td>(list=[]) list of values to stick in '?' placeholders passed in via the where_cond parameter (or any other parameter). These values are automatically quoted/escaped by the SQLite API. </td></tr>
     <tr><td class="paramname">order_by</td><td>(string=None) a column name, or multiple comma-separated column names, to order by. Eg. passing in 'time, id' generates 'ORDER BY time, id'. Pass None if no order by clause is needed. </td></tr>
     <tr><td class="paramname">dump_sql</td><td>(boolean=False) Set to True if you wish to print the generated statement (before '?' substitution - unfortunately sqlite api restrictions make it difficult to access the final sustituted verison...) to standard output. </td></tr>
+    <tr><td class="paramname">group_by</td><td>(string) This string is inserted into to SQL statement after the where clause. It can be a single column name, or multiple names separated with commas (Eg. 'child_id', or 'child_id, awc'). </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of lists, one sub-list per row. Each sublist contains data in the order specified by cols. </dd></dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00102">102</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00104">104</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -540,15 +544,16 @@ Public Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">table</td><td>(string) name of table to update </td></tr>
-    <tr><td class="paramname">col</td><td>(list) list of names of columns (strings) to update </td></tr>
+    <tr><td class="paramname">cols</td><td>(list) list of names of columns (strings) to update </td></tr>
     <tr><td class="paramname">where_cond</td><td>(string=None) a boolean condition like ('x=y'). Will generate 'WHERE x=y'. Set to None if no where condition should be generated. Note: Can use '?' as a placeholder for raw data values, then pass the raw values in using the 'params' parameter. Eg. passing 'x=?' for where_cond and [2] for params generates 'WHERE x=2'. Advantage here is that the DB ensures the raw values are properly escaped/quoted. </td></tr>
     <tr><td class="paramname">params</td><td>(list=[]) list of values to stick in '?' placeholders generated for each column we are updating. The last param is in this list is used for the where_cond parameter (if any). These values are automatically quoted/escaped by the SQLite API. </td></tr>
+    <tr><td class="paramname">dump_sql</td><td>(boolean=False) Set to True if you wish to print the generated statement (before '?' substitution - unfortunately sqlite api restrictions make it difficult to access the final sustituted verison...) to standard output. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) number of rows updated </dd></dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00190">190</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00193">193</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -607,7 +612,51 @@ Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) number of rows updated </dd></dl>
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00163">163</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00165">165</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa22b69016575680c4225940d9abd1cc4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def db.database.Database.write_to_file </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes out all of the data in a table to a csv file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">self</td><td></td></tr>
+    <tr><td class="paramname">path</td><td>(string) The location in which you'd like to save the csv file. (Eg. 'C:/Wayne/data.csv') </td></tr>
+    <tr><td class="paramname">table</td><td>(string) Name of the database table to read data from. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definition at line <a class="el" href="database_8py_source.html#l00227">227</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -622,7 +671,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00018">18</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00019">19</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -636,7 +685,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="database_8py_source.html#l00021">21</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
+<p>Definition at line <a class="el" href="database_8py_source.html#l00022">22</a> of file <a class="el" href="database_8py_source.html">database.py</a>.</p>
 
 </div>
 </div>
@@ -649,7 +698,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacedb.html">db</a></li><li class="navelem"><a class="el" href="namespacedb_1_1database.html">database</a></li><li class="navelem"><a class="el" href="classdb_1_1database_1_1_database.html">Database</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:18 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:09 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

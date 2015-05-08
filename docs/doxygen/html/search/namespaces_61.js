@@ -8,6 +8,7 @@ var searchData=
   ['custom_5fapp',['custom_app',['../namespaceapp_1_1custom__app.html',1,'app']]],
   ['data_5fviewer_5fapp',['data_viewer_app',['../namespaceapp_1_1data__viewer__app.html',1,'app']]],
   ['naptime_5ffilter_5fapp',['naptime_filter_app',['../namespaceapp_1_1naptime__filter__app.html',1,'app']]],
+  ['pitch_5fstudy_5fapp',['pitch_study_app',['../namespaceapp_1_1pitch__study__app.html',1,'app']]],
   ['reliability2_5fapp',['reliability2_app',['../namespaceapp_1_1reliability2__app.html',1,'app']]],
   ['reliability_5fapp',['reliability_app',['../namespaceapp_1_1reliability__app.html',1,'app']]],
   ['splitter_5fapp',['splitter_app',['../namespaceapp_1_1splitter__app.html',1,'app']]],

@@ -2,6 +2,7 @@ var namespaceui =
 [
     [ "data_viewer_app", "namespaceui_1_1data__viewer__app.html", "namespaceui_1_1data__viewer__app" ],
     [ "naptime_filter_app", "namespaceui_1_1naptime__filter__app.html", "namespaceui_1_1naptime__filter__app" ],
+    [ "pitch_study_app", "namespaceui_1_1pitch__study__app.html", "namespaceui_1_1pitch__study__app" ],
     [ "reliability2_app", "namespaceui_1_1reliability2__app.html", "namespaceui_1_1reliability2__app" ],
     [ "reliability_app", "namespaceui_1_1reliability__app.html", "namespaceui_1_1reliability__app" ],
     [ "splitter_app", "namespaceui_1_1splitter__app.html", "namespaceui_1_1splitter__app" ],

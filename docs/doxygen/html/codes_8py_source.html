@@ -254,7 +254,7 @@ $(document).ready(function(){initNavTree('codes_8py_source.html','');});
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            errors = []</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            freq_dict = {}</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">for</span> c <span class="keywordflow">in</span> cd_str:</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordflow">if</span> c <span class="keywordflow">in</span> freq_dict:</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                <span class="keywordflow">if</span> c <span class="keywordflow">in</span> freq_dict <span class="keywordflow">and</span> <span class="keywordflow">not</span> c.isdigit():</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                    errors.append(<span class="stringliteral">&#39;Code contains more than one &quot;%c&quot;.&#39;</span> % c)</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                    freq_dict.pop(c) <span class="comment">#remove so we won&#39;t get redundant errors if c is encountered again</span></div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                <span class="keywordflow">else</span>:</div>
@@ -348,7 +348,7 @@ $(document).ready(function(){initNavTree('codes_8py_source.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_8dba4be13e7b5b450dd533232b439a45.html">data_structs</a></li><li class="navelem"><a class="el" href="codes_8py.html">codes.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:09 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:02 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -144,7 +144,7 @@ $(document).ready(function(){initNavTree('db__window_8py_source.html','');});
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        folder_entry = gtk.Entry()</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        folder_entry.set_width_chars(50)</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        browse_button = gtk.Button(<span class="stringliteral">&#39;Browse&#39;</span>)</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select naptime folder&#39;</span>, folder_entry, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select naptime folder&#39;</span>, folder_entry))<span class="comment">#, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        hbox.pack_start(folder_label, <span class="keyword">True</span>, <span class="keyword">False</span>, 0)</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        hbox.pack_start(folder_entry, <span class="keyword">True</span>, <span class="keyword">False</span>, 0)</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        hbox.pack_start(browse_button, <span class="keyword">True</span>, <span class="keyword">False</span>, 0)</div>
@@ -191,7 +191,7 @@ $(document).ready(function(){initNavTree('db__window_8py_source.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_1788f8309b1a812dcb800a185471cf6c.html">ui</a></li><li class="navelem"><a class="el" href="dir_6ea4750b0efaf29eda1842ce5ee4ceb5.html">naptime_filter_app</a></li><li class="navelem"><a class="el" href="db__window_8py.html">db_window.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:10 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:03 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

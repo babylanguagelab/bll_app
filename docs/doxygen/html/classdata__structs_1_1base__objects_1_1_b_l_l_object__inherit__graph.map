@@ -4,7 +4,7 @@
 <area shape="rect" id="node22" href="$classdata__structs_1_1combo__option_1_1_combo_option.html" title="This class represents a single entry in a UI combo box." alt="" coords="372,475,519,517"/>
 <area shape="rect" id="node23" href="$classdata__structs_1_1output__calcs_1_1_output_calc.html" title="An OutputCalc encapsulates all of the calculations for a particular output." alt="" coords="378,541,513,582"/>
 <area shape="rect" id="node29" href="$classdata__structs_1_1speaker_1_1_speaker.html" title="This class represents a LENA&#45;defined speaker." alt="" coords="347,607,543,633"/>
-<area shape="rect" id="node30" href="$classdata__structs_1_1utterance_1_1_utterance.html" title="This class represents an Utterance (though this class&#39;s representation may differ slightly from the l..." alt="" coords="339,657,551,684"/>
+<area shape="rect" id="node30" href="$classdata__structs_1_1utterance_1_1_utterance.html" title="This class represents an Utterance." alt="" coords="339,657,551,684"/>
 <area shape="rect" id="node4" href="$classdata__structs_1_1check2_1_1_check2.html" title="This class represents one trial&#39;s worth of data for the reliability2 app." alt="" coords="609,5,797,32"/>
 <area shape="rect" id="node5" href="$classdata__structs_1_1check_1_1_check.html" title="A saved collection of settings that can be used to generate stats from a TRS file (for the Reliabilit..." alt="" coords="615,56,790,83"/>
 <area shape="rect" id="node6" href="$classdata__structs_1_1output_1_1_output.html" title="An Output represents particular statistic that the user is trying to calculate from a TRS file..." alt="" coords="614,107,791,133"/>

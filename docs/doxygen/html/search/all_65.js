@@ -24,5 +24,7 @@ var searchData=
   ['execute_5fstmt',['execute_stmt',['../classdb_1_1database_1_1_database.html#a8b35c311796ef9544e1090fc90bd6c94',1,'db::database::Database']]],
   ['existing_5ffilters',['existing_filters',['../classui_1_1data__viewer__app_1_1filter__window_1_1_filter_window.html#a9e2b1ccd7476394ccead323c9ebf0541',1,'ui::data_viewer_app::filter_window::FilterWindow']]],
   ['export',['export',['../classparsers_1_1reliability2__exporter_1_1_reliability2_exporter.html#a4c9e716442a044160f60e69d94e9535d',1,'parsers.reliability2_exporter.Reliability2Exporter.export()'],['../classparsers_1_1reliability__exporter_1_1_reliability_exporter.html#a2cd8f0c8f58709917fa021eb1ba0302b',1,'parsers.reliability_exporter.ReliabilityExporter.export()'],['../classparsers_1_1stats__exporter_1_1_stats_exporter.html#a255d610aff971d05616726a21aecff05',1,'parsers.stats_exporter.StatsExporter.export()']]],
-  ['export_5ffilename',['export_filename',['../classparsers_1_1stats__exporter_1_1_stats_exporter.html#a73a4b04d00f2e8cf3dfbef3e9108ffc2',1,'parsers::stats_exporter::StatsExporter']]]
+  ['export_5fdata',['export_data',['../namespaceparsers_1_1pitch__study__exporter.html#a6290c86b6562b695a8f6ddcc3af76c3e',1,'parsers::pitch_study_exporter']]],
+  ['export_5ffilename',['export_filename',['../classparsers_1_1stats__exporter_1_1_stats_exporter.html#a73a4b04d00f2e8cf3dfbef3e9108ffc2',1,'parsers::stats_exporter::StatsExporter']]],
+  ['extract_5fclip',['extract_clip',['../classparsers_1_1wav__parser_1_1_wav_parser.html#ada2b1cf3aedbabe980fdad6d1d12d326',1,'parsers::wav_parser::WavParser']]]
 ];

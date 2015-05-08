@@ -49,6 +49,9 @@ Temporary Items
 icons/
 *.db
 
-# Log files and custom scripts
+# Spreadsheet files
+*.csv
+*.xlsx
+
+# Log files
 logs/
-custom_scripts/

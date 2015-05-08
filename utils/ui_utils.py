@@ -1,6 +1,6 @@
 ## @package utils.ui_utils
 
-from gi.repository import Gtk as gtk
+from gi.repository import Gtk as gtk, Pango
 from gi.repository import GObject as gobject
 from gi.repository import GdkPixbuf as pixbuf
 
@@ -55,7 +55,9 @@ class UIUtils(object):
          'FILTER': 'icons/open_icon_library-standard/icons/png/%s/actions/filter.png',
          'PRAAT': 'icons/open_icon_library-standard/icons/png/%s/apps/praat.png',
          'SAVE': 'icons/open_icon_library-standard/icons/png/%s/actions/document-save-as-6.png',
-         'UPDATE': 'icons/open_icon_library-standard/icons/png/%s/apps/system-software-update-4.png'
+         'UPDATE': 'icons/open_icon_library-standard/icons/png/%s/apps/system-software-update-4.png',
+         'VOLUME_OFF': 'icons/open_icon_library-standard/icons/png/%s/status/volume-0.png',
+        'VOLUME_ON': 'icons/open_icon_library-standard/icons/png/%s/status/audio-volume-high-5.png',
          })
 
     #This enum allows you to select the size of the image you want for your button (see create_button()). The values correspond to the names of subdirectories in the 'bll_app/icons/png/' directory.
@@ -71,16 +73,26 @@ class UIUtils(object):
             'PX128': '128x128',
             })
 
-    ## Sets some common GTK properties that all of the apps use. This need only be called once at appliation startup.
+    ## Sets some common GTK properties that all of the apps use. This only needs to be called once at appliation startup.
     # @param app_icon_filename (string) path to an image file. This icons will be used as the default application icon (appears in the top left-hand corner of all windows)
     @staticmethod
     def setup_gtk(app_icon_filename):
         #allow images to appear on buttons
-        #gtk.settings_get_default().set_long_property('gtk-button-images', True, 'main')
         gtk.Settings.get_default().set_long_property('gtk-button-images', True, 'main')
         #set default program icon
-        #gtk.Window.set_default_icon_list(gtk.gdk.pixbuf_new_from_file(app_icon_filename))
         gtk.Window.set_default_icon_list([pixbuf.Pixbuf.new_from_file(app_icon_filename)])
+
+    ## Sets the font size for a given widget
+    # @param widget (Gtk Container) the widget whose font size you'd like to set
+    # @param pt_size (int, possibly float too?) the font size (pt)
+    # @param bold (boolean=False) Set to True to make font bold
+    @staticmethod
+    def set_font_size(widget, pt_size, bold=False):
+        font = widget.get_style_context().get_font(gtk.StateFlags.NORMAL)
+        font.set_size(pt_size * Pango.SCALE)
+        if bold:
+            font.set_weight(Pango.Weight.BOLD)
+        widget.override_font(font)
 
     ## Constructs the full path to an icon, given a value from the BUTTON_ICONS enum, and a value from the BUTTON_ICON_SIZES enum.
     # @param img_path (string) this must be a value from the BUTTON_ICONS enum
@@ -163,28 +175,31 @@ class UIUtils(object):
     @staticmethod
     def get_time_spinners(label=None, hours=0, mins=0, secs=0):
         entry_box = gtk.HBox()
-        entry_box.pack_start(gtk.Alignment(xalign=0.25, yalign=0))
+        entry_box.pack_start(gtk.Alignment(xalign=0.25, yalign=0), False, False, 0)
 
         if label:
-            entry_box.pack_start(label)
+            entry_box.pack_start(label, False, False, 0)
         
-        hours_adj = gtk.Adjustment(value=0, lower=0, upper=1000, step_incr=1, page_incr=5) #note: upper is a required param - I just arbitrarily set it to something huge
-        hours_spinner = gtk.SpinButton(hours_adj)
+        hours_adj = gtk.Adjustment(value=0, lower=0, upper=1000, step_incr=1, page_incr=5) #note: upper is a required param - set it to something that won't be exceeded
+        hours_spinner = gtk.SpinButton()
+        hours_spinner.set_adjustment(hours_adj)
         hours_spinner.set_value(hours)
-        entry_box.pack_start(hours_spinner, False, False)
-        entry_box.pack_start(gtk.Label(':'), False, False)
+        entry_box.pack_start(hours_spinner, False, False, 0)
+        entry_box.pack_start(gtk.Label(':'), False, False, 0)
 
         mins_adj = gtk.Adjustment(value=0, lower=0, upper=59, step_incr=1, page_incr=5)
-        mins_spinner = gtk.SpinButton(mins_adj)
+        mins_spinner = gtk.SpinButton()
+        mins_spinner.set_adjustment(mins_adj)
         mins_spinner.set_value(mins)
-        entry_box.pack_start(mins_spinner, False, False)
-        entry_box.pack_start(gtk.Label(':'), False, False)
+        entry_box.pack_start(mins_spinner, False, False, 0)
+        entry_box.pack_start(gtk.Label(':'), False, False, 0)
 
         secs_adj = gtk.Adjustment(value=0, lower=0, upper=59, step_incr=1, page_incr=5)
-        secs_spinner = gtk.SpinButton(secs_adj)
+        secs_spinner = gtk.SpinButton()
+        secs_spinner.set_adjustment(secs_adj)
         secs_spinner.set_value(secs)
-        entry_box.pack_start(secs_spinner, False, False)
-        entry_box.pack_start(gtk.Alignment(xalign=0.25, yalign=0))
+        entry_box.pack_start(secs_spinner, False, False, 0)
+        entry_box.pack_start(gtk.Alignment(xalign=0.25, yalign=0), False, False, 0)
 
         return entry_box, hours_spinner, mins_spinner, secs_spinner
 
@@ -250,7 +265,7 @@ class UIUtils(object):
 
         combobox = gtk.ComboBox(model=model)
         renderer = gtk.CellRendererText()
-        combobox.pack_start(renderer, True)
+        combobox.pack_start(renderer, True, False, 0)
         combobox.add_attribute(renderer, 'text', 0)
         combobox.set_active(0)
 
@@ -344,7 +359,7 @@ class UIUtils(object):
 
         combobox = gtk.ComboBox(model=list_store)
         renderer = gtk.CellRendererText()
-        combobox.pack_start(renderer, True)
+        combobox.pack_start(renderer, True, False, 0)
         combobox.add_attribute(renderer, 'text', 0)
         
         combobox.set_active(active_index)
@@ -504,12 +519,12 @@ class UIUtils(object):
         invalid_label = gtk.Label('')
         
         hbox = gtk.HBox()
-        hbox.pack_start(entry_label)
-        hbox.pack_start(entry)
-        vbox.pack_start(hbox)
-        vbox.pack_start(invalid_label)
+        hbox.pack_start(entry_label, False, False, 0)
+        hbox.pack_start(entry, False, False, 0)
+        vbox.pack_start(hbox, False, False, 0)
+        vbox.pack_start(invalid_label, False, False, 0)
         
-        message_area.pack_end(vbox, False, False)
+        message_area.pack_end(vbox, False, False, 0)
         vbox.show_all()
 
         done = False
@@ -558,9 +573,9 @@ class UIUtils(object):
             for button in checkbuttons:
                 align = gtk.Alignment(xalign=1.0, yalign=1.0)
                 align.add(button)
-                vbox.pack_start(align)
+                vbox.pack_start(align, False, False, 0)
                 
-            content_area.pack_end(vbox, False, False)
+            content_area.pack_end(vbox, False, False, 0)
             vbox.show_all()
         
         response = dialog.run()

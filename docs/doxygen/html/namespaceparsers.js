@@ -6,6 +6,7 @@ var namespaceparsers =
     [ "freq_exporter", "namespaceparsers_1_1freq__exporter.html", "namespaceparsers_1_1freq__exporter" ],
     [ "its_parser", "namespaceparsers_1_1its__parser.html", "namespaceparsers_1_1its__parser" ],
     [ "parser_tools", "namespaceparsers_1_1parser__tools.html", "namespaceparsers_1_1parser__tools" ],
+    [ "pitch_study_exporter", "namespaceparsers_1_1pitch__study__exporter.html", null ],
     [ "reliability2_exporter", "namespaceparsers_1_1reliability2__exporter.html", "namespaceparsers_1_1reliability2__exporter" ],
     [ "reliability2_parser", "namespaceparsers_1_1reliability2__parser.html", "namespaceparsers_1_1reliability2__parser" ],
     [ "reliability_exporter", "namespaceparsers_1_1reliability__exporter.html", "namespaceparsers_1_1reliability__exporter" ],

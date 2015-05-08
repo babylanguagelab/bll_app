@@ -2,6 +2,7 @@ var classparsers_1_1wav__parser_1_1_wav_parser =
 [
     [ "__init__", "classparsers_1_1wav__parser_1_1_wav_parser.html#aa5a532348a0ebb3e4f1fd5b28f8aee14", null ],
     [ "close", "classparsers_1_1wav__parser_1_1_wav_parser.html#a6678e5005bf24f08791f2127b20026b4", null ],
+    [ "extract_clip", "classparsers_1_1wav__parser_1_1_wav_parser.html#ada2b1cf3aedbabe980fdad6d1d12d326", null ],
     [ "get_sound_len", "classparsers_1_1wav__parser_1_1_wav_parser.html#a7a584d76162298449ece817d32b221ac", null ],
     [ "play_clip", "classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284", null ],
     [ "play_seg", "classparsers_1_1wav__parser_1_1_wav_parser.html#abad651e95a43105d5e6fae5bc2f985e9", null ],

@@ -120,22 +120,25 @@ $(document).ready(function(){initNavTree('mem__database_8py_source.html','');});
 <div class="line"><a name="l00012"></a><span class="lineno"><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#ab7fdc8aef975f434d9ab628f86812033">   12</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#ab7fdc8aef975f434d9ab628f86812033" title="Constructor.">__init__</a>(self):</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        <span class="comment">#create an in-memory SQLite database, just pass in this special identifier instead of a filename</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        super(MemDatabase, self).<a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#ab7fdc8aef975f434d9ab628f86812033" title="Constructor.">__init__</a>(<span class="stringliteral">&#39;:memory:&#39;</span>)</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#a2b34c6fa91d972cf88d5a4f0694f2e84">   16</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#a2b34c6fa91d972cf88d5a4f0694f2e84">dump_to_file</a>(self, filename):</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        file_db = <a class="code" href="classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database.">Database</a>(filename)</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        sql_iter = self.conn.iterdump()</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">for</span> line <span class="keywordflow">in</span> sql_iter:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            file_db.execute_stmt(line)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        file_db.close()</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="comment">## Writes this in-memory database to a *.db file on disk</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment">#  @param self</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="comment">#  @param filename (string) path to the *.db file you wish to write to (will be created if it doesn&#39;t exist)</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#a2b34c6fa91d972cf88d5a4f0694f2e84">   19</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classdb_1_1mem__database_1_1_mem_database.html#a2b34c6fa91d972cf88d5a4f0694f2e84" title="Writes this in-memory database to a *.db file on disk.">dump_to_file</a>(self, filename):</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        file_db = <a class="code" href="classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database.">Database</a>(filename)</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        sql_iter = self.conn.iterdump()</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">for</span> line <span class="keywordflow">in</span> sql_iter:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            file_db.execute_stmt(line)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        file_db.close()</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_ce5981f09099a3fa6071b9eb8fe67a2c.html">db</a></li><li class="navelem"><a class="el" href="mem__database_8py.html">mem_database.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:10 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:03 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

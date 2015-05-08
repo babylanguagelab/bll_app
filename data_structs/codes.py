@@ -146,7 +146,7 @@ class TranscriberCode3(Code):
             errors = []
             freq_dict = {}
             for c in cd_str:
-                if c in freq_dict:
+                if c in freq_dict and not c.isdigit():
                     errors.append('Code contains more than one "%c".' % c)
                     freq_dict.pop(c) #remove so we won't get redundant errors if c is encountered again
                 else:

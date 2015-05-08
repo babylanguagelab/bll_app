@@ -7,6 +7,7 @@ var namespaceapp =
     [ "custom_app", "namespaceapp_1_1custom__app.html", "namespaceapp_1_1custom__app" ],
     [ "data_viewer_app", "namespaceapp_1_1data__viewer__app.html", "namespaceapp_1_1data__viewer__app" ],
     [ "naptime_filter_app", "namespaceapp_1_1naptime__filter__app.html", "namespaceapp_1_1naptime__filter__app" ],
+    [ "pitch_study_app", "namespaceapp_1_1pitch__study__app.html", "namespaceapp_1_1pitch__study__app" ],
     [ "reliability2_app", "namespaceapp_1_1reliability2__app.html", "namespaceapp_1_1reliability2__app" ],
     [ "reliability_app", "namespaceapp_1_1reliability__app.html", "namespaceapp_1_1reliability__app" ],
     [ "splitter_app", "namespaceapp_1_1splitter__app.html", "namespaceapp_1_1splitter__app" ],

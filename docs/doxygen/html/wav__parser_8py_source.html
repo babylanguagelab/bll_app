@@ -135,7 +135,7 @@ $(document).ready(function(){initNavTree('wav__parser_8py_source.html','');});
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">#  @returns (float) The length of the sound in seconds, or zero if there was an error opening the WAV file.</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a7a584d76162298449ece817d32b221ac">   28</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a7a584d76162298449ece817d32b221ac" title="Returns a sound&#39;s length, in seconds.">get_sound_len</a>(self):</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">if</span> self.<a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a3f0a417b997788c78a4b7d7807128033">total_sec</a> &lt; 0:</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            self.<a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a3f0a417b997788c78a4b7d7807128033">total_sec</a> = self.wav_in.getnframes() / self.wav_in.getframerate()</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            self.<a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a3f0a417b997788c78a4b7d7807128033">total_sec</a> = self.wav_in.getnframes() / float(self.wav_in.getframerate())</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keywordflow">return</span> self.<a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a3f0a417b997788c78a4b7d7807128033">total_sec</a></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
@@ -171,48 +171,67 @@ $(document).ready(function(){initNavTree('wav__parser_8py_source.html','');});
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        self.<a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284" title="Extracts a specified chunk of audio from the wav file and plays it through the default audio device...">play_clip</a>(start, end)</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">## Extracts a specified chunk of audio from the wav file and plays it through the default audio device.</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">#  @param self</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">#  @param start_time (float) absolute start time of the clip to play, in seconds</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">#  @param end_time (float) absolute end time of the clip to play, in seconds</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284">   70</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284" title="Extracts a specified chunk of audio from the wav file and plays it through the default audio device...">play_clip</a>(self, start_time, end_time):</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        self.logger.info(<span class="stringliteral">&quot;Playing clip: [%f, %f]\n&quot;</span> % (start_time, end_time))</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">#initialize the audio library</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        audio = pyaudio.PyAudio()</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="comment">#extract the chunk of the sound that we want to play</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        start_frame = int(start_time * self.wav_in.getframerate())</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        end_frame = int(end_time * self.wav_in.getframerate())</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        num_frames = end_frame - start_frame + 1</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="comment">#construct and audio stream and write the sound chunk to it</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        stream = audio.open(format=audio.get_format_from_width(self.wav_in.getsampwidth()),</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                            channels=self.wav_in.getnchannels(),</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                            rate=self.wav_in.getframerate(),</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                            output=<span class="keyword">True</span>,</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                            )</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        self.wav_in.setpos(start_frame)</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        data = self.wav_in.readframes(num_frames)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        stream.write(data)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="comment">#clean up</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        stream.stop_stream()</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        stream.close()</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        audio.terminate()</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="comment">## Closes any files or other resources used by this parser.</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="comment">#  This should always be called after you&#39;re done with the parser!</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="comment">#  @param self</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a6678e5005bf24f08791f2127b20026b4">   99</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a6678e5005bf24f08791f2127b20026b4" title="Closes any files or other resources used by this parser.">close</a>(self):</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        self.wav_in.close()</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#ada2b1cf3aedbabe980fdad6d1d12d326">   66</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#ada2b1cf3aedbabe980fdad6d1d12d326">extract_clip</a>(self, start_time, end_time, filename):</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="comment">#initialize the audio library</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        audio = pyaudio.PyAudio()</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        wav_out = wave.open(filename, <span class="stringliteral">&#39;wb&#39;</span>)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        wav_out.setnchannels(self.wav_in.getnchannels())</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        wav_out.setsampwidth(self.wav_in.getsampwidth())</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        wav_out.setframerate(self.wav_in.getframerate())</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="comment">#extract the chunk of the sound that we want to save</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        start_frame = int(start_time * self.wav_in.getframerate())</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        end_frame = int(end_time * self.wav_in.getframerate())</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        num_frames = end_frame - start_frame + 1</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        self.wav_in.setpos(start_frame)</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        data = self.wav_in.readframes(num_frames)</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        wav_out.writeframes(data)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        wav_out.close()</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        audio.terminate()</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="comment">## Extracts a specified chunk of audio from the wav file and plays it through the default audio device.</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="comment">#  @param self</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">#  @param start_time (float) absolute start time of the clip to play, in seconds</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">#  @param end_time (float) absolute end time of the clip to play, in seconds</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284">   89</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a0622ffb5be806a45073b876e8ec47284" title="Extracts a specified chunk of audio from the wav file and plays it through the default audio device...">play_clip</a>(self, start_time, end_time):</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        self.logger.info(<span class="stringliteral">&quot;Playing clip: [%f, %f]\n&quot;</span> % (start_time, end_time))</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="comment">#initialize the audio library</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        audio = pyaudio.PyAudio()</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="comment">#extract the chunk of the sound that we want to play</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        start_frame = int(start_time * self.wav_in.getframerate())</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        end_frame = int(end_time * self.wav_in.getframerate())</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        num_frames = end_frame - start_frame + 1</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="comment">#construct and audio stream and write the sound chunk to it</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        stream = audio.open(format=audio.get_format_from_width(self.wav_in.getsampwidth()),</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                            channels=self.wav_in.getnchannels(),</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                            rate=self.wav_in.getframerate(),</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                            output=<span class="keyword">True</span>,</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                            )</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        self.wav_in.setpos(start_frame)</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        data = self.wav_in.readframes(num_frames)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        stream.write(data)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="comment">#clean up</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        stream.stop_stream()</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        stream.close()</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        audio.terminate()</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="comment">## Closes any files or other resources used by this parser.</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="comment">#  This should always be called after you&#39;re done with the parser!</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="comment">#  @param self</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a6678e5005bf24f08791f2127b20026b4">  118</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classparsers_1_1wav__parser_1_1_wav_parser.html#a6678e5005bf24f08791f2127b20026b4" title="Closes any files or other resources used by this parser.">close</a>(self):</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        self.wav_in.close()</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_a5a40681709ed751decc24cd7289c9c5.html">parsers</a></li><li class="navelem"><a class="el" href="wav__parser_8py.html">wav_parser.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:10 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:03 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

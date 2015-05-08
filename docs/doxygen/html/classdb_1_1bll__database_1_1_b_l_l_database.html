@@ -167,6 +167,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad4cc36793006ad1415ed30cbd280640d inherit pub_methods_classdb_1_1database_1_1_database"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdb_1_1database_1_1_database.html#ad4cc36793006ad1415ed30cbd280640d">update</a></td></tr>
 <tr class="memdesc:ad4cc36793006ad1415ed30cbd280640d inherit pub_methods_classdb_1_1database_1_1_database"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates rows in a table.  <a href="#ad4cc36793006ad1415ed30cbd280640d">More...</a><br/></td></tr>
 <tr class="separator:ad4cc36793006ad1415ed30cbd280640d inherit pub_methods_classdb_1_1database_1_1_database"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa22b69016575680c4225940d9abd1cc4 inherit pub_methods_classdb_1_1database_1_1_database"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdb_1_1database_1_1_database.html#aa22b69016575680c4225940d9abd1cc4">write_to_file</a></td></tr>
+<tr class="memdesc:aa22b69016575680c4225940d9abd1cc4 inherit pub_methods_classdb_1_1database_1_1_database"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes out all of the data in a table to a csv file.  <a href="#aa22b69016575680c4225940d9abd1cc4">More...</a><br/></td></tr>
+<tr class="separator:aa22b69016575680c4225940d9abd1cc4 inherit pub_methods_classdb_1_1database_1_1_database"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -226,7 +229,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>Provides BLL-app-specific data retreival and storage routines, building on the base database class. </p>
 <p>Constants needed for segment and utterance parsing/manipulation (lena speaker codes, transcriber codes, etc.), application-wide settings (info needed to launch Praat and Excel), common UI combobox options, and any associated information are retreived from database tables and put into Enums by routines in this class. The <a class="el" href="classdb_1_1bll__database_1_1_d_b_constants.html" title="This class does an initial SQL select on database &#39;lookup tables&#39; (tables containing information that...">DBConstants</a> class (see bottom of file) is populated using these methods. <a class="el" href="classdb_1_1bll__database_1_1_d_b_constants.html" title="This class does an initial SQL select on database &#39;lookup tables&#39; (tables containing information that...">DBConstants</a>' public attributes (Enums) can then be used anywhere in the application code. </p>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00019">19</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00018">18</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a382c49683d035b0c5483e7ea5fca665e"></a>
 <div class="memitem">
@@ -250,7 +253,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00028">28</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00027">27</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -287,7 +290,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) attributes are from the 'code_name' column, values are from the 'id' column </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00115">115</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00114">114</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -322,7 +325,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(dictionary) a dictionary of Enums. The dictionary contains a key for each id from the combo_groups table. Each entry contains an Enum of all possible combo options for that group (Retreived from the combo_options table. Enum attributes are from the 'code_name' column, values are from the 'id' column). </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00133">133</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00132">132</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -357,7 +360,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) attributes are from the 'code_name' column, values are from the 'id' column </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00124">124</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00123">123</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -392,7 +395,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) Enum attributes are from the 'code_name' column, values are from the 'id' column). </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00146">146</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00145">145</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -428,7 +431,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00101">101</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00100">100</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -464,7 +467,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) attributes are 'MEDIA', 'OVERLAPPING', 'NON_VERBAL_NOISE', values are 0, 1, 2, (respectively) </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00108">108</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00107">107</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -500,7 +503,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) attributes are from code_name column, values from id column </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00092">92</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00091">91</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -536,7 +539,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Code) Code object that can be used to access info about different lena notes code options. </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00220">220</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00219">219</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -571,7 +574,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00243">243</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00242">242</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -607,7 +610,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of Code objects, one for each transcriber code. </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00181">181</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00180">180</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -634,7 +637,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00050">50</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00049">49</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -672,7 +675,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Code/list of Code) a Code object (or list of Code objects, if selecting transcriber codes) that contains code options and properties from the DB table </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00158">158</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00157">157</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -710,7 +713,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(Enum) an Enum with attributes for all of the options within the table (attributes are from the code_name column, values from the id column). </dd></dl>
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00168">168</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00167">167</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -733,7 +736,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00021">21</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00020">20</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -755,7 +758,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00020">20</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00019">19</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -777,7 +780,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00022">22</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00021">21</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -799,7 +802,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00024">24</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00023">23</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -821,7 +824,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00023">23</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
+<p>Definition at line <a class="el" href="bll__database_8py_source.html#l00022">22</a> of file <a class="el" href="bll__database_8py_source.html">bll_database.py</a>.</p>
 
 </div>
 </div>
@@ -834,7 +837,7 @@ Additional Inherited Members</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacedb.html">db</a></li><li class="navelem"><a class="el" href="namespacedb_1_1bll__database.html">bll_database</a></li><li class="navelem"><a class="el" href="classdb_1_1bll__database_1_1_b_l_l_database.html">BLLDatabase</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:18 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:08 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

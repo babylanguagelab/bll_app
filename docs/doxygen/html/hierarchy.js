@@ -1,5 +1,6 @@
 var hierarchy =
 [
+    [ "ui.pitch_study_app.batch_sel_win.BatchSelectionWindow", "classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html", null ],
     [ "ui.stats_app.config_window.ConfigWindow", "classui_1_1stats__app_1_1config__window_1_1_config_window.html", null ],
     [ "ui.reliability2_app.test_window.TestWindow.Controls", "classui_1_1reliability2__app_1_1test__window_1_1_test_window_1_1_controls.html", null ],
     [ "ui.reliability2_app.create_check_window.CreateCheckWindow", "classui_1_1reliability2__app_1_1create__check__window_1_1_create_check_window.html", null ],
@@ -27,10 +28,11 @@ var hierarchy =
     [ "ui.reliability_app.load_window.LoadWindow", "classui_1_1reliability__app_1_1load__window_1_1_load_window.html", null ],
     [ "ui.data_viewer_app.main_window.MainWindow", "classui_1_1data__viewer__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.naptime_filter_app.main_window.MainWindow", "classui_1_1naptime__filter__app_1_1main__window_1_1_main_window.html", null ],
+    [ "ui.pitch_study_app.main_window.MainWindow", "classui_1_1pitch__study__app_1_1main__window_1_1_main_window.html", null ],
+    [ "ui.verifier_app.main_window.MainWindow", "classui_1_1verifier__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.reliability2_app.main_window.MainWindow", "classui_1_1reliability2__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.reliability_app.main_window.MainWindow", "classui_1_1reliability__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.splitter_app.main_window.MainWindow", "classui_1_1splitter__app_1_1main__window_1_1_main_window.html", null ],
-    [ "ui.verifier_app.main_window.MainWindow", "classui_1_1verifier__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.wh_freq_app.main_window.MainWindow", "classui_1_1wh__freq__app_1_1main__window_1_1_main_window.html", null ],
     [ "utils.naptime.Naptime", "classutils_1_1naptime_1_1_naptime.html", null ],
     [ "object", null, [
@@ -41,6 +43,7 @@ var hierarchy =
         [ "app.custom_app.CustomApp", "classapp_1_1custom__app_1_1_custom_app.html", null ],
         [ "app.data_viewer_app.DataViewerApp", "classapp_1_1data__viewer__app_1_1_data_viewer_app.html", null ],
         [ "app.naptime_filter_app.NaptimeFilterApp", "classapp_1_1naptime__filter__app_1_1_naptime_filter_app.html", null ],
+        [ "app.pitch_study_app.PitchStudyApp", "classapp_1_1pitch__study__app_1_1_pitch_study_app.html", null ],
         [ "app.reliability2_app.Reliability2App", "classapp_1_1reliability2__app_1_1_reliability2_app.html", null ],
         [ "app.reliability_app.ReliabilityApp", "classapp_1_1reliability__app_1_1_reliability_app.html", null ],
         [ "app.splitter_app.SplitterApp", "classapp_1_1splitter__app_1_1_splitter_app.html", null ],
@@ -122,9 +125,10 @@ var hierarchy =
     [ "ui.verifier_app.open_pair_window.OpenPairWindow", "classui_1_1verifier__app_1_1open__pair__window_1_1_open_pair_window.html", null ],
     [ "ui.splitter_app.options_window.OptionsWindow", "classui_1_1splitter__app_1_1options__window_1_1_options_window.html", null ],
     [ "ui.stats_app.output_window.OutputWindow", "classui_1_1stats__app_1_1output__window_1_1_output_window.html", null ],
+    [ "ui.pitch_study_app.testing_window.TestingWindow", "classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html", null ],
     [ "ui.reliability2_app.test_window.TestWindow.TestStateMachine", "classui_1_1reliability2__app_1_1test__window_1_1_test_window_1_1_test_state_machine.html", null ],
-    [ "ui.reliability_app.test_window.TestWindow", "classui_1_1reliability__app_1_1test__window_1_1_test_window.html", null ],
     [ "ui.reliability2_app.test_window.TestWindow", "classui_1_1reliability2__app_1_1test__window_1_1_test_window.html", null ],
+    [ "ui.reliability_app.test_window.TestWindow", "classui_1_1reliability__app_1_1test__window_1_1_test_window.html", null ],
     [ "ui.verifier_app.verification_window.VerificationWindow", "classui_1_1verifier__app_1_1verification__window_1_1_verification_window.html", null ],
     [ "ui.stats_app.view_configs_window.ViewConfigsWindow", "classui_1_1stats__app_1_1view__configs__window_1_1_view_configs_window.html", null ]
 ];

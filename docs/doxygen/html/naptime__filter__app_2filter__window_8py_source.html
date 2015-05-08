@@ -150,7 +150,7 @@ $(document).ready(function(){initNavTree('naptime__filter__app_2filter__window_8
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">if</span> self.<a class="code" href="classui_1_1naptime__filter__app_1_1filter__window_1_1_filter_window.html#a4f27222c06fb7260ecbe77690433604b">filter_type</a> == FilterWindow.FILTER_TYPES.FILE:</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            src_browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_file(<span class="stringliteral">&#39;Select file&#39;</span>, src_entry, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">elif</span> self.<a class="code" href="classui_1_1naptime__filter__app_1_1filter__window_1_1_filter_window.html#a4f27222c06fb7260ecbe77690433604b">filter_type</a> == FilterWindow.FILTER_TYPES.FOLDER:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            src_browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select folder&#39;</span>, src_entry, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            src_browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select folder&#39;</span>, src_entry)) <span class="comment">#[UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        dest_label = gtk.Label(<span class="stringliteral">&#39;Destination:&#39;</span>)</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="comment">#table.attach(dest_label, 0, 1, 1, 2, gtk.EXPAND, gtk.EXPAND)</span></div>
@@ -163,7 +163,7 @@ $(document).ready(function(){initNavTree('naptime__filter__app_2filter__window_8
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">#table.attach(dest_browse_button, 2, 3, 1, 2, gtk.EXPAND, gtk.EXPAND)</span></div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        grid.attach(dest_browse_button, 2, 1, 1, 1)</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        dest_browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select folder&#39;</span>, dest_entry, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        dest_browse_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: UIUtils.browse_folder(<span class="stringliteral">&#39;Select folder&#39;</span>, dest_entry))<span class="comment">#, [UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER]))</span></div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        vbox.pack_start(grid, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            </div>
@@ -235,7 +235,7 @@ $(document).ready(function(){initNavTree('naptime__filter__app_2filter__window_8
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_1788f8309b1a812dcb800a185471cf6c.html">ui</a></li><li class="navelem"><a class="el" href="dir_6ea4750b0efaf29eda1842ce5ee4ceb5.html">naptime_filter_app</a></li><li class="navelem"><a class="el" href="naptime__filter__app_2filter__window_8py.html">filter_window.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:10 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:03 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

@@ -29,12 +29,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "acrp__app_8py.html",
-"classdata__structs_1_1output__calcs_1_1_rate_output_calc.html#a95875c7b3400b795b755ea15c1a99b8a",
-"classdb_1_1database_1_1_database.html#a265d02ed386e97e9f1492adbe8eff27f",
-"classui_1_1data__viewer__app_1_1main__window_1_1_main_window.html#a7b649bfc1a5bd9e6c36c813e21cbb64f",
-"classui_1_1verifier__app_1_1open__pair__window_1_1_open_pair_window.html#a5e6e77ba486cdb20a7e926194341ee88",
-"functions_0x6c.html",
-"namespaceutils.html"
+"classdata__structs_1_1output__calcs_1_1_rate_output_calc.html#a581cc3f5bb32c01715ef395ef65f6582",
+"classdb_1_1csv__database_1_1_c_s_v_database.html#af6a44471284eca851d97f65a155a103a",
+"classui_1_1data__viewer__app_1_1main__window_1_1_main_window.html#a60b50c7233bc808ade791fa56288016b",
+"classui_1_1stats__app_1_1config__window_1_1_config_window.html#a7be6f1e0e2af163e25cf0cba35ef6160",
+"data__viewer__app_2main__window_8py_source.html",
+"namespaceui_1_1naptime__filter__app_1_1db__window.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

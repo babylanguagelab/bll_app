@@ -11,7 +11,12 @@ from app.app import App
 
 #from custom_scripts.reliability.rel_conf_mat.tasks2_3 import *
 #from custom_scripts.reliability.rel_conf_mat.task4 import *
-from custom_scripts.reliability.feedback.stats import *
+from custom_scripts.reliability.rel_conf_mat.man_fan_count import *
+#from custom_scripts.reliability.feedback.stats import *
+#from custom_scripts.melissa.testing import *
+#from custom_scripts.reliability.rel_conf_mat.means import *
+#from custom_scripts.reliability.rel_conf_mat.child_voc import *
+#from custom_scripts.reliability.rel_conf_mat.lena_db import *
 
 ## Handles startup for the custom command line scripts (such as thos contained in the bll_app/custom_scripts/ folder).
 # Using this class as an entry point for command line scripts gives them access to all of the bll_app classes.

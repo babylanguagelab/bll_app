@@ -8,6 +8,7 @@ var searchData=
   ['next_5fbutton',['next_button',['../classui_1_1reliability2__app_1_1test__window_1_1_test_window_1_1_controls.html#a2cc0dc586583aca0f03bc35219f88a2c',1,'ui::reliability2_app::test_window::TestWindow::Controls']]],
   ['next_5fid',['next_id',['../classdata__structs_1_1utterance_1_1_utterance.html#af3dd7c5de5826824744594e354287c57',1,'data_structs::utterance::Utterance']]],
   ['num',['num',['../classdata__structs_1_1segment_1_1_segment.html#afd40e55f77560650f6321dca4550f24d',1,'data_structs::segment::Segment']]],
+  ['num_5foptions',['NUM_OPTIONS',['../classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html#a1dab871024d4604c7138a8c78016848d',1,'ui::pitch_study_app::testing_window::TestingWindow']]],
   ['num_5frows',['num_rows',['../classui_1_1data__viewer__app_1_1main__window_1_1_main_window.html#aee2a32521f8082f237b192a5f7f72e94',1,'ui::data_viewer_app::main_window::MainWindow']]],
   ['num_5fsegs',['num_segs',['../classdata__structs_1_1check_1_1_check.html#ad219eb002fd31f2df570c35311c6774c',1,'data_structs::check::Check']]],
   ['num_5ftrans_5fcodes',['NUM_TRANS_CODES',['../classdb_1_1bll__database_1_1_b_l_l_database.html#a48d11839e52ee013a1aa1e4c2bdf0046',1,'db::bll_database::BLLDatabase']]],

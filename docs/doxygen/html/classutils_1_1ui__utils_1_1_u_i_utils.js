@@ -19,6 +19,7 @@ var classutils_1_1ui__utils_1_1_u_i_utils =
     [ "open_file", "classutils_1_1ui__utils_1_1_u_i_utils.html#a6697d8f6919f0af893d724879f82297d", null ],
     [ "open_folder", "classutils_1_1ui__utils_1_1_u_i_utils.html#ad6734f5922bfa9d8ca579135bba8c9ba", null ],
     [ "save_file", "classutils_1_1ui__utils_1_1_u_i_utils.html#a516f52c7988dc0d441df3b573842d0e3", null ],
+    [ "set_font_size", "classutils_1_1ui__utils_1_1_u_i_utils.html#a07d5a821de0279de17ae241c92c10cfd", null ],
     [ "setup_gtk", "classutils_1_1ui__utils_1_1_u_i_utils.html#a65538c02780be9884518ccfb7a3302bb", null ],
     [ "show_confirm_dialog", "classutils_1_1ui__utils_1_1_u_i_utils.html#ac8b34d0298d643cfeac9faf35fab8035", null ],
     [ "show_empty_form_dialog", "classutils_1_1ui__utils_1_1_u_i_utils.html#a1ec9d368c21560284c89ae994256c7a2", null ],

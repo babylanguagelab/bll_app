@@ -119,28 +119,33 @@ $(document).ready(function(){initNavTree('custom__app_8py_source.html','');});
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">#from custom_scripts.reliability.rel_conf_mat.tasks2_3 import *</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">#from custom_scripts.reliability.rel_conf_mat.task4 import *</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">from</span> <a class="code" href="namespacecustom__scripts_1_1reliability_1_1feedback_1_1stats.html">custom_scripts.reliability.feedback.stats</a> <span class="keyword">import</span> *</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">## Handles startup for the custom command line scripts (such as thos contained in the bll_app/custom_scripts/ folder).</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"># Using this class as an entry point for command line scripts gives them access to all of the bll_app classes.</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"># So for example, you can use the TRSParser class in your command line scripts to read TRS files.</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html" title="Handles startup for the custom command line scripts (such as thos contained in the bll_app/custom_scr...">CustomApp</a>(<a class="code" href="classapp_1_1app_1_1_app.html" title="This is the &quot;abstract&quot; superclass of all _app classes.">App</a>):</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">   20</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">__init__</a>(self):</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        super(CustomApp, self).<a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">__init__</a>(</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="stringliteral">&#39;custom_app&#39;</span>,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            App.APP_TYPES.CMD_LINE <span class="comment">#this will prevent the superclass from starting up PyGTK</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            )</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="comment">## See superclass description. Calling this will start your command line script (if it contains a method called &quot;run&quot;).</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a60a43d1c4297930733020f454a746ca5">   27</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a60a43d1c4297930733020f454a746ca5" title="See superclass description.">start</a>(self):</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        run()</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">from</span> <a class="code" href="namespacecustom__scripts_1_1reliability_1_1rel__conf__mat_1_1man__fan__count.html">custom_scripts.reliability.rel_conf_mat.man_fan_count</a> <span class="keyword">import</span> *</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">#from custom_scripts.reliability.feedback.stats import *</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment">#from custom_scripts.melissa.testing import *</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">#from custom_scripts.reliability.rel_conf_mat.means import *</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">#from custom_scripts.reliability.rel_conf_mat.child_voc import *</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">#from custom_scripts.reliability.rel_conf_mat.lena_db import *</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">## Handles startup for the custom command line scripts (such as thos contained in the bll_app/custom_scripts/ folder).</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"># Using this class as an entry point for command line scripts gives them access to all of the bll_app classes.</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"># So for example, you can use the TRSParser class in your command line scripts to read TRS files.</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html">   24</a></span>&#160;<span class="keyword">class </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html" title="Handles startup for the custom command line scripts (such as thos contained in the bll_app/custom_scr...">CustomApp</a>(<a class="code" href="classapp_1_1app_1_1_app.html" title="This is the &quot;abstract&quot; superclass of all _app classes.">App</a>):</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">   25</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">__init__</a>(self):</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        super(CustomApp, self).<a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a85c37f1812add4341d5a5235cf57e867">__init__</a>(</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="stringliteral">&#39;custom_app&#39;</span>,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            App.APP_TYPES.CMD_LINE <span class="comment">#this will prevent the superclass from starting up PyGTK</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            )</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">## See superclass description. Calling this will start your command line script (if it contains a method called &quot;run&quot;).</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a60a43d1c4297930733020f454a746ca5">   32</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classapp_1_1custom__app_1_1_custom_app.html#a60a43d1c4297930733020f454a746ca5" title="See superclass description.">start</a>(self):</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        run()</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a class="el" href="custom__app_8py.html">custom_app.py</a></li>
-    <li class="footer">Generated on Fri Jan 9 2015 16:37:09 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 5 2015 13:23:02 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

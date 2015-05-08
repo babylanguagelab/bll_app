@@ -12,6 +12,9 @@ from db.bll_database import DBConstants
 ## This class contains static methods that can be used to perform some basic operations in Praat.
 #  To do this, it uses the sendpraat program, available <a href="http://www.fon.hum.uva.nl/praat/sendpraat.html" target="_blank">here</a>. The location of this program on the current machine should be available in the constant DBConstants.SETTINGS.SENDPRAAT_PATH (which is defined in the DB settings table).
 class PraatInterop(object):
+
+    ## Opens a Praat instance.
+    # Note: Things won't work if you open more than one at a time.
     @staticmethod
     def open_praat():
         praat = subprocess.Popen([DBConstants.SETTINGS.PRAAT_PATH])
@@ -19,10 +22,19 @@ class PraatInterop(object):
         #wait for praat to start up before sending it commands
         time.sleep(0.5)
 
+    ## Closes an open Praat instance.
     @staticmethod
     def close_praat():
         PraatInterop.send_commands(['Quit'])
 
+    ## Sends a list of commands to Praat.
+    # These commands are just Strings that manipulate the Praat UI. You can access anything clickable in the UI by its name.
+    # If you need to use Praat variables to store stuff, or other Praat scripting language functions, you'll need to open an editor window.
+    # See get_sel_bounds_script() for an example of how to do that.
+    # This idea is to generate a Praat scripts for a specific task using the get_..._script() methods below. These methods return a list of strings that can be then be passed to this method for execution.
+    # This allows us to dynamically generate Praat scripts, using values or other information from our Python scripts.
+    # @param cmds (list) list of Praat commands (String). Eg. ['Open long sound file... "mysound.wav"', 'Extract part... 0.0 10.0']
+    # @returns (int) 0 on success, nonzero on issue (see subprocess module in Python API for details)
     @staticmethod
     def send_commands(cmds):
         sendpraat_args = [
@@ -37,15 +49,16 @@ class PraatInterop(object):
                         shell=False,
                         ) #returns 0 on success
 
-    ## This method opens praat and displays a spectrograph of a given section of a given wave file.
+    ## This method returns a script that opens praat and displays a spectrograph of a given section of a given wave file.
     #  The intention is that the user can select a portion with the mouse, and then the selection boundaries
     #  can be retreived with the close_praat() method (below).
     #  @param start_time (float) absolute start time of the clip to display
     #  @param end_time (float) absolute end time of the clip to display
     #  @param wav_filename (string) full path to the wave file to open
+    #  @param open_spec_win (boolean=True) set to False if you don't want to open a spectrogram window (this will just extract the sound clip)
     @staticmethod
     def get_open_clip_script(start_time, end_time, wav_filename, open_spec_win=True):
-        #open the sound in praat, extract the correct portion, and open a soundEditor window (spectrogram) so the user can select a chunk. The sendpraat program can be used to send commands in the praat scripting language.
+        #open the sound in praat, extract the correct portion, and open a soundEditor window (spectrogram) so the user can select a chunk.
         script = [
             'Open long sound file... %s' % (wav_filename),
             'Extract part... %f %f yes' % (start_time, end_time),
@@ -56,12 +69,7 @@ class PraatInterop(object):
 
         return script
 
-    ## Closes a Praat instance that has been openned with open_praat() (above). This method expects
-    #  Praat to be open, with a sound chunk visible in a sound editor window. A portion of this chunk should
-    #  have been selected by the user with a mouse. If it is not, a sential value is returned.
-    #  @param wav_filename (string) full path of the wav file that was openned in Praat
-    #  @returns ( tuple(int, int) ) the start time, end time that were selected by the user. If no chunk was
-    #                selected, these will both be set to -1.
+    ## Used in custom_scripts
     @staticmethod
     def get_sel_bounds_script(wav_filename):
         port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
@@ -78,25 +86,7 @@ class PraatInterop(object):
 
         return script
 
-    # @staticmethod
-    # def get_pitch_slope_pts_script(start_time, end_time, wav_filename):
-    #     port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
-    #     sound_ed_name = os.path.basename(wav_filename)[:-4]
-
-    #     #praat automatically positions the cursor at the midpoint of the sound editor window when it is opened
-    #     script = [
-    #         'editor Sound %s' % (sound_ed_name),
-    #         'midpoint_pitch = Get pitch',
-    #         'Move cursor to... %f' % (end_time - 0.25),
-    #         'endpoint_pitch = Get pitch',
-            
-    #         # this causes praat to send a message on a socket created on the specified port
-    #         "sendsocket localhost:%d 'midpoint_pitch' 'endpoint_pitch'" % (port),
-    #         'Close',
-    #         ]
-
-    #     return script
-
+    ## Used in Melissa's thesis project (see custom_scripts directory)
     @staticmethod
     def get_octave_corrected_pitch_script():
         script = [
@@ -119,6 +109,29 @@ class PraatInterop(object):
 
         return script
 
+    ## This low-pass filters a clip from a wav file, and saves the clip as a new wav file.
+    # Used in relaibility project project (see custom_scripts directory)
+    @staticmethod
+    def get_low_pass_filter_script(wav_filename, clip_filename, file_code, start_time, stop_time, filter_from, filter_to, filter_smoothing):
+        script = [
+            "Extract part... %f %f yes" % (start_time, stop_time),
+            "Filter (pass Hann band)... %d %d %d" % (filter_from, filter_to, filter_smoothing),
+            "max = Get maximum... 0 0 Sinc70",
+            "min = Get minimum... 0 0 Sinc70",
+            "max_intensity = max(abs(min), abs(max))",
+            "scale_factor = 0.999 / max_intensity",
+            "Multiply... scale_factor",
+            'Save as WAV file... %s' % (clip_filename),
+            'select Sound %s' % (file_code + '_band'),
+            'Remove',
+            'select Sound %s' % (file_code),
+            'Remove',
+            'select LongSound %s' % (file_code),
+        ]
+
+        return script
+
+    ## Used in Melissa's thesis project (see custom_scripts directory)
     @staticmethod
     def get_pitch_sample_vals_script(clip_start, clip_end, wav_filename, step=0.01):
         port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
@@ -160,6 +173,7 @@ class PraatInterop(object):
 
         return script
 
+    ## Used in Melissa's thesis project (see custom_scripts directory)
     @staticmethod
     def get_pitch_extrema():
         port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
@@ -173,40 +187,8 @@ class PraatInterop(object):
 
         return script
 
-    # @staticmethod
-    # def get_pitch_listing_script(start_time, end_time, wav_filename):
-    #     port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
-    #     sound_ed_name = os.path.basename(wav_filename)[:-4]
-
-    #     #praat automatically positions the cursor at the midpoint of the sound editor window when it is opened
-    #     script = [
-    #         'editor Sound %s' % (sound_ed_name),
-    #         'Select... %f %f' % (start_time, end_time),
-    #         'listing$ = Pitch listing',
-    #         "sendsocket localhost:%d 'listing$'" % (port), #This is a table. Rows are separated by newlines, and cells by tabs (or maybe spaces?)
-    #         'Close',
-    #         ]
-
-    #     return script
-
-    # @staticmethod
-    # def get_freq_vals_script(start_time, end_time, wav_filename):
-    #     port = int(DBConstants.SETTINGS.PRAAT_IPC_PORT)
-    #     sound_ed_name = os.path.basename(wav_filename)[:-4]
-
-    #     script = [
-    #         'editor Sound %s' % (sound_ed_name),
-    #         'Select... %f %f' % (start_time, end_time),
-    #         'min_pitch = Get minimum pitch',
-    #         'max_pitch = Get maximum pitch',
-    #         'mean_pitch = Get pitch',
-    #         "sendsocket localhost:%d 'min_pitch' 'max_pitch' 'mean_pitch'" % (port),
-    #         'Close',
-    #         ]
-
-    #     return script
-
-    ## Creates a socket to listen for the boundary info that Praat will be instructed to send (see close_praat() method above).
+    ## Creates a socket to listen for info that Praat is instructed to send.
+    #  To see how praat can be intructed to send info, see the get_sel_bounds_script() method.
     #  @param port (int) the port to listen on
     #  @returns (socket) a socket object from the Python socket library. This socket is set up and listening on the specified port.
     @staticmethod
@@ -217,17 +199,16 @@ class PraatInterop(object):
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         serversocket.setblocking(0)
-        #bind the socket to a public host,
-        # and a well-known port
+        #bind the socket to a public host and a well-known port
         serversocket.bind(('localhost', port))
-        #become a server socket
+        #fire up
         serversocket.listen(1)
         
         return serversocket
 
-    ## Receives a message containing the selected boundary information from Praat. Then destroys the socket.
+    ## Receives a message containing the selected boundary information from Praat.
     #  @param serversocket (socket) Python socket library socket object to receive the message on
-    #  @returns (string, string) returns two strings indicating the Praat-selected start and end time
+    #  @returns (list) returns a list of values sent back by Praat. Values should be separated by a space character.
     @staticmethod
     def socket_receive(serversocket, delim=' '):
         #block until we get a connection on the specified port (20 second timeout)

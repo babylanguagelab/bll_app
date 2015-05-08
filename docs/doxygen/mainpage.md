@@ -21,8 +21,9 @@ Libraries
   * <a href="http://www.sqlite.org/lang.html" target="_blank">SQLite SQL Docs</a>
   * <a href="http://docs.python.org/2/library/sqlite3.html" target="_blank">Python Bindings</a>
   * <a href="http://www.sqlite.org/sqlite.html" target="_blank">Command-line utility</a>
-* GTK+ (v2.24)
-  * <a href="https://developer.gnome.org/pygtk/stable/" target="_blank">Python Bindings (PyGTK)</a>
+* GTK+ (v3.0)
+  * <a href="http://lazka.github.io/pgi-docs/" target="_blank">API Reference (GTK3 is part of something called GI Repository)</a>
+  * <a href="https://python-gtk-3-tutorial.readthedocs.org/en/latest/" target="_blank">Tutorial</a>
 * PyAudio
   * <a href="http://people.csail.mit.edu/hubert/pyaudio/" target="_blank">Website</a>
   * <a href="http://people.csail.mit.edu/hubert/pyaudio/docs/" target="_blank">Docs</a>
@@ -35,7 +36,10 @@ Libraries
 
 User Manuals
 ------------
-* <a href="../../manuals/CSVProcessingScripts.pdf" target="_blank">CSV Processing Scripts</a>
+* <a href="../../manuals/TranscriberManual2_1.pdf" target="_blank">Transcriber Manual (as of Jan. 2015)</a>
+** See Google Drive for newer versions!
+* <a href="../../manuals/PitchStudyApplication.pdf" target="_blank">Pitch Study Program</a>
+* <a href="../../manuals/NaptimeFilterApplication.pdf" target="_blank">Naptime Filter Script</a>
 * <a href="../../manuals/DataViewerApplication.pdf" target="_blank">Data Viewer</a>
 * <a href="../../manuals/ReliabilityApplication.pdf" target="_blank">Reliability Program (1)</a>
 * <a href="../../manuals/ReliabilityApplication2.pdf" target="_blank">Reliability Program (2)</a>
@@ -43,5 +47,10 @@ User Manuals
 * <a href="../../manuals/StatisticsApplication.pdf" target="_blank">Statistics Program</a>
 * <a href="../../manuals/TranscriptionVerifierApplication.pdf" target="_blank">Transcription Checker</a>
 * <a href="../../manuals/WHFreqApplication.pdf" target="_blank">WH Question Program</a>
+* <a href="../../manuals/CSVProcessingScripts.pdf" target="_blank">Misc. CSV Processing Scripts</a>
 
-<sub>Wayne Franz - franz.wayne@gmail.com</sub>
+Other Documentation
+-------------------
+* <a href="../../manuals/ProgrammerGuide.pdf" target="_blank">Programmer Guide</a>
+
+<sub>Author: Wayne Franz (2012-2015) - franz.wayne@gmail.com</sub>

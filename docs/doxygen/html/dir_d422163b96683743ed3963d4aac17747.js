@@ -22,6 +22,9 @@ var dir_d422163b96683743ed3963d4aac17747 =
     [ "naptime_filter_app.py", "naptime__filter__app_8py.html", [
       [ "NaptimeFilterApp", "classapp_1_1naptime__filter__app_1_1_naptime_filter_app.html", "classapp_1_1naptime__filter__app_1_1_naptime_filter_app" ]
     ] ],
+    [ "pitch_study_app.py", "pitch__study__app_8py.html", [
+      [ "PitchStudyApp", "classapp_1_1pitch__study__app_1_1_pitch_study_app.html", "classapp_1_1pitch__study__app_1_1_pitch_study_app" ]
+    ] ],
     [ "reliability2_app.py", "reliability2__app_8py.html", [
       [ "Reliability2App", "classapp_1_1reliability2__app_1_1_reliability2_app.html", "classapp_1_1reliability2__app_1_1_reliability2_app" ]
     ] ],
