@@ -12,9 +12,6 @@ import os
 # This allows you to do SQL-operations on the data, which in some circumstances can be much more convenient than implementing
 # search (query), sort, or data modification methods in straight Python. The cost for doing this is a little extra time inserting all the data - however, this
 # cost isn't usually too bad because in-memory databases are up to an order of magnitude faster than file-based ones.
-# This class was implemented on a per-need basis, so some things (like delete(), or update for named
-# columns added using add_column()) are not implemented yet. You can use the superclass's update() and
-# delete() methods to do this yourself, or extend this class when the functionality is needed.
 #
 # Sample usage:
 # \code{.py}
@@ -22,32 +19,22 @@ import os
 # #create a list of data types corresponding to the format of (a row in) your csv file
 # data_types = [str, int, float, bool, str, str, str]
 #
-# #this will create a single in-memory table, whose columns can be referred to by an integer index value (see select()
-# #call below)
-# db = CSVDatabase(data_types)
+# #this will create a single in-memory table with the contents of multiple csv files (files must have the same columns)
+# db = CSVDatabase.create_with_files(['myFile1.csv', 'myFile2.csv'], data_types)
 #
-# #insert the data from the csv file - don't forget to skip over the header row
-# csv_reader.next()
-# for row in csv_reader:
-#   db.csv_insert(row)
+# #select Age, Gender from table where Age > 12
+# rows = db.csv_select_by_name(col_names=['Age', 'Gender'],
+#                        where_body='%s > ?',
+#                        where_cols=['Age'], params=[12])
 #
-# #you can add extra named columns to the db that do not exist in the csv file
-# #Currently, these extra columns are not updatable - only selectable... This would not be too hard to change if
-# #future code requires it.
+# #you can append new named columns to the db that do not exist in the csv file
 # db.add_column('Extra column', bool)
 #
-# #update a value in column 3 (setting it to 2 wherever the value in column number 3 is equal to 5) - see
-# #Database.update() for a more detailed description. Right now the where_cond requires the
-# #column name, which is 'col<index>', making things less pretty than they could be...
-# #The first column has an index of 0.
-# db.update([3], where_cond='col3=?', params=[2, 5])
+# #See also csv_insert(), csv_delete_by_name(), csv_update_by_name()
 #
-# #select some values from column with index 4 (where column index 3 is equal to the value 2)
-# rows = db.select([4], where_cond='col3=?', params=[2])
+# #You can write out the database to a csv file like this:
+# db.write_to_file('path/to/database.db', omit_col_indices=[0]) #this will omit the first column from the exported spreadsheet
 #
-# #dump the selected data to another csv file
-# for line in rows:
-#  csv_writer.writerow(line)
 # \endcode
 class CSVDatabase(MemDatabase):
     TABLE_NAME = 'data'

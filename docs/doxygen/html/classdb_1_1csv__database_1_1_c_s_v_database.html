@@ -252,39 +252,28 @@ Private Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class provides a way to convert a csv file into an in-memory database. </p>
-<p>This allows you to do SQL-operations on the data, which in some circumstances can be much more convenient than implementing search (query), sort, or data modification methods in straight Python. The cost for doing this is a little extra time inserting all the data - however, this cost isn't usually too bad because in-memory databases are up to an order of magnitude faster than file-based ones. This class was implemented on a per-need basis, so some things (like <a class="el" href="classdb_1_1database_1_1_database.html#a5330b99d309dbdcba101dc517b15a686" title="Deletes rows from a table in the database.">delete()</a>, or update for named columns added using <a class="el" href="classdb_1_1csv__database_1_1_c_s_v_database.html#a7984ac7f555262913472dfce97a78641" title="Adds a named column to the this database&#39;s single table.">add_column()</a>) are not implemented yet. You can use the superclass's <a class="el" href="classdb_1_1database_1_1_database.html#ad4cc36793006ad1415ed30cbd280640d" title="Updates rows in a table.">update()</a> and <a class="el" href="classdb_1_1database_1_1_database.html#a5330b99d309dbdcba101dc517b15a686" title="Deletes rows from a table in the database.">delete()</a> methods to do this yourself, or extend this class when the functionality is needed.</p>
+<p>This allows you to do SQL-operations on the data, which in some circumstances can be much more convenient than implementing search (query), sort, or data modification methods in straight Python. The cost for doing this is a little extra time inserting all the data - however, this cost isn't usually too bad because in-memory databases are up to an order of magnitude faster than file-based ones.</p>
 <p>Sample usage: </p>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">#create a list of data types corresponding to the format of (a row in) your csv file</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;data_types = [str, int, float, bool, str, str, str]</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">#this will create a single in-memory table, whose columns can be referred to by an integer index value (see select()</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">#call below)</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;db = CSVDatabase(data_types)</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">#insert the data from the csv file - don&#39;t forget to skip over the header row</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;csv_reader.next()</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordflow">for</span> row <span class="keywordflow">in</span> csv_reader:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  db.csv_insert(row)</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">#you can add extra named columns to the db that do not exist in the csv file</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">#Currently, these extra columns are not updatable - only selectable... This would not be too hard to change if</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">#future code requires it.</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;db.add_column(<span class="stringliteral">&#39;Extra column&#39;</span>, bool)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment">#update a value in column 3 (setting it to 2 wherever the value in column number 3 is equal to 5) - see</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">#Database.update() for a more detailed description. Right now the where_cond requires the</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">#column name, which is &#39;col&lt;index&gt;&#39;, making things less pretty than they could be...</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">#The first column has an index of 0.</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;db.update([3], where_cond=<span class="stringliteral">&#39;col3=?&#39;</span>, params=[2, 5])</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment">#select some values from column with index 4 (where column index 3 is equal to the value 2)</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;rows = db.select([4], where_cond=<span class="stringliteral">&#39;col3=?&#39;</span>, params=[2])</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">#dump the selected data to another csv file</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keywordflow">for</span> line <span class="keywordflow">in</span> rows:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; csv_writer.writerow(line)</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">#this will create a single in-memory table with the contents of multiple csv files (files must have the same columns)</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;db = CSVDatabase.create_with_files([<span class="stringliteral">&#39;myFile1.csv&#39;</span>, <span class="stringliteral">&#39;myFile2.csv&#39;</span>], data_types)</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">#select Age, Gender from table where Age &gt; 12</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;rows = db.csv_select_by_name(col_names=[<span class="stringliteral">&#39;Age&#39;</span>, <span class="stringliteral">&#39;Gender&#39;</span>],</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;                       where_body=<span class="stringliteral">&#39;%s &gt; ?&#39;</span>,</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                       where_cols=[<span class="stringliteral">&#39;Age&#39;</span>], params=[12])</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">#you can append new named columns to the db that do not exist in the csv file</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;db.add_column(<span class="stringliteral">&#39;Extra column&#39;</span>, bool)</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment">#See also csv_insert(), csv_delete_by_name(), csv_update_by_name()</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment">#You can write out the database to a csv file like this:</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;db.write_to_file(<span class="stringliteral">&#39;path/to/database.db&#39;</span>, omit_col_indices=[0]) <span class="comment">#this will omit the first column from the exported spreadsheet</span></div>
 </div><!-- fragment --> 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00052">52</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00039">39</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="aa9a5a68be24792864523cd40c845ed67"></a>
 <div class="memitem">
@@ -326,7 +315,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00069">69</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00056">56</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -381,7 +370,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(String) the clause. This contains db column names. </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00217">217</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00204">204</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -415,7 +404,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00118">118</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00105">105</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -461,7 +450,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of the indices that correspond to the column names you specified </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00203">203</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00190">190</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -515,7 +504,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) a new row that does not contain any of the columns specified using col_indices. </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00395">395</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00382">382</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -560,7 +549,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00377">377</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00364">364</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -607,7 +596,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(<a class="el" href="classdb_1_1csv__database_1_1_c_s_v_database.html" title="This class provides a way to convert a csv file into an in-memory database.">CSVDatabase</a>) a <a class="el" href="classdb_1_1csv__database_1_1_c_s_v_database.html" title="This class provides a way to convert a csv file into an in-memory database.">CSVDatabase</a> object containing the rows from all of the files. This won't have a primary key, so if the data is large you may want to add some indices before you start querying. </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00095">95</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00082">82</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -652,7 +641,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00081">81</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00068">68</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -698,7 +687,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) number of rows deleted </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00313">313</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00300">300</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -751,7 +740,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) number of rows deleted </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00331">331</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00318">318</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -790,7 +779,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of all the primary key values of the inserted rows </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00131">131</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00118">118</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -884,7 +873,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of lists, one sub-list per row. Each sublist contains data in the order specified by col_indices. </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00159">159</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00146">146</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -985,7 +974,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) list of lists, one sub-list per row. Each sublist contains data in the order specified by col_names. </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00260">260</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00247">247</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1045,7 +1034,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(int) number of rows updated </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00293">293</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00280">280</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1099,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00353">353</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00340">340</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1138,7 +1127,7 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00369">369</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00356">356</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1165,7 +1154,7 @@ Private Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>(list) </dd></dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00230">230</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00217">217</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1191,7 +1180,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00427">427</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00414">414</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1236,7 +1225,7 @@ Private Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00408">408</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00395">395</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1251,7 +1240,7 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00074">74</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00061">61</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1273,7 +1262,7 @@ Private Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00054">54</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00041">41</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1303,7 +1292,7 @@ Private Member Functions</h2></td></tr>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;        <span class="comment">#These should be entered in the form &#39;yyyy-mm-dd hh:mm:ss.sss&#39;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        }</div>
 </div><!-- fragment -->
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00055">55</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00042">42</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1317,7 +1306,7 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00073">73</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00060">60</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1331,7 +1320,7 @@ Private Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00072">72</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00059">59</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1353,7 +1342,7 @@ Private Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00063">63</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00050">50</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1375,7 +1364,7 @@ Private Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00053">53</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
+<p>Definition at line <a class="el" href="csv__database_8py_source.html#l00040">40</a> of file <a class="el" href="csv__database_8py_source.html">csv_database.py</a>.</p>
 
 </div>
 </div>
@@ -1388,7 +1377,7 @@ Private Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacedb.html">db</a></li><li class="navelem"><a class="el" href="namespacedb_1_1csv__database.html">csv_database</a></li><li class="navelem"><a class="el" href="classdb_1_1csv__database_1_1_c_s_v_database.html">CSVDatabase</a></li>
-    <li class="footer">Generated on Tue May 5 2015 13:23:09 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Fri May 8 2015 09:28:26 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>
