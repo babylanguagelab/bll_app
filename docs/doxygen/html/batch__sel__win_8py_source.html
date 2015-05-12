@@ -109,141 +109,145 @@ $(document).ready(function(){initNavTree('batch__sel__win_8py_source.html','');}
 <a href="batch__sel__win_8py.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno"><a class="code" href="namespaceui_1_1pitch__study__app_1_1batch__sel__win.html">    1</a></span>&#160;<span class="keyword">from</span> gi.repository <span class="keyword">import</span> Gtk <span class="keyword">as</span> gtk</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="keyword">from</span> <a class="code" href="namespaceutils_1_1ui__utils.html">utils.ui_utils</a> <span class="keyword">import</span> UIUtils</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="keyword">from</span> <a class="code" href="namespacedb_1_1database.html">db.database</a> <span class="keyword">import</span> Database</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">from</span> <a class="code" href="namespaceui_1_1pitch__study__app_1_1testing__window.html">ui.pitch_study_app.testing_window</a> <span class="keyword">import</span> TestingWindow</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html">    6</a></span>&#160;<span class="keyword">class </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html">BatchSelectionWindow</a>():</div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ab584addbc573dc1050e4e7e2d9f68f6b">    7</a></span>&#160;    PARTICIPANTS_PER_BATCH = 10</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">from</span> <a class="code" href="namespacedb_1_1bll__database.html">db.bll_database</a> <span class="keyword">import</span> BLLDatabase</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">from</span> <a class="code" href="namespacedata__structs_1_1pitch__study__props.html">data_structs.pitch_study_props</a> <span class="keyword">import</span> PitchStudyProps</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">from</span> <a class="code" href="namespaceui_1_1pitch__study__app_1_1testing__window.html">ui.pitch_study_app.testing_window</a> <span class="keyword">import</span> TestingWindow</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html">    8</a></span>&#160;<span class="keyword">class </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html">BatchSelectionWindow</a>():</div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a4f1c1bdafdf6c83c4a5627324c2c5712">    9</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a4f1c1bdafdf6c83c4a5627324c2c5712">__init__</a>(self, db_path):</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a8ca23aa9378a8e6bedc04b0290a40e6a">   10</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a8ca23aa9378a8e6bedc04b0290a40e6a">window</a> = gtk.Window(gtk.WindowType.TOPLEVEL)</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        self.window.set_title(<span class="stringliteral">&#39;Select Batch Number&#39;</span>)</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        self.window.connect(<span class="stringliteral">&#39;destroy&#39;</span>, <span class="keyword">lambda</span> w: self.window.destroy())</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        self.window.set_border_width(10)</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        self.window.set_default_size(210, 100)</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        db = <a class="code" href="classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database.">Database</a>(db_path)</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        vbox = gtk.VBox()</div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a25f2f941418bb548fdb73cffaeaa2dba">   10</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a25f2f941418bb548fdb73cffaeaa2dba">bll_db</a> = <a class="code" href="classdb_1_1bll__database_1_1_b_l_l_database.html" title="Provides BLL-app-specific data retreival and storage routines, building on the base database class...">BLLDatabase</a>()</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac61975e18825ed4c189121b3f4f160a7">   11</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac61975e18825ed4c189121b3f4f160a7">props</a> = PitchStudyProps.db_select(self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a25f2f941418bb548fdb73cffaeaa2dba">bll_db</a>)[0]</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        self.bll_db.close()</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a8ca23aa9378a8e6bedc04b0290a40e6a">   14</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a8ca23aa9378a8e6bedc04b0290a40e6a">window</a> = gtk.Window(gtk.WindowType.TOPLEVEL)</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        self.window.set_title(<span class="stringliteral">&#39;Select Batch Number&#39;</span>)</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        self.window.connect(<span class="stringliteral">&#39;destroy&#39;</span>, <span class="keyword">lambda</span> w: self.window.destroy())</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        self.window.set_border_width(10)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        self.window.set_default_size(210, 100)</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        next_batch_num, next_part_num = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">_get_next_nums</a>(db)</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        db = <a class="code" href="classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database.">Database</a>(db_path)</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        label = gtk.Label(<span class="stringliteral">&#39;Select the batch number to run: &#39;</span>)</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        batch_spin_adj = gtk.Adjustment(value=1, lower=1, upper=self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(db) + 1, step_increment=1, page_increment=1, page_size=1)</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">   24</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">batch_spin</a> = gtk.SpinButton()</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        self.batch_spin.set_adjustment(batch_spin_adj)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        self.batch_spin.set_snap_to_ticks(<span class="keyword">True</span>)</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        self.batch_spin.set_value(next_batch_num)</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        hbox = gtk.HBox()</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        hbox.pack_start(label, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        hbox.pack_start(self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">batch_spin</a>, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        vbox.pack_start(hbox, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        label = gtk.Label(<span class="stringliteral">&#39;Select the participant number to use: &#39;</span>)</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        part_spin_adj = gtk.Adjustment(value=1, lower=1, upper=BatchSelectionWindow.PARTICIPANTS_PER_BATCH + 1, step_increment=1, page_increment=1, page_size=1)</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">   35</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">part_spin</a> = gtk.SpinButton()</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        self.part_spin.set_adjustment(part_spin_adj)</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        self.part_spin.set_snap_to_ticks(<span class="keyword">True</span>)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        self.part_spin.set_value(next_part_num)</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        hbox = gtk.HBox()</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        hbox.pack_start(label, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        hbox.pack_start(self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">part_spin</a>, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        vbox.pack_start(hbox, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        button_box = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">_build_button_box</a>(db)</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        vbox.pack_start(button_box, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        self.window.add(vbox)</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        self.window.show_all()</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">   50</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">_get_next_nums</a>(self, db):</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        batch_num = 1</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        part_num = 1</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        total_batches = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(db)</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        rows = db.select(</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            [<span class="stringliteral">&#39;max(c.Batch_Num)&#39;</span>],</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            where_cond = <span class="stringliteral">&#39;r.Participant_Num is not null&#39;</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        )</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">if</span> rows <span class="keywordflow">and</span> rows[0][0] <span class="keywordflow">is</span> <span class="keywordflow">not</span> <span class="keywordtype">None</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            cur_batch_num = rows[0][0]</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            rows = db.select(</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                [<span class="stringliteral">&#39;max(r.Participant_Num)&#39;</span>],</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                where_cond = <span class="stringliteral">&#39;c.Batch_Num = ?&#39;</span>,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                params = [cur_batch_num]</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            )</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordflow">if</span> rows <span class="keywordflow">and</span> rows[0][0] <span class="keywordflow">is</span> <span class="keywordflow">not</span> <span class="keywordtype">None</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                cur_part_num = rows[0][0]</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                <span class="keywordflow">if</span> cur_part_num &lt; BatchSelectionWindow.PARTICIPANTS_PER_BATCH:</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    part_num = cur_part_num + 1</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                    batch_num = cur_batch_num</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keywordflow">elif</span> cur_batch_num &lt; total_batches:</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                    batch_num = cur_batch_num + 1</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                    <span class="comment">#part_num = 1</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">return</span> batch_num, part_num</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">   81</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(self, db):</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        rows = db.select(</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="stringliteral">&#39;clips&#39;</span>,</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            [<span class="stringliteral">&#39;max(Batch_Num)&#39;</span>]</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        )</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">return</span> rows[0][0]</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        </div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">   88</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">_check_if_used</a>(self, db, batch_num, participant_num):</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        rows = db.select(</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            [<span class="stringliteral">&#39;count(c.id)&#39;</span>],</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            where_cond = <span class="stringliteral">&#39;c.Batch_Num = ? and r.Participant_Num = ?&#39;</span>,</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            params = [batch_num, participant_num]</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        )</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordflow">return</span> rows[0][0] &gt; 0</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;</div>
-<div class="line"><a name="l00097"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">   97</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">_build_button_box</a>(self, db):</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        button_box = gtk.HButtonBox()</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        button_box.set_layout(gtk.ButtonBoxStyle.EDGE)</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        vbox = gtk.VBox()</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        next_batch_num, next_part_num = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">_get_next_nums</a>(db)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        label = gtk.Label(<span class="stringliteral">&#39;Select the batch number to run: &#39;</span>)</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        batch_spin_adj = gtk.Adjustment(value=1, lower=1, upper=self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(db) + 1, step_increment=1, page_increment=1, page_size=1)</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">   28</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">batch_spin</a> = gtk.SpinButton()</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        self.batch_spin.set_adjustment(batch_spin_adj)</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        self.batch_spin.set_snap_to_ticks(<span class="keyword">True</span>)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        self.batch_spin.set_value(next_batch_num)</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        hbox = gtk.HBox()</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        hbox.pack_start(label, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        hbox.pack_start(self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#ac1f5e795fb030086bf457285e98c9e29">batch_spin</a>, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        vbox.pack_start(hbox, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        label = gtk.Label(<span class="stringliteral">&#39;Select the participant number to use: &#39;</span>)</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        part_spin_adj = gtk.Adjustment(value=1, lower=1, upper=self.props.max_parts_per_batch + 1, step_increment=1, page_increment=1, page_size=1)</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">   39</a></span>&#160;        self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">part_spin</a> = gtk.SpinButton()</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        self.part_spin.set_adjustment(part_spin_adj)</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        self.part_spin.set_snap_to_ticks(<span class="keyword">True</span>)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        self.part_spin.set_value(next_part_num)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        hbox = gtk.HBox()</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        hbox.pack_start(label, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        hbox.pack_start(self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a7690304fa69f0ab672055cc101682ce3">part_spin</a>, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        vbox.pack_start(hbox, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        button_box = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">_build_button_box</a>(db)</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        vbox.pack_start(button_box, <span class="keyword">True</span>, <span class="keyword">True</span>, 0)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        self.window.add(vbox)</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        self.window.show_all()</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">   54</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a2ebced35be1f51302554869bf202dcff">_get_next_nums</a>(self, db):</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        batch_num = 1</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        part_num = 1</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        total_batches = self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(db)</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        rows = db.select(</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            [<span class="stringliteral">&#39;max(c.Batch_Num)&#39;</span>],</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            where_cond = <span class="stringliteral">&#39;r.Participant_Num is not null&#39;</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        )</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordflow">if</span> rows <span class="keywordflow">and</span> rows[0][0] <span class="keywordflow">is</span> <span class="keywordflow">not</span> <span class="keywordtype">None</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            cur_batch_num = rows[0][0]</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            rows = db.select(</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                [<span class="stringliteral">&#39;max(r.Participant_Num)&#39;</span>],</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                where_cond = <span class="stringliteral">&#39;c.Batch_Num = ?&#39;</span>,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                params = [cur_batch_num]</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            )</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keywordflow">if</span> rows <span class="keywordflow">and</span> rows[0][0] <span class="keywordflow">is</span> <span class="keywordflow">not</span> <span class="keywordtype">None</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                cur_part_num = rows[0][0]</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                <span class="keywordflow">if</span> cur_part_num &lt; self.props.max_parts_per_batch:</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                    part_num = cur_part_num + 1</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                    batch_num = cur_batch_num</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keywordflow">elif</span> cur_batch_num &lt; total_batches:</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    batch_num = cur_batch_num + 1</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                    <span class="comment">#part_num = 1</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">return</span> batch_num, part_num</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">   85</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a62713ea458ae1cf9120a2eb855a6a534">_get_total_batches</a>(self, db):</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        rows = db.select(</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="stringliteral">&#39;clips&#39;</span>,</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            [<span class="stringliteral">&#39;max(Batch_Num)&#39;</span>]</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        )</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">return</span> rows[0][0]</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        </div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">   92</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">_check_if_used</a>(self, db, batch_num, participant_num):</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        rows = db.select(</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="stringliteral">&#39;clips c join ratings r on c.id = r.clip_id&#39;</span>,</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            [<span class="stringliteral">&#39;count(c.id)&#39;</span>],</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            where_cond = <span class="stringliteral">&#39;c.Batch_Num = ? and r.Participant_Num = ?&#39;</span>,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            params = [batch_num, participant_num]</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        )</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">return</span> rows[0][0] &gt; 0</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        cancel_button = gtk.Button(stock=gtk.STOCK_CANCEL, label=<span class="stringliteral">&#39;Cancel&#39;</span>)</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        cancel_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: self.window.destroy())</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        button_box.add(cancel_button)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        ok_button = gtk.Button(stock=gtk.STOCK_OK, label=<span class="stringliteral">&#39;Run&#39;</span>)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        ok_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">check_input</a>(db))</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        button_box.add(ok_button)</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        <span class="keywordflow">return</span> button_box</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">  111</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">check_input</a>(self, db):</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        batch_num = self.batch_spin.get_value_as_int()</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        participant_num = self.part_spin.get_value_as_int()</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">if</span> self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">_check_if_used</a>(db, batch_num, participant_num):</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            response = UIUtils.show_confirm_dialog(<span class="stringliteral">&#39;Participant %d has recorded responses for Batch %d.\nContinuing will overwrite the existing data for this participant (in this batch).\nDo you want continue?&#39;</span> % (participant_num, batch_num))</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keywordflow">if</span> response:</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                db.delete(</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    <span class="stringliteral">&#39;ratings&#39;</span>,</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                    where_cond = <span class="stringliteral">&#39;clip_id in (select id from clips where Batch_Num = ?) and Participant_Num = ?&#39;</span>,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                    params = [batch_num, participant_num]</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                )</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(db, batch_num, participant_num)</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(db, batch_num, participant_num)</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        <span class="comment">#db.close()</span></div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        </div>
-<div class="line"><a name="l00129"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">  129</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(self, db, batch_num, participant_num):</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        self.window.destroy()</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <a class="code" href="classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html">TestingWindow</a>(db, batch_num, participant_num)</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">  101</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b2767d490685db0209d8d3ac1070437">_build_button_box</a>(self, db):</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        button_box = gtk.HButtonBox()</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        button_box.set_layout(gtk.ButtonBoxStyle.EDGE)</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        cancel_button = gtk.Button(stock=gtk.STOCK_CANCEL, label=<span class="stringliteral">&#39;Cancel&#39;</span>)</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        cancel_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: self.window.destroy())</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        button_box.add(cancel_button)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        ok_button = gtk.Button(stock=gtk.STOCK_OK, label=<span class="stringliteral">&#39;Run&#39;</span>)</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        ok_button.connect(<span class="stringliteral">&#39;clicked&#39;</span>, <span class="keyword">lambda</span> w: self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">check_input</a>(db))</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        button_box.add(ok_button)</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        <span class="keywordflow">return</span> button_box</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">  115</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a98b34a305e6d2de4accf1931c3512916">check_input</a>(self, db):</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        batch_num = self.batch_spin.get_value_as_int()</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        participant_num = self.part_spin.get_value_as_int()</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">if</span> self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#aab9aa216c2a4e5ce5e3cd019060bba3b">_check_if_used</a>(db, batch_num, participant_num):</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            response = UIUtils.show_confirm_dialog(<span class="stringliteral">&#39;Participant %d has recorded responses for Batch %d.\nContinuing will overwrite the existing data for this participant (in this batch).\nDo you want continue?&#39;</span> % (participant_num, batch_num))</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keywordflow">if</span> response:</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                db.delete(</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    <span class="stringliteral">&#39;ratings&#39;</span>,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    where_cond = <span class="stringliteral">&#39;clip_id in (select id from clips where Batch_Num = ?) and Participant_Num = ?&#39;</span>,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    params = [batch_num, participant_num]</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                )</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(db, batch_num, participant_num)</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keywordflow">else</span>:</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            self.<a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(db, batch_num, participant_num)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="comment">#db.close()</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        </div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">  133</a></span>&#160;    <span class="keyword">def </span><a class="code" href="classui_1_1pitch__study__app_1_1batch__sel__win_1_1_batch_selection_window.html#a6b5ea135b998f35fe16fd69049cdaa9b">_start_testing</a>(self, db, batch_num, participant_num):</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        self.window.destroy()</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        <a class="code" href="classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html">TestingWindow</a>(db, batch_num, participant_num)</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="dir_1788f8309b1a812dcb800a185471cf6c.html">ui</a></li><li class="navelem"><a class="el" href="dir_3b14df1329a9812d2923a461e313d805.html">pitch_study_app</a></li><li class="navelem"><a class="el" href="batch__sel__win_8py.html">batch_sel_win.py</a></li>
-    <li class="footer">Generated on Fri May 8 2015 09:28:21 for Baby Language Lab Scripts by
+    <li class="footer">Generated on Tue May 12 2015 12:33:18 for Baby Language Lab Scripts by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.3.1 </li>
   </ul>

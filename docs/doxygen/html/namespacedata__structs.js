@@ -9,6 +9,7 @@ var namespacedata__structs =
     [ "output", "namespacedata__structs_1_1output.html", "namespacedata__structs_1_1output" ],
     [ "output_calcs", "namespacedata__structs_1_1output__calcs.html", "namespacedata__structs_1_1output__calcs" ],
     [ "output_config", "namespacedata__structs_1_1output__config.html", "namespacedata__structs_1_1output__config" ],
+    [ "pitch_study_props", "namespacedata__structs_1_1pitch__study__props.html", "namespacedata__structs_1_1pitch__study__props" ],
     [ "seg_filters", "namespacedata__structs_1_1seg__filters.html", "namespacedata__structs_1_1seg__filters" ],
     [ "segment", "namespacedata__structs_1_1segment.html", "namespacedata__structs_1_1segment" ],
     [ "speaker", "namespacedata__structs_1_1speaker.html", "namespacedata__structs_1_1speaker" ],

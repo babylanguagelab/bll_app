@@ -1,16 +1,12 @@
 from gi.repository import Gtk as gtk, Pango
 from utils.ui_utils import UIUtils
-from db.database import Database
+from db.bll_database import BLLDatabase
+from data_structs.pitch_study_props import PitchStudyProps
 from parsers.wav_parser import WavParser
 import time
 import os
 
 class TestingWindow():
-    CLIP_DIR = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/testing/clips/'
-    NUM_OPTIONS = 4
-    BREAK_INTERVAL = 50
-    SOUND_DELAY = 0.8
-    
     def _update_rating(self, db, rating):
         rows = db.select(
             'clips',
@@ -49,7 +45,7 @@ class TestingWindow():
             if (self.order_num - 1) == num_clips or num_clips == 1:
                 self._finish()
 
-            elif (self.order_num - 1) % TestingWindow.BREAK_INTERVAL == 0:
+            elif (self.order_num - 1) % self.props.break_interval == 0:
                 self.test_grid.hide()
                 self.pause_grid.show_all()
 
@@ -68,7 +64,7 @@ class TestingWindow():
             params = [self.batch_num, self.order_num]
         )
         filename, age = row[0]
-        self.filename = '%sbatch%d/%s_%d-%d.wav' % (TestingWindow.CLIP_DIR, self.batch_num, filename[:-5], age, self.order_num)
+        self.filename = '%sbatch%d/%s_%d-%d.wav' % (self.props.clips_dir_path, self.batch_num, filename[:-5], age, self.order_num)
         
         num_clips = self._get_num_clips(db)
         #self.label.set_text('Clip %d of %d' % (self.order_num, self._get_num_clips(db)))
@@ -79,7 +75,7 @@ class TestingWindow():
         while gtk.events_pending():
             gtk.main_iteration()
 
-        time.sleep(TestingWindow.SOUND_DELAY)
+        time.sleep(self.props.inter_clip_sound_del)
 
         self._toggle_playing_icon(True)
             
@@ -163,9 +159,9 @@ class TestingWindow():
         label_high = gtk.Label('Very Much like a Question')
         label_high.set_alignment(1, 0)
         UIUtils.set_font_size(label_high, 20, bold=True)
-        button_grid.attach(label_high, 2, 0, 2, 1)
+        button_grid.attach(label_high, self.props.num_options - 2, 0, 2, 1)
         
-        for i in range(TestingWindow.NUM_OPTIONS):
+        for i in range(self.props.num_options):
             button = gtk.Button('\n' + str(i + 1) + '\n')
             UIUtils.set_font_size(button, 15, bold=True)
             button.connect('button-release-event', lambda w, e: self._next(db, int(w.get_label())))
@@ -182,6 +178,10 @@ class TestingWindow():
         return grid
     
     def __init__(self, db, batch_num, participant_num):
+        self.bll_db = BLLDatabase()
+        self.props = PitchStudyProps.db_select(self.bll_db)[0]
+        self.bll_db.close()
+        
         self.batch_num = batch_num
         self.participant_num = participant_num
         self.order_num = 1

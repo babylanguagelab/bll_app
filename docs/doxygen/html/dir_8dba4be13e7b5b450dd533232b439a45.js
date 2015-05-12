@@ -30,6 +30,9 @@ var dir_8dba4be13e7b5b450dd533232b439a45 =
     [ "output_config.py", "output__config_8py.html", [
       [ "OutputConfig", "classdata__structs_1_1output__config_1_1_output_config.html", "classdata__structs_1_1output__config_1_1_output_config" ]
     ] ],
+    [ "pitch_study_props.py", "pitch__study__props_8py.html", [
+      [ "PitchStudyProps", "classdata__structs_1_1pitch__study__props_1_1_pitch_study_props.html", "classdata__structs_1_1pitch__study__props_1_1_pitch_study_props" ]
+    ] ],
     [ "seg_filters.py", "seg__filters_8py.html", [
       [ "SegFilter", "classdata__structs_1_1seg__filters_1_1_seg_filter.html", "classdata__structs_1_1seg__filters_1_1_seg_filter" ],
       [ "WHQFilter", "classdata__structs_1_1seg__filters_1_1_w_h_q_filter.html", "classdata__structs_1_1seg__filters_1_1_w_h_q_filter" ],

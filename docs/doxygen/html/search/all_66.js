@@ -27,7 +27,7 @@ var searchData=
   ['filterwindow',['FilterWindow',['../classui_1_1data__viewer__app_1_1filter__window_1_1_filter_window.html',1,'ui::data_viewer_app::filter_window']]],
   ['filterwindow',['FilterWindow',['../classui_1_1naptime__filter__app_1_1filter__window_1_1_filter_window.html',1,'ui::naptime_filter_app::filter_window']]],
   ['finish',['finish',['../classparsers_1_1freq__exporter_1_1_freq_exporter.html#a21e199bdf75b430a6f487b285210277a',1,'parsers.freq_exporter.FreqExporter.finish()'],['../classparsers_1_1state__machines_1_1_parse_utters_state_machine.html#a39fa3c28d93a0b73715d311ebcd0ca48',1,'parsers.state_machines.ParseUttersStateMachine.finish()'],['../classparsers_1_1state__machines_1_1_link_utters_state_machine.html#a9891d82003829de2758edf2c7db28ca2',1,'parsers.state_machines.LinkUttersStateMachine.finish()']]],
-  ['form',['form',['../classui_1_1reliability__app_1_1create__window_1_1_create_window.html#aaafe621abaa20b8fb70d21108a159084',1,'ui::reliability_app::create_window::CreateWindow']]],
+  ['form',['form',['../classui_1_1pitch__study__app_1_1options__window_1_1_options_window.html#aed3628b8a5d9167e65cc6669dd2fa5ee',1,'ui.pitch_study_app.options_window.OptionsWindow.form()'],['../classui_1_1reliability__app_1_1create__window_1_1_create_window.html#aaafe621abaa20b8fb70d21108a159084',1,'ui.reliability_app.create_window.CreateWindow.form()']]],
   ['form',['Form',['../classutils_1_1form_1_1_form.html',1,'utils::form']]],
   ['form_2epy',['form.py',['../form_8py.html',1,'']]],
   ['freq_5fexporter_2epy',['freq_exporter.py',['../freq__exporter_8py.html',1,'']]],

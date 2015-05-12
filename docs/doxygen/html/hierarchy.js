@@ -29,10 +29,10 @@ var hierarchy =
     [ "ui.data_viewer_app.main_window.MainWindow", "classui_1_1data__viewer__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.naptime_filter_app.main_window.MainWindow", "classui_1_1naptime__filter__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.pitch_study_app.main_window.MainWindow", "classui_1_1pitch__study__app_1_1main__window_1_1_main_window.html", null ],
-    [ "ui.verifier_app.main_window.MainWindow", "classui_1_1verifier__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.reliability2_app.main_window.MainWindow", "classui_1_1reliability2__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.reliability_app.main_window.MainWindow", "classui_1_1reliability__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.splitter_app.main_window.MainWindow", "classui_1_1splitter__app_1_1main__window_1_1_main_window.html", null ],
+    [ "ui.verifier_app.main_window.MainWindow", "classui_1_1verifier__app_1_1main__window_1_1_main_window.html", null ],
     [ "ui.wh_freq_app.main_window.MainWindow", "classui_1_1wh__freq__app_1_1main__window_1_1_main_window.html", null ],
     [ "utils.naptime.Naptime", "classutils_1_1naptime_1_1_naptime.html", null ],
     [ "object", null, [
@@ -57,6 +57,7 @@ var hierarchy =
           [ "data_structs.check.Check", "classdata__structs_1_1check_1_1_check.html", null ],
           [ "data_structs.output.Output", "classdata__structs_1_1output_1_1_output.html", null ],
           [ "data_structs.output_config.OutputConfig", "classdata__structs_1_1output__config_1_1_output_config.html", null ],
+          [ "data_structs.pitch_study_props.PitchStudyProps", "classdata__structs_1_1pitch__study__props_1_1_pitch_study_props.html", null ],
           [ "data_structs.seg_filters.SegFilter", "classdata__structs_1_1seg__filters_1_1_seg_filter.html", [
             [ "data_structs.seg_filters.OverlappingVocalsSegFilter", "classdata__structs_1_1seg__filters_1_1_overlapping_vocals_seg_filter.html", null ],
             [ "data_structs.seg_filters.SpeakerCodeSegFilter", "classdata__structs_1_1seg__filters_1_1_speaker_code_seg_filter.html", null ],
@@ -123,12 +124,13 @@ var hierarchy =
       [ "utils.ui_utils.UIUtils", "classutils_1_1ui__utils_1_1_u_i_utils.html", null ]
     ] ],
     [ "ui.verifier_app.open_pair_window.OpenPairWindow", "classui_1_1verifier__app_1_1open__pair__window_1_1_open_pair_window.html", null ],
+    [ "ui.pitch_study_app.options_window.OptionsWindow", "classui_1_1pitch__study__app_1_1options__window_1_1_options_window.html", null ],
     [ "ui.splitter_app.options_window.OptionsWindow", "classui_1_1splitter__app_1_1options__window_1_1_options_window.html", null ],
     [ "ui.stats_app.output_window.OutputWindow", "classui_1_1stats__app_1_1output__window_1_1_output_window.html", null ],
     [ "ui.pitch_study_app.testing_window.TestingWindow", "classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html", null ],
     [ "ui.reliability2_app.test_window.TestWindow.TestStateMachine", "classui_1_1reliability2__app_1_1test__window_1_1_test_window_1_1_test_state_machine.html", null ],
-    [ "ui.reliability2_app.test_window.TestWindow", "classui_1_1reliability2__app_1_1test__window_1_1_test_window.html", null ],
     [ "ui.reliability_app.test_window.TestWindow", "classui_1_1reliability__app_1_1test__window_1_1_test_window.html", null ],
+    [ "ui.reliability2_app.test_window.TestWindow", "classui_1_1reliability2__app_1_1test__window_1_1_test_window.html", null ],
     [ "ui.verifier_app.verification_window.VerificationWindow", "classui_1_1verifier__app_1_1verification__window_1_1_verification_window.html", null ],
     [ "ui.stats_app.view_configs_window.ViewConfigsWindow", "classui_1_1stats__app_1_1view__configs__window_1_1_view_configs_window.html", null ]
 ];

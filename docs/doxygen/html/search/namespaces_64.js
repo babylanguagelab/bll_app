@@ -15,6 +15,7 @@ var searchData=
   ['output',['output',['../namespacedata__structs_1_1output.html',1,'data_structs']]],
   ['output_5fcalcs',['output_calcs',['../namespacedata__structs_1_1output__calcs.html',1,'data_structs']]],
   ['output_5fconfig',['output_config',['../namespacedata__structs_1_1output__config.html',1,'data_structs']]],
+  ['pitch_5fstudy_5fprops',['pitch_study_props',['../namespacedata__structs_1_1pitch__study__props.html',1,'data_structs']]],
   ['seg_5ffilters',['seg_filters',['../namespacedata__structs_1_1seg__filters.html',1,'data_structs']]],
   ['segment',['segment',['../namespacedata__structs_1_1segment.html',1,'data_structs']]],
   ['speaker',['speaker',['../namespacedata__structs_1_1speaker.html',1,'data_structs']]],

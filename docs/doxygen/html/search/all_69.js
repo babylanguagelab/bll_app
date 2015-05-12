@@ -8,6 +8,7 @@ var searchData=
   ['inputs_5fdict',['inputs_dict',['../classui_1_1stats__app_1_1output__window_1_1_options_frame.html#a6431b05ddc41b66bfd8dad6c2c8aa0e2',1,'ui.stats_app.output_window.OptionsFrame.inputs_dict()'],['../classutils_1_1add__filter__window_1_1_add_filter_window.html#abf9b10eccb3641e28ffa07c305d75170',1,'utils.add_filter_window.AddFilterWindow.inputs_dict()']]],
   ['insert',['insert',['../classdb_1_1database_1_1_database.html#a580ffa7c7ef3a7c038d569f87eff9fac',1,'db::database::Database']]],
   ['insert_5fdata_5fscript',['INSERT_DATA_SCRIPT',['../classdb_1_1bll__database_1_1_b_l_l_database.html#a2a8635a455ee1eb84effc16038fbff47',1,'db::bll_database::BLLDatabase']]],
+  ['inter_5fclip_5fsound_5fdel',['inter_clip_sound_del',['../classdata__structs_1_1pitch__study__props_1_1_pitch_study_props.html#a79bf84b089a8d107b112f85f7d553c33',1,'data_structs::pitch_study_props::PitchStudyProps']]],
   ['is_5fdistance',['is_distance',['../classdata__structs_1_1codes_1_1_code_info.html#a78e71bc8a7bcb1215a920546c6127979',1,'data_structs.codes.CodeInfo.is_distance()'],['../classdata__structs_1_1speaker_1_1_speaker.html#afa28e7f6d10900e7f1bab07898a7b5c1',1,'data_structs.speaker.Speaker.is_distance()']]],
   ['is_5fdot_5fsplit',['is_dot_split',['../classdata__structs_1_1utterance_1_1_utterance.html#a0cb35b62abba94048423bb5476fad31c',1,'data_structs::utterance::Utterance']]],
   ['is_5ffloat',['is_float',['../classutils_1_1backend__utils_1_1_backend_utils.html#a3ceebe488daf4fbd5d46d29bc4f0abee',1,'utils::backend_utils::BackendUtils']]],

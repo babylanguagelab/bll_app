@@ -7,6 +7,9 @@ var dir_3b14df1329a9812d2923a461e313d805 =
     [ "main_window.py", "pitch__study__app_2main__window_8py.html", [
       [ "MainWindow", "classui_1_1pitch__study__app_1_1main__window_1_1_main_window.html", "classui_1_1pitch__study__app_1_1main__window_1_1_main_window" ]
     ] ],
+    [ "options_window.py", "pitch__study__app_2options__window_8py.html", [
+      [ "OptionsWindow", "classui_1_1pitch__study__app_1_1options__window_1_1_options_window.html", "classui_1_1pitch__study__app_1_1options__window_1_1_options_window" ]
+    ] ],
     [ "testing_window.py", "testing__window_8py.html", [
       [ "TestingWindow", "classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window.html", "classui_1_1pitch__study__app_1_1testing__window_1_1_testing_window" ]
     ] ]

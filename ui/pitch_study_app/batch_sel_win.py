@@ -1,12 +1,16 @@
 from gi.repository import Gtk as gtk
 from utils.ui_utils import UIUtils
 from db.database import Database
+from db.bll_database import BLLDatabase
+from data_structs.pitch_study_props import PitchStudyProps
 from ui.pitch_study_app.testing_window import TestingWindow
 
 class BatchSelectionWindow():
-    PARTICIPANTS_PER_BATCH = 10
-    
     def __init__(self, db_path):
+        self.bll_db = BLLDatabase()
+        self.props = PitchStudyProps.db_select(self.bll_db)[0]
+        self.bll_db.close()
+        
         self.window = gtk.Window(gtk.WindowType.TOPLEVEL)
         self.window.set_title('Select Batch Number')
         self.window.connect('destroy', lambda w: self.window.destroy())
@@ -31,7 +35,7 @@ class BatchSelectionWindow():
         vbox.pack_start(hbox, True, True, 0)
 
         label = gtk.Label('Select the participant number to use: ')
-        part_spin_adj = gtk.Adjustment(value=1, lower=1, upper=BatchSelectionWindow.PARTICIPANTS_PER_BATCH + 1, step_increment=1, page_increment=1, page_size=1)
+        part_spin_adj = gtk.Adjustment(value=1, lower=1, upper=self.props.max_parts_per_batch + 1, step_increment=1, page_increment=1, page_size=1)
         self.part_spin = gtk.SpinButton()
         self.part_spin.set_adjustment(part_spin_adj)
         self.part_spin.set_snap_to_ticks(True)
@@ -69,7 +73,7 @@ class BatchSelectionWindow():
             if rows and rows[0][0] is not None:
                 cur_part_num = rows[0][0]
 
-                if cur_part_num < BatchSelectionWindow.PARTICIPANTS_PER_BATCH:
+                if cur_part_num < self.props.max_parts_per_batch:
                     part_num = cur_part_num + 1
                     batch_num = cur_batch_num
                 elif cur_batch_num < total_batches:

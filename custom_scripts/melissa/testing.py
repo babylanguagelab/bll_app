@@ -17,7 +17,7 @@ data_path = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/testing/data/dataset.csv'
 filter_from = 0
 filter_to = 400
 filter_smoothing = 100
-amplitude_factor = 5
+short_clip_limit = 0.8 #any clips shorter than this will be filtered out
 
 def get_bounds_list(db, filename):
     rows = db.select(
@@ -53,44 +53,52 @@ def get_file_age(db, filename):
     )
     return row[0][0]
 
-def partition_files(db, age):
-    #get a list of pairs of (filename, total duration)
-    pairs = db.select(
+def del_short_clips(db):
+    rowcount = db.delete(
         'clips',
-        ['Filename, sum(Stop_Time - Start_Time) as dur'],
+        where_cond='Stop_Time - Start_Time < ?',
+        params=[short_clip_limit]
+    )
+
+    print 'Removed %d clips' % (rowcount)
+
+def partition_files(db):
+    #get a list of pairs of (filename, total duration)
+    age_10_rows = db.select(
+        'clips',
+        ['Filename', 'sum(Stop_Time - Start_Time) as dur'],
         where_cond = 'Age = ?',
         group_by = 'Filename',
         order_by = 'dur',
-        params = [age]
+        params = [10]
+    )
+
+    age_14_rows = db.select(
+        'clips',
+        ['Filename', 'sum(Stop_Time - Start_Time) as dur'],
+        where_cond = 'Age = ?',
+        group_by = 'Filename',
+        order_by = 'dur',
+        params = [14]
     )
 
     batches = []
     i = 0
 
-    #we have an even number of recordings, so this will work out exactly
-    num_batches = len(pairs) / 2
+    #we have the same number of 10 and 14 month-old recordings, so this is safe
+    num_batches = len(age_10_rows)
+    print 'Batch Num\tFiles\t\t\tTotal Dur'
     while i < num_batches:
-        group = [pairs[0], pairs[-1]]
+        group = [age_10_rows[0][0], age_14_rows[-1][0]] #grab shortest and longest and put them together
         batches.append(group)
-        pairs = pairs[1:-1]
+
+        total_dur = age_10_rows[0][1] + age_14_rows[-1][1]
+        print '%d\t\t(%s, %s)\t%f sec' % (i + 1, age_10_rows[0][0], age_14_rows[-1][0], total_dur)
+        
+        age_10_rows = age_10_rows[1:]
+        age_14_rows = age_14_rows[:-1]
         i += 1
 
-    return batches
-    
-def divide_clips(db):
-    batches_10mo = partition_files(db, 10)
-    batches_14mo = partition_files(db, 14)
-
-    batches_10mo.sort(key=lambda pair: pair[0][1] + pair[1][1])
-    batches_14mo.sort(key=lambda pair: pair[0][1] + pair[1][1])
-
-    batches = []
-    num_batches = len(batches_10mo) #both lists have same length, since we have same number of 10mo and 14mo recordings
-    head = lambda x: x[0]
-    for i in range(num_batches):
-        group = map(head, batches_10mo[i]) + map(head, batches_14mo[num_batches - i - 1])
-        batches.append(group)
-        
     return batches
     
 #def filter_clips(db, csv_filename, batch_dir):
@@ -203,6 +211,11 @@ def create_db():
         float,
         str,
     )
+
+    #remove old db if it exists
+    if os.path.exists(db_path):
+        os.remove(db_path)
+    
     db = CSVDatabase.create_with_files([data_path], col_datatypes)
     db.execute_script(sql_path)
     db.dump_to_file(db_path)
@@ -213,7 +226,14 @@ def create_db():
 def run():
     db = create_db()
 
-    batches = divide_clips(db)
+    print 'Removing clips with duration less than %f' % (short_clip_limit)
+    del_short_clips(db)
+    print ''
+
+    print 'Partitioning batches...'
+    batches = partition_files(db)
+    print ''
+    
     for i in range(len(batches)):
         print 'Creating batch %d of %d' % (i + 1, len(batches))
         
