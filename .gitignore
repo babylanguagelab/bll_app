@@ -55,3 +55,6 @@ icons/
 
 # Log files
 logs/
+
+# Test
+/test
