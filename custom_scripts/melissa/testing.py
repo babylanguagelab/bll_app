@@ -8,11 +8,11 @@ import sys
 import random
 from collections import OrderedDict
 
-wav_in_dir = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/wav/'
-wav_out_dir = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/testing/clips/'
-db_path = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/testing/data/clips.db'
-sql_path = 'C:/Users/Wayne/Documents/baby-lab/bll_app/custom_scripts/melissa/testing_rename.sql'
-data_path = 'C:/Users/Wayne/Documents/baby-lab/bll/mel/testing/data/dataset.csv'
+wav_in_dir = 'C:/Experimental Data/Daycare Study/Pitch Study Data/wav/'
+wav_out_dir = 'C:/Experimental Data/Daycare Study/Pitch Study Data/testing/clips/'
+db_path = 'C:/Experimental Data/Daycare Study/Pitch Study Data/testing/data/clips.db'
+sql_path = 'C:/Program Files (x86)/bll_app/custom_scripts/melissa/testing_rename.sql'
+data_path = 'C:/Experimental Data/Daycare Study/Pitch Study Data/testing/data/dataset.csv'
 
 filter_from = 0
 filter_to = 400
