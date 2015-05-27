@@ -5,11 +5,10 @@ from db.bll_database import DBConstants
 from data_structs.speaker import Speaker
 
 ##This class holds a chunk of information from the TRS file.
-#This corresponds to the information between a <Turn></Turn> pair of tags in a TRS file. Each <sync> or <who> group within the turn tags is an Utterance (caveat:  if one <sync> or <who> tag has multiple lines, each line is a separate Utterance).
-#Each Segment has a list of Utterances it contains.
-#Note: this class differs slightly from the linguistic definition of a "segment". However, this is the organization that I finally settled on coding when I started....
-#To the best of my knowledge, the linguistic definition is usually equivalent to what the Utterance object represents.
-#I make sure metrics presented in units of "Segments" in the UI correspond to the linguistic definition (which is usually Utterance objects).
+# This corresponds to the information between a <Turn></Turn> pair of tags in a TRS file. Each <sync> or <who> group within the turn tags is an Utterance
+# (caveat:  if one <sync> or <who> tag has multiple lines, each line is a separate Utterance).
+# Each Segment has a list of Utterances it contains.
+# Utterances correspond to "bullet points" in transcriber.
 class Segment(DBObject):
     ## Constructor
     #  @param self

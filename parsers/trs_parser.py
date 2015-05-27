@@ -20,18 +20,10 @@ from parsers.parser_tools import *
 class TRSParser(object):
     #every correctly transcribed line should match this regex
     #General format: "<transcription phrase> <lena notes> <pipe-delimited LENA codes><pipe-delimited transcriber codes>"
-    TRANS_LINE_REGEX = '^\s*([^\|]*?)\s*(' + '|'.join(DBConstants.LENA_NOTES_CODES.get_all_options_codes()) + ')?\s*(?:\|(.*)\|)?\s*(?:`)*$' #note: allow for backticks at the end of line (occurs in some TRS files for some unknown reason...)
-    #TRANS_LINE_REGEX = '^\s*([^\|]*?)\s*((?:(?:' + '|'.join(DBConstants.LENA_NOTES_CODES.get_all_options_codes()) + ')\s*)*)(?:\|(.*)\|)?\s*(?:`)*$' #note: allow for backticks at the end of line (occurs in some TRS files for some unknown reason...)
+    TRANS_LINE_REGEX = '^\s*([^\|]*?)\s*(' + '|'.join(DBConstants.LENA_NOTES_CODES.get_all_options_codes()) + ')?\s*(?:\|(.*)\|)?\s*$'
     
     #this regex is used to check for angle brackets to see if a particular transcription should be marked as 'overlapping'
     TRANS_OVERLAP_REGEX = '\s*<.*>\s*'
-
-    # TRANS_CODE_REGEX = '^\s*\|\s*[%s]\s*\|\s*[%s]\s*\|\s*[%s]+\s*\|\s*[%s]\s*\|\s*$' % (
-    #     ''.join(DBConstants.TRANS_CODES[0].get_all_options_codes()),
-    #     ''.join(DBConstants.TRANS_CODES[1].get_all_options_codes()),
-    #     ''.join(DBConstants.TRANS_CODES[2].get_all_options_codes()) + '\s',
-    #     ''.join(DBConstants.TRANS_CODES[3].get_all_options_codes())
-    #     )
 
     ## Constructor
     #  @param self
@@ -294,8 +286,12 @@ class TRSParser(object):
                 if remove_bad_trans_codes:
                     for i in range(len(trans_codes)):
                         code = trans_codes[i]
-                        pattern = '^[%s]%s$' % (''.join(DBConstants.TRANS_CODES[i].get_all_options_codes()), '+' if i == 2 else '') #code 2 can have multiple chars
+                        pattern = '^[%s]$' % (''.join(DBConstants.TRANS_CODES[i].get_all_options_codes()))
 
+                        #code 2 can have multiple chars, with numbers (I1, C1, etc.)
+                        if i == 2:
+                            pattern = '^([%s][1-9]?)+$' % (''.join(DBConstants.TRANS_CODES[i].get_all_options_codes()))
+                            
                         if not re.match(pattern, code):
                             trans_codes[i] = ''
 

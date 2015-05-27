@@ -4,9 +4,10 @@ import sqlite3
 import logging
 import traceback
 import sys
+import csv
 
 ## This class provides a basic API layer on top of an SQLite database.
-#  All (well, ok, most) SQL should be restricted to this file. Calling code can form queries using the select() method. You can also update(), insert(), and delete().
+#  Ideally, all SQL should be restricted to this file. Calling code can form queries using the select() method. You can also update(), insert(), and delete().
 class Database(object):
     ## Constructor
     #  @param self
@@ -98,6 +99,7 @@ class Database(object):
     #  @param params (list=[]) list of values to stick in '?' placeholders passed in via the where_cond parameter (or any other parameter). These values are automatically quoted/escaped by the SQLite API.
     #  @param order_by (string=None) a column name, or multiple comma-separated column names, to order by. Eg. passing in 'time, id' generates 'ORDER BY time, id'. Pass None if no order by clause is needed.
     #  @param dump_sql (boolean=False) Set to True if you wish to print the generated statement (before '?' substitution - unfortunately sqlite api restrictions make it difficult to access the final sustituted verison...) to standard output.
+    #  @param group_by (string) This string is inserted into to SQL statement after the where clause. It can be a single column name, or multiple names separated with commas (Eg. 'child_id', or 'child_id, awc').
     #  @returns (list) list of lists, one sub-list per row. Each sublist contains data in the order specified by cols.
     def select(self, table, cols, where_cond=None, params=[], order_by=None, dump_sql=False, group_by=None):
         sql = 'SELECT %s FROM %s' % (','.join(cols), table)
@@ -183,9 +185,10 @@ class Database(object):
 
     ## Updates rows in a table.
     #  @param table (string) name of table to update
-    #  @param col (list) list of names of columns (strings) to update
+    #  @param cols (list) list of names of columns (strings) to update
     #  @param where_cond (string=None) a boolean condition like ('x=y'). Will generate 'WHERE x=y'. Set to None if no where condition should be generated. Note: Can use '?' as a placeholder for raw data values, then pass the raw values in using the 'params' parameter. Eg. passing 'x=?' for where_cond and [2] for params generates 'WHERE x=2'. Advantage here is that the DB ensures the raw values are properly escaped/quoted.
     #  @param params (list=[]) list of values to stick in '?' placeholders generated for each column we are updating. The last param is in this list is used for the where_cond parameter (if any). These values are automatically quoted/escaped by the SQLite API.
+    #  @param dump_sql (boolean=False) Set to True if you wish to print the generated statement (before '?' substitution - unfortunately sqlite api restrictions make it difficult to access the final sustituted verison...) to standard output.
     #  @returns (int) number of rows updated
     def update(self, table, cols, where_cond=None, params=[], dump_sql=False):
         rowcount = 0
@@ -216,3 +219,27 @@ class Database(object):
             self.conn.rollback()
 
         return rowcount
+
+    ## Writes out all of the data in a table to a csv file.
+    #  @param self
+    #  @param path (string) The location in which you'd like to save the csv file. (Eg. 'C:/Wayne/data.csv')
+    #  @param table (string) Name of the database table to read data from.
+    def write_to_file(self, path, table):
+        file_out = open(path, 'wb')
+        writer = csv.writer(file_out)
+
+        self.cursor.execute('PRAGMA table_info(%s)' % (table)) #This SQLite pragma selects the column names from the table
+        rows = self.cursor.fetchall()
+
+        #throw away everything except the column names
+        col_names = map(lambda cur_row: cur_row[1], rows)
+
+        #write the column names in the csv file
+        writer.writerow(col_names)
+
+        #write the table rows to the csv file
+        rows = self.select(table, col_names, order_by='id') #select *
+        for cur_row in rows:
+            writer.writerow(cur_row)
+        
+        file_out.close()

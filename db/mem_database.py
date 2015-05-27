@@ -12,7 +12,10 @@ class MemDatabase(Database):
     def __init__(self):
         #create an in-memory SQLite database, just pass in this special identifier instead of a filename
         super(MemDatabase, self).__init__(':memory:')
-    
+
+    ## Writes this in-memory database to a *.db file on disk
+    #  @param self
+    #  @param filename (string) path to the *.db file you wish to write to (will be created if it doesn't exist)
     def dump_to_file(self, filename):
         file_db = Database(filename)
         sql_iter = self.conn.iterdump()

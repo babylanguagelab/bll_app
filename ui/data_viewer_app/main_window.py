@@ -39,6 +39,7 @@ class MainWindow():
         self.logger = logging.getLogger(__name__)
                                          
         self.csv_filename = UIUtils.open_file('Select csv file', filters=[UIUtils.CSV_FILE_FILTER, UIUtils.ALL_FILE_FILTER])
+        self.window.set_title('%s - %s' % (self.window.get_title(), os.path.basename(self.csv_filename)))
         if not self.csv_filename:
             exit(0)
 
@@ -331,13 +332,19 @@ class MainWindow():
         export_button = UIUtils.create_button('Export', UIUtils.BUTTON_ICONS.EXPORT, UIUtils.BUTTON_ICON_SIZES.PX16)
         export_button.connect('clicked', lambda w: self._export(treeview, col_headers, db))
 
+        context_label = gtk.Label('Context')
+        context_adj = gtk.Adjustment(value=0, lower=0, upper=99, step_increment=1)
+        self.context_spinner = gtk.SpinButton()
+        self.context_spinner.set_adjustment(context_adj)
+        self.context_spinner.set_numeric(True)
+
         spacer = gtk.SeparatorToolItem()
         spacer.set_draw(False) #don't draw a vertical line
         spacer.set_expand(True)
 
         filter_label = gtk.Label('Filter state:')
 
-        for widget in [filter_label, search_entry, filter_button, play_button, praat_button]:
+        for widget in [filter_label, search_entry, filter_button, praat_button, play_button, self.context_spinner, context_label]:
             tool_item = gtk.ToolItem()
             tool_item.add(widget)
             if widget == search_entry:
@@ -427,6 +434,8 @@ class MainWindow():
         start, end = self._get_sel_row_clip_info(col_headers, treeview)
         
         if self.wav_parser and start != None and end != None:
+            start = max(0, start - self.context_spinner.get_value())
+            end = min(self.wav_parser.get_sound_len(), end + self.context_spinner.get_value())
             self.wav_parser.play_clip(start, end)
 
         #return the focus to the currenly selected row in the treeview, so the user can immediately press the down arrow to move on to the next row

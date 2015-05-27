@@ -49,9 +49,12 @@ Temporary Items
 icons/
 *.db
 
-# Log files and custom scripts
-logs/
-custom_scripts/
+# Spreadsheet files
+*.csv
+*.xlsx
 
-# User documentation (hosted elsewhere)
-docs/
+# Log files
+logs/
+
+# Test
+/test
