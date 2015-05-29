@@ -1,0 +1,4 @@
+<map id="db.mem_database.MemDatabase" name="db.mem_database.MemDatabase">
+<area shape="rect" id="node4" href="$classdb_1_1csv__database_1_1_c_s_v_database.html" title="This class provides a way to convert a csv file into an in&#45;memory database." alt="" coords="11,229,216,256"/>
+<area shape="rect" id="node2" href="$classdb_1_1database_1_1_database.html" title="This class provides a basic API layer on top of an SQLite database." alt="" coords="37,80,189,107"/>
+</map>
