@@ -22,6 +22,7 @@ class UIUtils(object):
     #These static members store gtk.FileFilter constants created by the _get_constants method() of the ui_utils module. They are populated when this file is processed by the Python iterpreter.
     WAV_FILE_FILTER = None
     TRS_FILE_FILTER = None 
+    ITS_FILE_FILTER = None 
     ALL_FILE_FILTER = None
     CSV_FILE_FILTER = None
     TRS_CSV_FILE_FILTER = None
@@ -653,6 +654,7 @@ def _get_constants():
     #These are provided only for convenience. Calling code is free to create filter for other types of files/folders.
     UIUtils.WAV_FILE_FILTER = UIUtils.build_file_filter('WAV Files', ['*.wav'])
     UIUtils.TRS_FILE_FILTER = UIUtils.build_file_filter('TRS Files', ['*.trs'])
+    UIUtils.ITS_FILE_FILTER = UIUtils.build_file_filter('ITS Files', ['*.its'])
     UIUtils.ALL_FILE_FILTER = UIUtils.build_file_filter('All Files', ['*'])
     UIUtils.CSV_FILE_FILTER = UIUtils.build_file_filter('CSV Files', ['*.csv'])
     UIUtils.TRS_CSV_FILE_FILTER = UIUtils.build_file_filter('TRS/CSV Files', ['*.trs', '*.csv'])

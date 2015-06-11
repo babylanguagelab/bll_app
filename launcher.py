@@ -5,7 +5,9 @@
 # In addition, the BLL_APP_ROOT_DIR constant must be set to the absolute path to the bll_app/ directory.
 
 #must include trailing slash
-BLL_APP_ROOT_DIR = 'C:/Users/Wayne/Documents/baby-lab/bll_app/'
+#BLL_APP_ROOT_DIR = 'C:/Users/Wayne/Documents/baby-lab/bll_app/'
+BLL_APP_ROOT_DIR = '/home/hao/Develop/projects/bll_app/'
+
 
 from app.app import App
 import imp
