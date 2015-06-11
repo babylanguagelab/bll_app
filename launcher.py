@@ -2,17 +2,15 @@
 # This module is the main entry point for all bll applications.
 # It must be launched with a single command-line arg, the name of the module
 # from the app/ directory that is to be run (i.e. which application to run).
-# In addition, the BLL_APP_ROOT_DIR constant must be set to the absolute path to the bll_app/ directory.
 
-#must include trailing slash
-#BLL_APP_ROOT_DIR = 'C:/Users/Wayne/Documents/baby-lab/bll_app/'
-BLL_APP_ROOT_DIR = '/home/hao/Develop/projects/bll_app/'
-
-
-from app.app import App
+import os
 import imp
 import sys
-#this will allow all modules to access bll classes
+from app.app import App
+
+BLL_APP_ROOT_DIR = os.getcwd()
+
+# this will allow all modules to access bll classes
 sys.path.append(BLL_APP_ROOT_DIR)
 
 if len(sys.argv) != 2:
