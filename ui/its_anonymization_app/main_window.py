@@ -80,27 +80,36 @@ class MainWindow():
         self.config_window.set_default_size(640, 480)
         self.config_window.connect('destroy', self.close_config)
 
-        self.config_model = gtk.ListStore(str, bool)
+        self.config_model = gtk.ListStore(bool, str, str)
         for i in dummy_info:
-            self.config_model.append([i[0], True])
+            self.config_model.append([True, i[0], i[2]])
 
         self.config_view = gtk.TreeView(self.config_model)
 
-        rendered_text = gtk.CellRendererText()
-        column_text = gtk.TreeViewColumn("attributes", rendered_text, text=0)
-        self.config_view.append_column(column_text)
-
         rendered_toggle = gtk.CellRendererToggle()
         rendered_toggle.connect("toggled", self.on_cell_toggled)
-        column_toggle = gtk.TreeViewColumn("dummy", rendered_toggle, active=1)
+        column_toggle = gtk.TreeViewColumn("mask", rendered_toggle, active=0)
         self.config_view.append_column(column_toggle)
+
+        rendered_text = gtk.CellRendererText()
+        column_text = gtk.TreeViewColumn("attributes", rendered_text, text=1)
+        self.config_view.append_column(column_text)
+
+        column_editabletext = gtk.CellRendererText()
+        column_editabletext.set_property("editable", True)
+        column_editabletext.connect("edited", self.on_cell_edit)
+        column_text = gtk.TreeViewColumn("value", column_editabletext, text=2)
+        self.config_view.append_column(column_text)
 
         self.config_window.add(self.config_view)
         self.window.hide()
         self.config_window.show_all()
 
     def on_cell_toggled(self, widget, path):
-        self.config_model[path][1] = not self.config_model[path][1]
+        self.config_model[path][0] = not self.config_model[path][0]
+
+    def on_cell_edit(self, widget, path, text):
+        self.config_model[path][2] = text
 
     def close_config(self, widget):
         # [BigFix] get new list and save config

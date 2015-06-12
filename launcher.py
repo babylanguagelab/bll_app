@@ -8,7 +8,7 @@ import imp
 import sys
 from app.app import App
 
-BLL_APP_ROOT_DIR = os.getcwd()
+BLL_APP_ROOT_DIR = os.getcwd() + '/'
 
 # this will allow all modules to access bll classes
 sys.path.append(BLL_APP_ROOT_DIR)
@@ -24,6 +24,7 @@ cls_name = reduce(lambda accum, word: accum + word.capitalize(), module_name.spl
 
 #attempt to dynamically import the module corresponding to the app we are launching
 try:
+    print module_path
     module = imp.load_source(module_name, module_path)
     
 except Exception as err:
