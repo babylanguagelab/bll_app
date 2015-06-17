@@ -14,7 +14,6 @@ class MainWindow:
 
         handlers = {
             "exit": Gtk.main_quit
-
         }
         self.builder.connect_signals(handlers)
 
