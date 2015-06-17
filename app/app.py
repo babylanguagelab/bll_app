@@ -5,10 +5,14 @@ from utils.backend_utils import BackendUtils
 from utils.ui_utils import UIUtils
 from utils.enum import Enum
 
-## This is the "abstract" superclass of all _app classes. There is one subclass for each
-# bll application. The launcher module instantiates the appropriate subclass to start the application.
-# This provides a single entry point (the launcher module) for all applications.
-# Subclasses should override the start method to do whatever they need to do to start the app.
+## This is the "abstract" superclass of all _app classes.
+# There is one subclass for each bll application. The launcher
+# module instantiates the appropriate subclass to start the application.
+# This provides a single entry point (the launcher module) for
+# all applications. Subclasses should override the start method to do
+# whatever they need to do to start the app.
+
+
 class App(object):
     APP_TYPES = Enum('GUI CMD_LINE'.split())
 
@@ -25,15 +29,16 @@ class App(object):
             )
 
         if app_type == App.APP_TYPES.GUI:
-            #this sets some project-wide GTK settings and sets the app-specific window icon
+            # this sets some project-wide GTK settings and
+            # sets the app-specific window icon
             UIUtils.setup_gtk(app_icon_filename)
 
-    ## This method must be overridden by subclasses to launch their main startup code.
+    ## This method must be overridden by subclasses to
+    # launch their main startup code.
     # @param self
     def start(self):
         pass
 
-    ## This method starts the gtk+ event loop. This causes the app to start accepting input from input
-    # devices like the keyboard and mouse. launcher.py only calls this if the app instance is App.APP_TYPES.GUI
+    ## This method starts the gtk+ event loop. This causes the app to start accepting input from input devices like the keyboard and mouse. launcher.py only calls this if the app instance is App.APP_TYPES.GUI
     def event_loop(self):
         gtk.main()

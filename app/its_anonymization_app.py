@@ -1,7 +1,8 @@
-## @package app.verifier_app
+## @package app.itsAnonymization_app
 
 from app.app import App
 from ui.its_anonymization_app.main_window import MainWindow
+
 
 ## Handles startup for the transcription verifier app.
 class ItsAnonymizationApp(App):
