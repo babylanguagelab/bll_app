@@ -27,7 +27,8 @@ class MainWindow:
             "config": self.openConfig,
             "selectFiles": self.selectFiles,
             "finishConf": self.finishConf,
-            "changeSelect": self.changeSelect
+            "changeSelect": self.changeSelect,
+            "run": self.run
         }
         self.builder.connect_signals(handlers)
 
@@ -65,10 +66,16 @@ class MainWindow:
     def finishConf(self, widget):
         myDebug(self.confList)
 
-    def run(self):
+    def run(self, widget):
+        result = self.driver.run()
+        # 1 - file list is empty
+        # 2 - config list is empty
+        myDebug(result)
+
+    def show(self):
         self.window.show_all()
         Gtk.main()
 
 if __name__ == '__main__':
     mWindow = MainWindow()
-    mWindow.run()
+    mWindow.show()
