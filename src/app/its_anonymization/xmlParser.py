@@ -20,23 +20,19 @@ class XMLParser2:
         self.root = self.tree.getroot()
         self.filename = filename
 
-    def findAttr(self, xpath, key):
-        node = self.root.find(xpath + "[@" + key + "]")
-        return node.attrib
+    def getAttr(self, xpath, key):
+        nodeList = self.root.findall(xpath)
+        return [x.attrib[key] for x in nodeList]
 
-    def changeAttr(self, path, key, value, single=True):
-        if (single):
-            node = self.root.find(path)
-            node.set(key, value)
-        else:
-            nodes = self.root.findall(path)
-            for node in nodes:
-                node.set(key, value)
+    def setAttr(self, path, key, value):
+        nodeList = self.root.findall(path)
+        for x in nodeList:
+            x.attrib[key] = value
 
-    def write(self, newFilename):
+    def delAttr(self, path, key):
+        nodeList = self.root.findall(path)
+        for x in nodeList:
+            del x.attrib[key]
+
+    def save(self, newFilename):
         self.tree.write(newFilename)
-
-    # show function
-
-mParser = XMLParser2("test.xml")
-print mParser.findAttr("./country", "name")

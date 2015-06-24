@@ -1,5 +1,7 @@
 from configInfo import ConfigInfo
 from debug import myDebug
+from xmlParser import XMLParser2
+
 
 fakeList = [['./11/21', '11', '22', '0', 'nope'],
             ['./11/22', '11', '22', '1', 'nope'],
@@ -28,7 +30,11 @@ class Driver:
         self.fileList = newFileList
 
     def applyFile(self, filename):
-        myDebug(filename)
+        _parser = XMLParser2(filename)
+        for i in self.confList:
+            if i.getConfig() == 1:
+                _parser.delAttr
+
         # for i in self.confList
         # if keep: continue
         # if delete: delete
