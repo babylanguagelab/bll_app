@@ -13,7 +13,7 @@ class XMLParser:
                 elem.clear()
 
 
-# normal xml parser, read xml file into memory
+# normal xml parser, read the xml file into memory
 class XMLParser2:
     def __init__(self, filename):
         self.tree = ET.parse(filename)
