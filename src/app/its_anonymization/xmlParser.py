@@ -20,19 +20,19 @@ class XMLParser2:
         self.root = self.tree.getroot()
         self.filename = filename
 
-    def getAttr(self, xpath, key):
-        nodeList = self.root.findall(xpath)
-        return [x.attrib[key] for x in nodeList]
+    def get_attr(self, xpath, key):
+        node_list = self.root.findall(xpath)
+        return [x.attrib[key] for x in node_list]
 
-    def setAttr(self, path, key, value):
-        nodeList = self.root.findall(path)
-        for x in nodeList:
+    def set_attr(self, path, key, value):
+        node_list = self.root.findall(path)
+        for x in node_list:
             x.attrib[key] = value
 
-    def delAttr(self, path, key):
-        nodeList = self.root.findall(path)
-        for x in nodeList:
+    def del_attr(self, path, key):
+        node_list = self.root.findall(path)
+        for x in node_list:
             del x.attrib[key]
 
-    def save(self, newFilename):
-        self.tree.write(newFilename)
+    def save(self, filename):
+        self.tree.write(filename)

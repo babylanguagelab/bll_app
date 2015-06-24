@@ -1,56 +1,52 @@
 from configInfo import ConfigInfo
 from xmlParser import XMLParser2
-
-fakeList = [['./11/21', '11', '0', 'nope'],
-            ['./11/22', '11', '0', 'nope'],
-            ['./11/22', '11', '0', 'nope'],
-            ['./11/22', '11', '1', 'nope'],
-            ['./11/22', '11', '1', 'nope'],
-            ['./11/22', '11', '0', 'nope'],
-            ['./11/22', '11', '0', 'nope'],
-            ['./11/22', '11', '0', 'nope'],
-            ['./11/23', '11', '0', 'nope'],
-            ['./11/25', '11', '0', 'nope'],
-            ['./11/26', '11', '0', 'nope']]
+from configFile import MyConfig
+import os
 
 
 class Driver:
     def __init__(self):
         # get settings from default configuration file
-        self.confList = [ConfigInfo(x[0], x[1], x[2], x[3])
-                         for x in fakeList]
-        self.fileList = []
+        self.MyConfig = MyConfig()
+        self.MyConfig.read_config("config.txt")
+        self.conf_list = [ConfigInfo(x[0], x[1], x[2], x[3]) for x in self.MyConfig.content]
+        self.file_list = []
 
-    # def getDefaultConfList(self):
-    # def saveAsDefault():
+    def getDefaultConfList(self):
+        self.MyConfig.read_config("dconfig.txt")
+        return [ConfigInfo(x[0], x[1], x[2], x[3]) for x in self.MyConfig.content]
 
-    def getConfList(self):
-        return [x.config for x in self.confList]
+    # def saveAsDefault(self):
 
-    def setConfList(self, newConfList):
-        for x in range(len(newConfList)):
-            if (self.confList[x].config != newConfList[x]):
-                self.confList[x].config = newConfList[x]
+    def get_conf_list(self):
+        return [x.config for x in self.conf_list]
 
-    def setFileList(self, newFileList):
-        self.fileList = newFileList
+    def set_conf_list(self, new_list):
+        for x in range(len(new_list)):
+            if self.conf_list[x].config != new_list[x]:
+                self.conf_list[x].config = new_list[x]
 
-    def applyFile(self, filename):
-        mParser = XMLParser2(filename)
-        for i in self.confList:
+    def set_file_list(self, new_list):
+        self.file_list = new_list
+
+    def apply_file(self, filename):
+        parser = XMLParser2(filename)
+        for i in self.conf_list:
             if i.config == "1":
-                mParser.delAttr(i.xpath, i.key)
+                parser.del_attr(i.xpath, i.key)
             if i.config == "2":
-                mParser.setAttr(i.xpath, i.key, i.getDummy())
-        mParser.save()
+                parser.set_attr(i.xpath, i.key, i.get_dummy())
+
+        fname, fext = os.path.splitext(filename)
+        parser.save(fname + "_after" + fext)
 
     def run(self):
-        if len(self.fileList) == 0:
+        if len(self.file_list) == 0:
             return 1
-        if len(self.confList) == 0:
+        if len(self.conf_list) == 0:
             return 2
 
-        for x in self.fileList:
-            self.applyFile(x)
+        for x in self.file_list:
+            self.apply_file(x)
 
         return 0
