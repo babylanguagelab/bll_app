@@ -2,6 +2,7 @@ from gi.repository import Gtk
 from debug import myDebug
 from driver import Driver
 
+
 class MainWindow:
     def __init__(self):
         self.driver = Driver()
@@ -22,7 +23,7 @@ class MainWindow:
         self.config_statusbar = self.builder.get_object("statusbar")
         self.config_context_id = self.config_statusbar.get_context_id("")
         self.config_statusbar.push(self.config_context_id,
-                                   "will show some descriptions here.")
+                                   "configure behavior on each domain.")
 
         self.connect_signals()
 
@@ -32,6 +33,7 @@ class MainWindow:
             "selectFiles": self.select_files,
             "config": self.open_config,
             "changeSelect": self.change_config,
+            "inMessage": self.message_config,
             "finishConf": self.finish_config,
             "run": self.run
         }
@@ -56,7 +58,6 @@ class MainWindow:
 
     def open_config(self, button):
         for i in range(len(self.conf_list)):
-            print i, self.conf_list[i]
             if self.conf_list[i] == '0':
                 self.config_rbutton[i*3].set_active(True)
             elif self.conf_list[i] == '1':
@@ -83,12 +84,38 @@ class MainWindow:
         self.driver.set_conf_list(self.conf_list)
         self.config.hide()
 
+    def message_config(self, widget, data):
+        name = widget.get_name()
+        message = ""
+
+        if name == "ok":
+            message = "return to main menu"
+        if name == "reset":
+            message = "reset to default value"
+        if name == "save":
+            message = "save as default value"
+
+        self.config_statusbar.push(self.config_context_id, message)
+
     def run(self, widget):
         result = self.driver.run()
+        message = ""
+
         if result == 1:
-            myDebug("file list is empty!")
+            message = "Error: You haven't chosen any files yet!"
         elif result == 2:
-            myDebug("config list is empty")
+            message = "Error: Configuration is empty!"
+        else:
+            message = "Make sure the filename is also anonymous."
+
+        dialog = Gtk.MessageDialog(self.window,
+                                   0,
+                                   Gtk.MessageType.INFO,
+                                   Gtk.ButtonsType.OK,
+                                   "Job complete!")
+        dialog.format_secondary_text(message)
+        dialog.run()
+        dialog.destroy()
 
     def show(self):
         self.window.show_all()

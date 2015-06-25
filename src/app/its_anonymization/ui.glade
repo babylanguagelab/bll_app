@@ -17,7 +17,7 @@
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkButton" id="button1">
-            <property name="label" translatable="yes">select</property>
+            <property name="label" translatable="yes">step1: choose its files</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -31,7 +31,7 @@
         </child>
         <child>
           <object class="GtkButton" id="button2">
-            <property name="label" translatable="yes">config</property>
+            <property name="label" translatable="yes">step 2: configure(optional)</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -45,7 +45,7 @@
         </child>
         <child>
           <object class="GtkButton" id="button3">
-            <property name="label" translatable="yes">run</property>
+            <property name="label" translatable="yes">step 3: run</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -82,10 +82,12 @@
             <child>
               <object class="GtkButton" id="button4">
                 <property name="label" translatable="yes">ok</property>
+                <property name="name">ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="finishConf" swapped="no"/>
+                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -96,10 +98,12 @@
             <child>
               <object class="GtkButton" id="button5">
                 <property name="label" translatable="yes">save</property>
+                <property name="name">save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="finishConf" swapped="no"/>
+                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -110,10 +114,12 @@
             <child>
               <object class="GtkButton" id="button6">
                 <property name="label" translatable="yes">reset</property>
+                <property name="name">reset</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="clicked" handler="finishConf" swapped="no"/>
+                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
