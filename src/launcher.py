@@ -9,7 +9,7 @@ import sys
 from functools import reduce
 from utils.debug import myDebug
 
-BLL_APP_ROOT_DIR = os.getcwd() + '/'
+BLL_APP_ROOT_DIR = os.getcwd() + '/' + 'src/app'
 
 # this will allow all modules to access bll classes
 sys.path.append(BLL_APP_ROOT_DIR)
@@ -22,18 +22,16 @@ para = sys.argv[1]
 
 if para == "list":
     myDebug("current programs:")
-    app_list = [f for f in os.listdir(BLL_APP_ROOT_DIR + 'app')
-                if not f.endswith(".py")]
+    app_list = [f for f in os.listdir(BLL_APP_ROOT_DIR)
+                if f != "__init__.py"]
     for i in app_list:
         myDebug(app_list.index(i), i)
-    select = input("select script to run:")
+    select = input("select script to run: ")
     module_name = app_list[int(select)]
 else:
     module_name = para
 
-module_path = '%sapp/%s.py' % (BLL_APP_ROOT_DIR, module_name)
-myDebug(module_path)
-exit(0)
+module_path = '%s/%s.py' % (BLL_APP_ROOT_DIR, module_name)
 
 # attempt to dynamically import the module corresponding to
 # the app we are launching

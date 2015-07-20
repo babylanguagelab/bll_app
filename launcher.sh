@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-python2 ./launcher.py $@
+python2 ./src/launcher.py $@

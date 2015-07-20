@@ -1,10 +1,10 @@
+from myXMLParser import XMLParser2
+from myConfig import MyConfig
 from configInfo import ConfigInfo
-from xmlParser import XMLParser2
-from configFile import MyConfig
 import os
 
 
-class Driver:
+class Controller:
     def __init__(self):
         # get settings from default configuration file
         self.MyConfig = MyConfig()
@@ -12,7 +12,8 @@ class Driver:
         self.conf_list = [ConfigInfo(x[0], x[1], x[2], x[3]) for x in self.MyConfig.content]
         self.file_list = []
 
-    def getDefaultConfList(self):
+    # default configuration list
+    def get_conf_dlist(self):
         self.MyConfig.read_config("dconfig.txt")
         return [ConfigInfo(x[0], x[1], x[2], x[3]) for x in self.MyConfig.content]
 
@@ -34,7 +35,7 @@ class Driver:
         for i in self.conf_list:
             if i.config == "1":
                 parser.del_attr(i.xpath, i.key)
-            if i.config == "2":
+            elif i.config == "2":
                 parser.set_attr(i.xpath, i.key, i.get_dummy())
 
         fname, fext = os.path.splitext(filename)

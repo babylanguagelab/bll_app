@@ -26,6 +26,7 @@ class XMLParser2:
 
     def set_attr(self, path, key, value):
         node_list = self.root.findall(path)
+
         for x in node_list:
             x.attrib[key] = value
 

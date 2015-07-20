@@ -1,5 +1,6 @@
 import csv
 
+
 class MyConfig:
     def __init__(self):
         self.content = []
@@ -12,9 +13,14 @@ class MyConfig:
 
         fp.close()
 
+    def change_config(self, string_list):
+        for x in range(len(self.content)):
+            if self.content[x] != string_list[x]:
+                self.content[x] = string_list[x]
+
     def write_config(self, filename, string_list):
         fp = open(filename, 'wb')
         writer = csv.writer(fp)
 
-        for row in string_list:
+        for row in self.content:
             writer.writerow(row)

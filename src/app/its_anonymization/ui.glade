@@ -146,18 +146,18 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkFrame" id="frame8">
+                  <object class="GtkFrame" id="frame0">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment8">
+                      <object class="GtkAlignment" id="alignment11">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box8">
+                          <object class="GtkBox" id="box14">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -188,7 +188,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton0</property>
+                                <property name="group">radiobutton21</property>
                                 <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
@@ -199,6 +199,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel" id="radiobutton2">
+                                <property name="name">0</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -213,10 +214,11 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label12">
+                      <object class="GtkLabel" id="label20">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Gender</property>
+                        <property name="label" translatable="yes">1. Serial Number</property>
+                        <property name="ellipsize">end</property>
                       </object>
                     </child>
                   </object>
@@ -227,18 +229,18 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame7">
+                  <object class="GtkFrame" id="frame1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment7">
+                      <object class="GtkAlignment" id="alignment8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box7">
+                          <object class="GtkBox" id="box8">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -280,6 +282,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel" id="radiobutton5">
+                                <property name="name">1</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -294,10 +297,10 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label11">
+                      <object class="GtkLabel" id="label12">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Algorithm Age</property>
+                        <property name="label" translatable="yes">2. Gender</property>
                       </object>
                     </child>
                   </object>
@@ -308,18 +311,18 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame10">
+                  <object class="GtkFrame" id="frame2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment10">
+                      <object class="GtkAlignment" id="alignment7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box13">
+                          <object class="GtkBox" id="box7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -333,7 +336,6 @@
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -350,8 +352,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton6</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
+                                <property name="group">radiobutton3</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -361,6 +362,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel" id="radiobutton8">
+                                <property name="name">2</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -375,11 +377,10 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label18">
+                      <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Enroll Date</property>
-                        <property name="ellipsize">end</property>
+                        <property name="label" translatable="yes">3. Algorithm Age</property>
                       </object>
                     </child>
                   </object>
@@ -424,9 +425,15 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="radiobutton10">
+                              <object class="GtkRadioButton" id="radiobutton10">
+                                <property name="label" translatable="yes">delete</property>
+                                <property name="name">3</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">radiobutton3</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -436,7 +443,7 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="radiobutton11">
-                                <property name="label" translatable="yes">change</property>
+                                <property name="label" translatable="yes">fuzz</property>
                                 <property name="name">3</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -461,7 +468,7 @@
                       <object class="GtkLabel" id="label5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Child ID</property>
+                        <property name="label" translatable="yes">4. Child ID</property>
                       </object>
                     </child>
                   </object>
@@ -472,7 +479,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame2">
+                  <object class="GtkFrame" id="frame4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
@@ -506,9 +513,15 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="radiobutton13">
+                              <object class="GtkRadioButton" id="radiobutton13">
+                                <property name="label" translatable="yes">delete</property>
+                                <property name="name">4</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">radiobutton3</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -518,7 +531,7 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="radiobutton14">
-                                <property name="label" translatable="yes">change</property>
+                                <property name="label" translatable="yes">fuzz</property>
                                 <property name="name">4</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -542,7 +555,7 @@
                       <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Child Key</property>
+                        <property name="label" translatable="yes">5. Child Key</property>
                       </object>
                     </child>
                   </object>
@@ -552,19 +565,38 @@
                     <property name="position">4</property>
                   </packing>
                 </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Identity</property>
+                <property name="justify">center</property>
+              </object>
+              <packing>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="box3">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkFrame" id="frame1">
+                  <object class="GtkFrame" id="frame5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment1">
+                      <object class="GtkAlignment" id="alignment10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box4">
+                          <object class="GtkBox" id="box13">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -595,7 +627,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton15</property>
+                                <property name="group">radiobutton6</property>
                                 <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
@@ -605,16 +637,10 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="radiobutton17">
-                                <property name="label" translatable="yes">change</property>
+                              <object class="GtkLabel" id="radiobutton17">
                                 <property name="name">5</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton15</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
+                                <property name="can_focus">False</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -627,39 +653,20 @@
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label4">
+                      <object class="GtkLabel" id="label18">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">DOB</property>
+                        <property name="label" translatable="yes">1. Enroll Date</property>
+                        <property name="ellipsize">end</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">6</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
-              </object>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="label1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Child
-Info</property>
-                <property name="justify">center</property>
-              </object>
-              <packing>
-                <property name="tab_fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="box3">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkFrame" id="frame6">
                     <property name="visible">True</property>
@@ -667,12 +674,12 @@ Info</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment6">
+                      <object class="GtkAlignment" id="alignment1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box11">
+                          <object class="GtkBox" id="box4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -695,9 +702,16 @@ Info</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="radiobutton19">
+                              <object class="GtkRadioButton" id="radiobutton19">
+                                <property name="label" translatable="yes">delete</property>
+                                <property name="name">6</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">radiobutton15</property>
+                                <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -706,9 +720,16 @@ Info</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="radiobutton20">
+                              <object class="GtkRadioButton" id="radiobutton20">
+                                <property name="label" translatable="yes">fuzz</property>
+                                <property name="name">6</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">radiobutton15</property>
+                                <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -721,33 +742,32 @@ Info</property>
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label17">
+                      <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">UTC Time</property>
-                        <property name="ellipsize">end</property>
+                        <property name="label" translatable="yes">2. DOB</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame11">
+                  <object class="GtkFrame" id="frame7">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment11">
+                      <object class="GtkAlignment" id="alignment5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box14">
+                          <object class="GtkBox" id="box10">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -790,6 +810,7 @@ Info</property>
                             </child>
                             <child>
                               <object class="GtkLabel" id="radiobutton23">
+                                <property name="name">7</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -804,33 +825,32 @@ Info</property>
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label20">
+                      <object class="GtkLabel" id="label15">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Serial Number</property>
-                        <property name="ellipsize">end</property>
+                        <property name="label" translatable="yes">3. Time Zone</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame5">
+                  <object class="GtkFrame" id="frame8">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <object class="GtkAlignment" id="alignment5">
+                      <object class="GtkAlignment" id="alignment6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <object class="GtkBox" id="box10">
+                          <object class="GtkBox" id="box11">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="homogeneous">True</property>
@@ -844,7 +864,6 @@ Info</property>
                                 <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -873,6 +892,7 @@ Info</property>
                             </child>
                             <child>
                               <object class="GtkLabel" id="radiobutton26">
+                                <property name="name">8</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -887,21 +907,22 @@ Info</property>
                       </object>
                     </child>
                     <child type="label">
-                      <object class="GtkLabel" id="label15">
+                      <object class="GtkLabel" id="label17">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Time Zone</property>
+                        <property name="label" translatable="yes">4. UTC Time</property>
+                        <property name="ellipsize">end</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkFrame" id="frame4">
+                  <object class="GtkFrame" id="frame9">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label_xalign">0</property>
@@ -955,7 +976,7 @@ Info</property>
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="radiobutton29">
-                                <property name="label" translatable="yes">change</property>
+                                <property name="label" translatable="yes">fuzz</property>
                                 <property name="name">9</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -979,103 +1000,14 @@ Info</property>
                       <object class="GtkLabel" id="label6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Local Time</property>
+                        <property name="label" translatable="yes">5. Clock Time</property>
                       </object>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFrame" id="frame9">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">none</property>
-                    <child>
-                      <object class="GtkAlignment" id="alignment9">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="left_padding">12</property>
-                        <child>
-                          <object class="GtkBox" id="box12">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="homogeneous">True</property>
-                            <child>
-                              <object class="GtkRadioButton" id="radiobutton30">
-                                <property name="label" translatable="yes">keep</property>
-                                <property name="name">10</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="active">True</property>
-                                <property name="draw_indicator">True</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="radiobutton31">
-                                <property name="label" translatable="yes">delete</property>
-                                <property name="name">10</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton30</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkRadioButton" id="radiobutton32">
-                                <property name="label" translatable="yes">change</property>
-                                <property name="name">10</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="draw_indicator">True</property>
-                                <property name="group">radiobutton30</property>
-                                <signal name="toggled" handler="changeSelect" swapped="no"/>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel" id="label19">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Clock Time</property>
-                        <property name="ellipsize">end</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
+                    <property name="position">4</property>
                   </packing>
                 </child>
               </object>
@@ -1087,8 +1019,7 @@ Info</property>
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Recording
-Info</property>
+                <property name="label" translatable="yes">Time</property>
                 <property name="justify">center</property>
               </object>
               <packing>

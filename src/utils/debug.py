@@ -8,5 +8,5 @@ def pythonVersion():
     return sys.version[0]
 
 
-def myDebug(*args, **kwargs):
-    print(args, kwargs)
+def myDebug(*args):
+    print(args)

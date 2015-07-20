@@ -1,13 +1,13 @@
 from gi.repository import Gtk
-from debug import myDebug
-from driver import Driver
+from myDebug import myDebug
+from controller import Controller
 
 
 class MainWindow:
     def __init__(self):
-        self.driver = Driver()
+        self.controller = Controller()
         self.file_list = []
-        self.conf_list = self.driver.get_conf_list()
+        self.conf_list = self.controller.get_conf_list()
 
         self.builder = Gtk.Builder()
         self.builder.add_from_file("ui.glade")
@@ -53,11 +53,12 @@ class MainWindow:
         else:
             myDebug("file choose dialog: ", response)
 
-        self.driver.set_file_list(self.file_list)
+        self.controller.set_file_list(self.file_list)
         dialog.destroy()
 
     def open_config(self, button):
-        for i in range(len(self.conf_list)):
+        # for i in range(len(self.conf_list)):
+        for i in range(11):
             if self.conf_list[i] == '0':
                 self.config_rbutton[i*3].set_active(True)
             elif self.conf_list[i] == '1':
@@ -81,7 +82,7 @@ class MainWindow:
     # fun: save as default
 
     def finish_config(self, widget):
-        self.driver.set_conf_list(self.conf_list)
+        self.controller.set_conf_list(self.conf_list)
         self.config.hide()
 
     def message_config(self, widget, data):
@@ -98,7 +99,7 @@ class MainWindow:
         self.config_statusbar.push(self.config_context_id, message)
 
     def run(self, widget):
-        result = self.driver.run()
+        result = self.controller.run()
         message = ""
 
         if result == 1:
