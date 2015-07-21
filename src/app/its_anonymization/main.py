@@ -5,9 +5,8 @@ from controller import Controller
 
 class MainWindow:
     def __init__(self):
-        self.controller = Controller()
+        self.control = Controller()
         self.file_list = []
-        self.conf_list = self.controller.get_conf_list()
 
         self.builder = Gtk.Builder()
         self.builder.add_from_file("ui.glade")
@@ -16,7 +15,7 @@ class MainWindow:
         self.config = self.builder.get_object("config")
 
         self.config_rbutton = []
-        for i in range(3 * len(self.conf_list) + 2):
+        for i in range(30):
             self.config_rbutton.append(
                 self.builder.get_object("radiobutton" + str(i)))
 
@@ -34,6 +33,7 @@ class MainWindow:
             "config": self.open_config,
             "changeSelect": self.change_config,
             "inMessage": self.message_config,
+            "saveConf": self.save_config,
             "finishConf": self.finish_config,
             "run": self.run
         }
@@ -57,32 +57,38 @@ class MainWindow:
         dialog.destroy()
 
     def open_config(self, button):
-        # for i in range(len(self.conf_list)):
-        for i in range(11):
-            if self.conf_list[i] == '0':
-                self.config_rbutton[i*3].set_active(True)
-            elif self.conf_list[i] == '1':
+        config = self.control.get_conf()
+        items = config.items
+
+        for i in range(10):
+            # print i, items[i], config.get_config(items[i])
+            if config.get_config(items[i]) == 1:
                 self.config_rbutton[i*3 + 1].set_active(True)
-            else:
+            elif config.get_config(items[i]) == 2:
                 self.config_rbutton[i*3 + 2].set_active(True)
+
         self.config.show_all()
 
     def change_config(self, button, data=None):
+        config = self.control.get_conf()
+
         if button.get_active():
             index = int(button.get_name())
-            content = button.get_label()
-            if content == "keep":
-                self.conf_list[index] = '0'
-            elif content == "delete":
-                self.conf_list[index] = '1'
-            else:
-                self.conf_list[index] = '2'
+            change = button.get_label()
+            key = config.items[index]
+            # print index, change, key, change
 
-    # fun: load default
-    # fun: save as default
+            if change == "keep":
+                self.control.set_conf(key, 0)
+            elif change == "delete":
+                self.control.set_conf(key, 1)
+            else:
+                self.control.set_conf(key, 2)
+
+    def save_config(self, widget, data=None):
+        self.control.save_config()
 
     def finish_config(self, widget):
-        self.controller.set_conf_list(self.conf_list)
         self.config.hide()
 
     def message_config(self, widget, data):
@@ -91,9 +97,7 @@ class MainWindow:
 
         if name == "ok":
             message = "return to main menu"
-        if name == "reset":
-            message = "reset to default value"
-        if name == "save":
+        elif name == "save":
             message = "save as default value"
 
         self.config_statusbar.push(self.config_context_id, message)

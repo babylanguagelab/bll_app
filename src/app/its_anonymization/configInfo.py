@@ -1,13 +1,27 @@
-PATH_DICT = {'Serial Number': [('path', 'value')],
-             'Gender': [('path', 'value')],
-             'Algorithm Age': [('path', 'value')],
-             'Child ID': [('path', 'value')],
-             'Child Key': [('path', 'value')],
+PATH_DICT = {'Serial Number': [('./ProcessingUnit/UPL_Header/TransferredUPL/RecorderInformation/SRDInfo', 'SerialNumber')],
+             'Gender': [('./ExportData/Child', 'Gender'),
+                        ('./ProcessingUnit/ChildInfo', 'gender'),
+                        ('./ProcessingUnit/UPL_Header/TransferredUPL/ApplicationData/PrimaryChild', 'Gender')],
+             'Algorithm Age': [('./ChildInfo', 'algorithmAge')],
+             'Child ID': [('./ExportData/Child', 'id')],
+             'Child Key': [('./ExportData/Child', 'ChildKey'),
+                           ('./ProcessingUnit/UPL_Header/TransferredUPL/ApplicationData/PrimaryChild', 'ChildKey')],
              'Enroll Date': [('path', 'value')],
-             'DOB': [('path', 'value')],
-             'Time Zone': [('path', 'value')],
-             'UTC Time': [('path', 'value')],
-             'Clock Time': [('path', 'value')]}
+             'DOB': [('./ExportData/Child', 'DOB'),
+                     ('./ProcessingUnit/UPL_Header/TransferredUPL/ApplicationData/PrimaryChild', 'DOB')],
+             'Time Zone': [('./ProcessingUnit/UPL_Header/TransferredUPL/RecordingInformation/TransferTime',
+                            'TimeZone')],
+             'UTC Time': [('./ProcessingUnit/UPL_Header/TransferredUPL/RecordingInformation/TransferTime',
+                           'UTCTime')],
+             'Clock Time': [('./ProcessingUnit/UPL_Header/TransferredUPL/RecordingInformation/TransferTime', 'LocalTime'),
+                            ('./ProcessingUnit/Bar', 'startClockTime'),
+                            ('./ProcessingUnit/Recording', 'startClockTime'),
+                            ('./ProcessingUnit/Recording', 'endClockTime'),
+                            ('./ProcessingUnit/Bar/Recording', 'startClockTime'),
+                            ('./ProcessingUnit/Bar/Recording', 'endClockTime'),
+                            ('./ProcessingUnit/Bar/FiveMinuteSection', 'startClockTime'),
+                            ('./ProcessingUnit/Bar/FiveMinuteSection', 'endClockTime'),
+                            ('./ProcessingUnit/UPL_SectorSummary/Item', 'timeStamp')]}
 
 EXAMPLE_DICT = {'Serial Number': 'example',
                 'Gender': 'example',
@@ -24,37 +38,20 @@ EXAMPLE_DICT = {'Serial Number': 'example',
 class ConfigInfo:
     def __init__(self):
         self.items = ['Serial Number', 'Gender', 'Algorithm Age',
-                      'Child ID', 'Child Key', 'Enroll Data', 'DOB',
-                      'TIME Zone', 'UTC Time', 'Clock Time']
+                      'Child ID', 'Child Key', 'Enroll Date', 'DOB',
+                      'Time Zone', 'UTC Time', 'Clock Time']
 
         # 0-keep, 1-delete, 2-change
-        self.config = 0
+        self.config = {}
 
     def get_path(self, key):
         return PATH_DICT[key]
 
+    def set_config(self, key, value):
+        self.config[key] = value
+
     def get_config(self, key):
-        return self.config
+        return self.config[key]
 
     def get_example(self, key):
         return EXAMPLE_DICT[key]
-
-    def get_dummy(self):
-        dummy_value = '0000000'
-
-        if self.key == "LocalTime":
-            dummy_value = "Tuesday 13:17:33"
-        elif self.key == "EnrollDate":
-            dummy_value = "2000-01-01"
-        elif self.key == "ChildKey":
-            dummy_value = "0000000000000000"
-        elif self.key == "DOB":
-            dummy_value = "2000-01-01"
-        elif self.key == "timeStamp":
-            dummy_value = "Tuesday 13:17:33"
-        elif self.key == "startClockTime":
-            dummy_value = "Tuesday 14:23:54"
-        elif self.key == "endClockTime":
-            dummy_value = "Tuesday 02:00:40"
-
-        return dummy_value
