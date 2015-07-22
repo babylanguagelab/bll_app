@@ -20,17 +20,21 @@ class XMLParser2:
         self.root = self.tree.getroot()
         self.filename = filename
 
-    def get_attr(self, xpath, key):
+    def get_attrs(self, xpath, key):
         node_list = self.root.findall(xpath)
         return [x.attrib[key] for x in node_list]
 
-    def set_attr(self, path, key, value):
+    def get_attr(self, xpath, key):
+        node = self.root.find(xpath)
+        return node.attrib[key]
+
+    def set_attrs(self, path, key, value):
         node_list = self.root.findall(path)
 
         for x in node_list:
             x.attrib[key] = value
 
-    def del_attr(self, path, key):
+    def del_attrs(self, path, key):
         node_list = self.root.findall(path)
         for x in node_list:
             del x.attrib[key]

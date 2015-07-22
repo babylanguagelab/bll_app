@@ -12,9 +12,10 @@ class MyConfig:
 
     def json_writer(self, filename, data=None):
         with open(filename, 'wb') as fp:
-            if data is not None:
-                self.content = data
-            json.dump(self.content, fp)
+            result = data
+            if data is None:
+                result = self.content
+            json.dump(result, fp)
 
     def change_config(self, key, value):
         self.content[key] = value
@@ -25,10 +26,15 @@ class MyConfig:
             for row in reader:
                 self.content.append(row)
 
-    def csv_writer(self, filename, string_list):
+    def csv_writer(self, filename, data=None):
         with open(filename, 'wb') as fp:
-            writer = csv.writer(fp)
-            for row in string_list:
+            result = data
+            if data is None:
+                for key, value in self.content:
+                    tmp = [key, value]
+                    result.append(tmp)
+            writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
+            for row in result:
                 writer.writerow(row)
 
 # myDict={

@@ -6,44 +6,86 @@ import os
 
 class Controller:
     def __init__(self):
-        self.configFile = MyConfig()
-        self.configInfo = ConfigInfo()
+        self.my_conf = MyConfig()
+        self.conf_info = ConfigInfo()
 
-        self.configFile.json_reader('configs')
-        for i in self.configFile.content:
-            self.configInfo.set_config(i, self.configFile.content[i])
-        self.file_list = []
+        self.my_conf.json_reader('configs')
+        for i in self.my_conf.content:
+            self.conf_info.set_config(i, self.my_conf.content[i])
+        self.folder = ""
+        self.overview = []
 
     def get_conf(self):
-        return self.configInfo
+        return self.conf_info
 
     def set_conf(self, key, value):
-        self.configInfo.set_config(key, value)
+        self.conf_info.set_config(key, value)
 
     def save_config(self):
-        self.configFile.json_writer('configs', self.configInfo.config)
+        self.my_conf.json_writer('configs', self.conf_info.config)
 
-    def set_file_list(self, new_list):
-        self.file_list = new_list
+    def set_files(self, path_list):
+        self.folder = path_list[0]
 
     def apply_file(self, filename):
         parser = XMLParser2(filename)
-        for i in self.conf_list:
-            if i.config == "1":
-                parser.del_attr(i.xpath, i.key)
-            elif i.config == "2":
-                parser.set_attr(i.xpath, i.key, i.get_dummy())
+        items = self.conf_info.items
+        new_folder = os.path.dirname(filename) + '_processed/'
+        message = [os.path.basename(filename)]
 
-        fname, fext = os.path.splitext(filename)
-        parser.save(fname + "_after" + fext)
+        for i in items:
+            config = self.conf_info.get_config(i)
+            xpaths = self.conf_info.get_path(i)
+            fill = True
+
+            if config == 1:
+                for j in xpaths:
+                    old_value = parser.get_attr(j[0], j[1])
+                    self.conf_info.set_value(i, old_value)
+                    parser.del_attrs(j[0], j[1])
+                    if fill:
+                        message.append(old_value)
+                        fill = False
+            elif config == 2:
+                for j in xpaths:
+                    old_value = parser.get_attr(j[0], j[1])
+                    self.conf_info.set_value(i, old_value)
+                    new_value = self.conf_info.get_fuzzy(i)
+                    parser.set_attrs(j[0], j[1], new_value)
+                    if fill:
+                        message.append(old_value)
+                        message.append(new_value)
+                        fill = False
+
+        self.overview.append(message)
+        parser.save(new_folder + os.path.basename(filename))
 
     def run(self):
-        if len(self.file_list) == 0:
+        if len(self.folder) == 0:
             return 1
-        if len(self.conf_list) == 0:
+        if len(self.conf_info.config) == 0:
             return 2
 
-        for x in self.file_list:
-            self.apply_file(x)
+        new_folder = self.folder + "_processed/"
+        if not os.path.isdir(new_folder):
+            os.mkdir(new_folder)
+
+        items = self.conf_info.items
+        message = ['filename']
+
+        for i in items:
+            config = self.conf_info.get_config(i)
+            if config == 1:
+                message.append(i)
+            elif config == 2:
+                message.append(i+'(old)')
+                message.append(i+'(new)')
+        self.overview.append(message)
+
+        file_list = os.listdir(self.folder)
+        for x in file_list:
+            self.apply_file(self.folder + '/' + x)
+
+        self.my_conf.csv_writer(new_folder + 'overview.csv', self.overview)
 
         return 0

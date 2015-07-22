@@ -40,20 +40,19 @@ class MainWindow:
         self.builder.connect_signals(handlers)
 
     def select_files(self, button):
-        dialog = Gtk.FileChooserDialog("Please choose its files",
+        dialog = Gtk.FileChooserDialog("Please choose its folder",
                                        self.window,
-                                       Gtk.FileChooserAction.OPEN,
+                                       Gtk.FileChooserAction.SELECT_FOLDER,
                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                                         Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        dialog.set_select_multiple(True)
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            self.file_list = dialog.get_filenames()
+            selected = dialog.get_filenames()
         else:
             myDebug("file choose dialog: ", response)
 
-        self.controller.set_file_list(self.file_list)
+        self.control.set_files(selected)
         dialog.destroy()
 
     def open_config(self, button):
@@ -103,7 +102,7 @@ class MainWindow:
         self.config_statusbar.push(self.config_context_id, message)
 
     def run(self, widget):
-        result = self.controller.run()
+        result = self.control.run()
         message = ""
 
         if result == 1:
