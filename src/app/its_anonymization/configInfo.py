@@ -1,3 +1,6 @@
+import time
+from datetime import date
+
 PATH_DICT = {'Serial Number': [('./ProcessingUnit/UPL_Header/TransferredUPL/RecorderInformation/SRDInfo', 'SerialNumber')],
              'Gender': [('./ExportData/Child', 'Gender'),
                         ('./ProcessingUnit/ChildInfo', 'gender'),
@@ -72,29 +75,11 @@ class ConfigInfo:
         if key == 'Serial Number':
             value = '0000'
         if key == 'Clock Time':
-            otime = self.value['Clock Time'].split('T')
-            [oyear, omonth, oday] = otime[0].split('-')
-            [byear, bmonth, bday] = self.value['DOB'].split('-')
+            # example: 2015-06-10T11:30:20Z
+            clock_time = strptime(self.value['Clock Time'], "%Y-%m-%dT%H-%M-%SU")
+            dob_time = strptime(self.value['DOB'], "%Y-%m-%dT%H-%M-%SU")
+            new_time = date(1000, 01, 01) + relativedelta(clock_time, dob_time)
 
-            nyear = 0; nmonth = 0
-            nday = int(oday) - int(bday)
-            if nday <= 0:
-                nday += 12
-                nmonth = -1
-            nmonth += int(omonth) - int(bmonth)
-            if nmonth <= 0:
-                nmonth += 12
-                nyear = -1
-            nyear += int(oyear) - int(byear)
-            nday = str(nday); nmonth = str(nmonth); nyear = str(nyear)
-            if len(nday) == 1:
-                nday = '0' + nday
-            if len(nmonth) == 1:
-                nmonth = '0' + nmonth
-            if len(nyear) < 4:
-                nyear = '0' * (4 - len(nyear)) + nyear
-
-            ntime = nyear + '-' + nmonth + '-' + nday
-            value = ntime + 'T' + otime[1]
+            value = new_time
 
         return value
