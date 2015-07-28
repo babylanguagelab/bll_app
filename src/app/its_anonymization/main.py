@@ -12,17 +12,22 @@ class MainWindow:
         self.builder.add_from_file("ui.glade")
 
         self.window = self.builder.get_object("main")
+        self.note = self.builder.get_object("note")
         self.config = self.builder.get_object("config")
 
         self.config_rbutton = []
         for i in range(18):
             self.config_rbutton.append(
                 self.builder.get_object("radiobutton" + str(i)))
+        self.config_entry = []
+        for i in range(4):
+            self.config_entry.append(
+                self.builder.get_object("entry" + str(i)))
 
         self.config_statusbar = self.builder.get_object("statusbar")
-        self.config_context_id = self.config_statusbar.get_context_id("")
+        self.config_context_id = self.config_statusbar.get_context_id("0")
         self.config_statusbar.push(self.config_context_id,
-                                   "configure behavior on each domain.")
+                                   "setup item list")
 
         self.connect_signals()
 
@@ -31,8 +36,10 @@ class MainWindow:
             "mainExit": Gtk.main_quit,
             "selectFiles": self.select_files,
             "config": self.open_config,
-            "changeSelect": self.change_config,
-            "inMessage": self.message_config,
+            "changeSelect": self.change_rbuttons,
+            "entryChanged": self.change_entry,
+            "inMessage": self.change_message,
+            "outMessage": self.restore_message,
             "saveConf": self.save_config,
             "finishConf": self.finish_config,
             "run": self.run
@@ -56,17 +63,20 @@ class MainWindow:
         dialog.destroy()
 
     def open_config(self, button):
-        config = self.control.get_conf()
-        items = config.items
+        conf = self.control.get_conf()
+        items = conf.items
 
         for i in range(9):
+            config_list = conf.get_config(items[i])
+            config = config_list[0]
+            value = config_list[1]
             # print i, items[i], config.get_config(items[i])
-            if config.get_config(items[i]) != 0:
+            if config != 0:
                 self.config_rbutton[i*2 + 1].set_active(True)
 
         self.config.show_all()
 
-    def change_config(self, button, data=None):
+    def change_rbuttons(self, button, data=None):
         config = self.control.get_conf()
 
         if button.get_active():
@@ -76,11 +86,20 @@ class MainWindow:
             # print index, change, key, change
 
             if change == "keep":
-                self.control.set_conf(key, [0, -1])
+                self.control.set_conf(key, 0)
             elif change == "delete":
-                self.control.set_conf(key, [1, -1])
+                self.control.set_conf(key, 1)
             else:
-                self.control.set_conf(key, [2, ''])
+                self.control.set_conf(key, 2)
+
+    def change_entry(self, widget, data=None):
+        index = int(widget.get_name())
+        text = widget.get_text()
+        config = self.control.get_conf()
+        key = config.items[index]
+
+        self.config_rbutton[index*2 + 1].set_active(True)
+        self.control.set_conf(key, 2, text)
 
     def save_config(self, widget, data=None):
         self.control.save_config()
@@ -88,7 +107,7 @@ class MainWindow:
     def finish_config(self, widget):
         self.config.hide()
 
-    def message_config(self, widget, data):
+    def change_message(self, widget, data=None):
         name = widget.get_name()
         message = ""
 
@@ -96,8 +115,21 @@ class MainWindow:
             message = "return to main menu"
         elif name == "save":
             message = "save as default value"
+        elif name == '0':
+            message = "Serial Number"
+        elif name == '3':
+            message = "Child ID"
+        elif name == '4':
+            message = "Child Key"
+        elif name == '6':
+            message = "DOB"
+        else:
+            message = "unkonw"
 
         self.config_statusbar.push(self.config_context_id, message)
+
+    def restore_message(self, widget, data=None):
+        self.config_statusbar.pop(self.config_context_id)
 
     def run(self, widget):
         result = self.control.run()
@@ -120,6 +152,8 @@ class MainWindow:
         dialog.destroy()
 
     def show(self):
+        self.note.run()
+        self.note.destroy()
         self.window.show_all()
         Gtk.main()
 

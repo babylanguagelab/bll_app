@@ -11,18 +11,20 @@ class Controller:
 
         self.my_conf.json_reader('configs')
         for i in self.my_conf.content:
-            self.conf_info.set_config(i, self.my_conf.content[i])
+            self.conf_info.set_config(i, self.my_conf.content[i][0],
+                                      self.my_conf.content[i][1])
         self.folder = ""
         self.overview = []
 
     def get_conf(self):
         return self.conf_info
 
-    def set_conf(self, key, value):
-        self.conf_info.set_config(key, value)
+    def set_conf(self, key, config, value=None):
+        self.conf_info.set_config(key, config, value)
 
     def save_config(self):
-        self.my_conf.json_writer('configs', self.conf_info.config)
+        print self.conf_info.config
+        # self.my_conf.json_writer('configs', self.conf_info.config)
 
     def set_files(self, path):
         self.folder = path

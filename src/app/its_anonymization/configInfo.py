@@ -50,17 +50,15 @@ class ConfigInfo:
         # 0-keep, 1-delete, 2-change
         self.config = {}
         self.original = {}
-        self.new_value = {}
 
     def get_path(self, key):
         return PATH_DICT[key]
 
-    def set_config(self, key, value_list):
-        config = value_list[0]
-        value = value_list[1]
-        self.config[key] = config
-        if config == 2:
-            self.new_value[key] = value
+    def set_config(self, key, config, value=None):
+        if value == None:
+            self.config[key][0] = config
+        else:
+            self.config[key] = [config, value]
 
     def get_config(self, key):
         return self.config[key]
@@ -86,6 +84,6 @@ class ConfigInfo:
 
             value = new_time
         else:
-            value = self.new_value[key]
+            value = self.config[key][1]
 
         return value
