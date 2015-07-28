@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkWindow" id="main">
@@ -74,6 +74,51 @@
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <signal name="destroy" handler="finishConf" swapped="no"/>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area1">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="button4">
+                <property name="label" translatable="yes">ok</property>
+                <property name="name">ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="finishConf" swapped="no"/>
+                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button5">
+                <property name="label" translatable="yes">save</property>
+                <property name="name">save</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="saveConf" swapped="no"/>
+                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
         <child>
           <object class="GtkNotebook" id="notebook1">
             <property name="visible">True</property>
@@ -140,6 +185,7 @@
                                 <property name="name">0</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="placeholder_text" translatable="yes">0000</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -857,51 +903,6 @@
             <property name="position">0</property>
           </packing>
         </child>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="button4">
-                <property name="label" translatable="yes">ok</property>
-                <property name="name">ok</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="finishConf" swapped="no"/>
-                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="button5">
-                <property name="label" translatable="yes">save</property>
-                <property name="name">save</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="saveConf" swapped="no"/>
-                <signal name="enter-notify-event" handler="inMessage" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkStatusbar" id="statusbar">
             <property name="visible">True</property>
@@ -923,50 +924,5 @@
       <action-widget response="0">button4</action-widget>
       <action-widget response="0">button5</action-widget>
     </action-widgets>
-  </object>
-  <object class="GtkRadioButton" id="radiobutton18">
-    <property name="label" translatable="yes">fuzz</property>
-    <property name="name">3</property>
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="receives_default">False</property>
-    <property name="xalign">0.5</property>
-    <property name="active">True</property>
-    <property name="draw_indicator">True</property>
-    <property name="group">radiobutton6</property>
-    <signal name="toggled" handler="changeSelect" swapped="no"/>
-  </object>
-  <object class="GtkRadioButton" id="radiobutton19">
-    <property name="label" translatable="yes">fuzz</property>
-    <property name="name">4</property>
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="receives_default">False</property>
-    <property name="xalign">0.5</property>
-    <property name="draw_indicator">True</property>
-    <property name="group">radiobutton8</property>
-    <signal name="toggled" handler="changeSelect" swapped="no"/>
-  </object>
-  <object class="GtkRadioButton" id="radiobutton20">
-    <property name="label" translatable="yes">fuzz</property>
-    <property name="name">0</property>
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="receives_default">False</property>
-    <property name="xalign">0.5</property>
-    <property name="draw_indicator">True</property>
-    <property name="group">radiobutton0</property>
-    <signal name="toggled" handler="changeSelect" swapped="no"/>
-  </object>
-  <object class="GtkRadioButton" id="radiobutton21">
-    <property name="label" translatable="yes">fuzz</property>
-    <property name="name">6</property>
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="receives_default">False</property>
-    <property name="xalign">0.5</property>
-    <property name="draw_indicator">True</property>
-    <property name="group">radiobutton12</property>
-    <signal name="toggled" handler="changeSelect" swapped="no"/>
   </object>
 </interface>

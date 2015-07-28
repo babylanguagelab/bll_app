@@ -24,8 +24,8 @@ class Controller:
     def save_config(self):
         self.my_conf.json_writer('configs', self.conf_info.config)
 
-    def set_files(self, path_list):
-        self.folder = path_list[0]
+    def set_files(self, path):
+        self.folder = path
 
     def apply_file(self, filename):
         parser = XMLParser2(filename)
@@ -41,7 +41,7 @@ class Controller:
             if config == 1:
                 for j in xpaths:
                     old_value = parser.get_attr(j[0], j[1])
-                    self.conf_info.set_value(i, old_value)
+                    self.conf_info.set_original(i, old_value)
                     parser.del_attrs(j[0], j[1])
                     if fill:
                         message.append(old_value)
@@ -49,7 +49,7 @@ class Controller:
             elif config == 2:
                 for j in xpaths:
                     old_value = parser.get_attr(j[0], j[1])
-                    self.conf_info.set_value(i, old_value)
+                    self.conf_info.set_original(i, old_value)
                     new_value = self.conf_info.get_fuzzy(i)
                     parser.set_attrs(j[0], j[1], new_value)
                     if fill:

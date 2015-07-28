@@ -12,10 +12,10 @@ class MyConfig:
 
     def json_writer(self, filename, data=None):
         with open(filename, 'wb') as fp:
-            result = data
+            res = data
             if data is None:
-                result = self.content
-            json.dump(result, fp)
+                res = self.content
+            json.dump(res, fp)
 
     def change_config(self, key, value):
         self.content[key] = value
@@ -28,24 +28,27 @@ class MyConfig:
 
     def csv_writer(self, filename, data=None):
         with open(filename, 'wb') as fp:
-            result = data
+            res = data
             if data is None:
                 for key, value in self.content:
                     tmp = [key, value]
-                    result.append(tmp)
+                    res.append(tmp)
             writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
-            for row in result:
+            for row in res:
                 writer.writerow(row)
 
 # myDict={
-#     "Serial Number":0,
-#     "Gender":0,
-#     "Algorithm Age":0,
-#     "Child ID":0,
-#     "Child Key":0,
-#     "Enroll Date":0,
-#     "DOB":0,
-#     "Time Zone":0,
-#     "UTC Time":0,
-#     "Clock Time":0,
+#     "Serial Number": (2, '0000'),
+#     "Gender": (0, -1),
+#     "Algorithm Age": (0, -1),
+#     "Child ID": (1, '0000'),
+#     "Child Key": (1, '0000000000000000'),
+#     "Enroll Date": (1, -1),
+#     "DOB": (1, '1900-01-01'),
+#     "Time Zone": (1, -1),
+#     "UTC Time": (1, -1),
+#     "Clock Time": (1, '0')
 # }
+
+# config = MyConfig()
+# config.json_writer('configs', myDict)

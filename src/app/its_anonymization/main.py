@@ -15,7 +15,7 @@ class MainWindow:
         self.config = self.builder.get_object("config")
 
         self.config_rbutton = []
-        for i in range(30):
+        for i in range(18):
             self.config_rbutton.append(
                 self.builder.get_object("radiobutton" + str(i)))
 
@@ -52,19 +52,17 @@ class MainWindow:
         else:
             myDebug("file choose dialog: ", response)
 
-        self.control.set_files(selected)
+        self.control.set_files(selected[0])
         dialog.destroy()
 
     def open_config(self, button):
         config = self.control.get_conf()
         items = config.items
 
-        for i in range(10):
+        for i in range(9):
             # print i, items[i], config.get_config(items[i])
-            if config.get_config(items[i]) == 1:
-                self.config_rbutton[i*3 + 1].set_active(True)
-            elif config.get_config(items[i]) == 2:
-                self.config_rbutton[i*3 + 2].set_active(True)
+            if config.get_config(items[i]) != 0:
+                self.config_rbutton[i*2 + 1].set_active(True)
 
         self.config.show_all()
 
@@ -78,11 +76,11 @@ class MainWindow:
             # print index, change, key, change
 
             if change == "keep":
-                self.control.set_conf(key, 0)
+                self.control.set_conf(key, [0, -1])
             elif change == "delete":
-                self.control.set_conf(key, 1)
+                self.control.set_conf(key, [1, -1])
             else:
-                self.control.set_conf(key, 2)
+                self.control.set_conf(key, [2, ''])
 
     def save_config(self, widget, data=None):
         self.control.save_config()
