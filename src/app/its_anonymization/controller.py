@@ -16,15 +16,23 @@ class Controller:
         self.folder = ""
         self.overview = []
 
-    def get_conf(self):
-        return self.conf_info
+    def get_conf_item(self, index):
+        return self.conf_info.items[index]
 
-    def set_conf(self, key, config, value=None):
+    def get_conf_config(self, key):
+        return self.conf_info.get_config(key)[0]
+
+    def get_conf_value(self, key):
+        return self.conf_info.get_config(key)[1]
+
+    def set_conf_config(self, key, config, value=None):
         self.conf_info.set_config(key, config, value)
 
+    def get_conf_exp(self, key):
+        return self.conf_info.get_exp(key)
+
     def save_config(self):
-        print self.conf_info.config
-        # self.my_conf.json_writer('configs', self.conf_info.config)
+        self.my_conf.json_writer('configs', self.conf_info.config)
 
     def set_files(self, path):
         self.folder = path
@@ -36,7 +44,7 @@ class Controller:
         message = [os.path.basename(filename)]
 
         for i in items:
-            config = self.conf_info.get_config(i)
+            config = self.get_conf_config(i)
             xpaths = self.conf_info.get_path(i)
             fill = True
 
@@ -72,11 +80,10 @@ class Controller:
         if not os.path.isdir(new_folder):
             os.mkdir(new_folder)
 
-        items = self.conf_info.items
         message = ['filename']
 
-        for i in items:
-            config = self.conf_info.get_config(i)
+        for i in self.conf_info.items:
+            config = self.get_conf_config(i)
             if config == 1:
                 message.append(i)
             elif config == 2:

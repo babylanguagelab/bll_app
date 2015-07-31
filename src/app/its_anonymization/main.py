@@ -25,10 +25,6 @@ class MainWindow:
                 self.builder.get_object("entry" + str(i)))
 
         self.config_statusbar = self.builder.get_object("statusbar")
-        self.config_context_id = self.config_statusbar.get_context_id("0")
-        self.config_statusbar.push(self.config_context_id,
-                                   "setup item list")
-
         self.connect_signals()
 
     def connect_signals(self):
@@ -56,20 +52,16 @@ class MainWindow:
 
         if response == Gtk.ResponseType.OK:
             selected = dialog.get_filenames()
+            self.control.set_files(selected[0])
         else:
             myDebug("file choose dialog: ", response)
 
-        self.control.set_files(selected[0])
         dialog.destroy()
 
     def open_config(self, button):
-        conf = self.control.get_conf()
-        items = conf.items
-
         for i in range(9):
-            config_list = conf.get_config(items[i])
-            config = config_list[0]
-            value = config_list[1]
+            key = self.control.get_conf_item(i)
+            config = self.control.get_conf_config(key)
             # print i, items[i], config.get_config(items[i])
             if config != 0:
                 self.config_rbutton[i*2 + 1].set_active(True)
@@ -77,29 +69,26 @@ class MainWindow:
         self.config.show_all()
 
     def change_rbuttons(self, button, data=None):
-        config = self.control.get_conf()
-
         if button.get_active():
             index = int(button.get_name())
             change = button.get_label()
-            key = config.items[index]
+            key = self.control.get_conf_item(index)
             # print index, change, key, change
 
             if change == "keep":
-                self.control.set_conf(key, 0)
+                self.control.set_conf_config(key, 0)
             elif change == "delete":
-                self.control.set_conf(key, 1)
+                self.control.set_conf_config(key, 1)
             else:
-                self.control.set_conf(key, 2)
+                self.control.set_conf_config(key, 2)
 
     def change_entry(self, widget, data=None):
         index = int(widget.get_name())
         text = widget.get_text()
-        config = self.control.get_conf()
-        key = config.items[index]
+        key = self.control.get_conf_item(index)
 
         self.config_rbutton[index*2 + 1].set_active(True)
-        self.control.set_conf(key, 2, text)
+        self.control.set_conf_config(key, 2, text)
 
     def save_config(self, widget, data=None):
         self.control.save_config()
@@ -109,27 +98,19 @@ class MainWindow:
 
     def change_message(self, widget, data=None):
         name = widget.get_name()
-        message = ""
 
-        if name == "ok":
-            message = "return to main menu"
-        elif name == "save":
-            message = "save as default value"
-        elif name == '0':
-            message = "Serial Number"
-        elif name == '3':
-            message = "Child ID"
-        elif name == '4':
-            message = "Child Key"
-        elif name == '6':
-            message = "DOB"
+        if (name.isdigit()):
+            key = self.control.get_conf_item(int(name))
+            message = self.control.get_conf_exp(key)
         else:
-            message = "unkonw"
-
-        self.config_statusbar.push(self.config_context_id, message)
+            if name == "ok":
+                message = "return to main menu"
+            elif name == "save":
+                message = "save as default value"
+        self.config_statusbar.set_text(message)
 
     def restore_message(self, widget, data=None):
-        self.config_statusbar.pop(self.config_context_id)
+        self.config_statusbar.set_text("")
 
     def run(self, widget):
         result = self.control.run()

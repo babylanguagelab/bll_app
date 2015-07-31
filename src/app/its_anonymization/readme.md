@@ -29,9 +29,6 @@
     - LocalTime->leave time of day alone, set date to based on new DOB
     - ClockTime->leave time of day alone, set date to based on new DOB
 
-# Bugs:
-1. multiple places for one key.
-
 # all configurations:
 ./ProcessingUnit/UPL_Header/TransferredUPL/RecordingInformation/TransferTime,LocalTime,1, 
 ./ProcessingUnit/UPL_Header/TransferredUPL/RecordingInformation/TransferTime,TimeZone,1, 
@@ -54,3 +51,6 @@
 ./ExportData/Child, ChildKey, 1,  
 ./ExportData/Child, DOB, 1,  
 ./ExportData/Child, Gender, 1,  
+
+# note:
+NOTE: This program takes all the .its files from a folder and removes information that might be used to identify the child, based on the user's selections.  It will generate a new folder that ends with "processed" at the place where the original folder is. It will also creates a report file that lists the old and new information for any fields that have been deleted or altered. Deletion of some information may prevent ADEX from functioning properly. It is the individual researcher's responsibility to ensure that any potentially identifying information is removed. This is very dependent on the individual lab's identity shielding practices, consent forms, ethics board and institutional policy, and laws of individual countries. Please leave in as much information as possible, but remember that information from one source could be combined downstream with another source to determine identities, so consider what other information may be found in other publicly available meta-data and derivative data. Save the original file, and a means of connecting the original with the anonymized file somewhere separate from the anonymized file. (I understand)
