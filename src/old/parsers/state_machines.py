@@ -179,6 +179,11 @@ class LinkUttersStateMachine(object):
         self.cur_linkable_seg = None
         # holds the segment whose utterances we were working with before we encountered cur_linkable_seg
         self.last_linkable_seg = None
+
+        # max search level
+        self.max_depth = 4
+        # current search level
+        self.cur_depth = 0
         
         #set up logging
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
@@ -213,28 +218,27 @@ class LinkUttersStateMachine(object):
         #we only drive the state machine for utterances that are linkable, and have been transcribed
         #if next_obj.is_linkable() and next_obj.trans_phrase:
         if next_obj.trans_phrase:
-
             #if we've moved beyond a segment boundary (i.e. next_obj is the first utterance of a new segment), some maintanence work needs to be done on the data structures
             if self.cur_linkable_seg == None or self.cur_linkable_seg.num != next_obj.seg.num:
-
                 #Any utterances whose link numbers are left in the 'prev_links' sub-dictionary are now too far away from their originating segment to be linked. (eg. they are from segment 2, and we are now starting segment 4 - therefore matching C/IC codes were not found in segment 3). Therefore, we generate errors for each of them.
                 for link_num in self.link_dict['prev_links']:
-                    err_msg = 'Encountered I%s with no C%s in next linkable segment.\n' % tuple([str(link_num or '')] * 2)
-                    err_msg += 'Expected a \'C\' in either the current segment, or one of the these (following) segments:\n'
-                    err_msg += self._get_seg_contents(self.cur_linkable_seg)
+                    self.cur_depth += 1
+                    if self.cur_depth > self.max_depth:
+                        err_msg = 'Encountered I%s with no C%s in next linkable segment.\n' % tuple([str(link_num or '')] * 2)
+                        err_msg += 'Expected a \'C\' in either the current segment, or one of the these (following) segments:\n'
+                        err_msg += self._get_seg_contents(self.cur_linkable_seg)
                         
-                    self.trs_parser.error_collector.add(ParserError(err_msg, self.link_dict['prev_links'][link_num]))
+                        self.trs_parser.error_collector.add(ParserError(err_msg, self.link_dict['prev_links'][link_num]))
 
                 #update the last/cur linkable segments
                 self.last_linkable_seg = self.cur_linkable_seg
                 self.cur_linkable_seg = next_obj.seg
 
                 #replace the 'prev_links' sub-dictionary (has outdated entries from 2 segments ago) with the 'cur_links' sub-dictionary (now has entries from 1 segment ago)
-                self.link_dict['prev_links'] = self.link_dict['cur_links']
+                # self.link_dict['prev_links'] = self.link_dict['cur_links']
                 #reset the 'cur_links' sub-dictionary so we can enter link numbers for utterances from the new segment
-                self.link_dict['cur_links'] = {}
+                # self.link_dict['cur_links'] = {}
 
-            
             continued_match = None #this will be set to a regex match object if next_obj contains an I transcriber code (note: could be IC)
             continuation_match = None #this will be set to a regex match object if next_obj contains a C transcriber code (note: could be IC)
             continued_num = '' #if continued_match is non-None, this will be set to the link number
@@ -246,25 +250,30 @@ class LinkUttersStateMachine(object):
                 continuation_match = re.search('(?:C(\d+)?)', next_obj.trans_codes[2])
 
             #determine the link numbers for any matches
+            #Note: if the utterance has an 'IC' code, it is possible that both continued and continuation are True at this point
             continued = hasattr(continued_match, 'group') #this is a boolean - True if continued_match is non-None
+            #if there was an I code (or an IC code), insert the link number into the 'cur_links' sub-dictionary
             if continued:
                 #if no number is present, use a 0 (i.e. match is just 'I' or 'IC')
                 continued_num = continued_match.groups()[0] or 0
+                #first check if it's aready in the sub-dictionary. If so, we've encountered it before in this segment - therefore generate an 'ambiguous Is' error.
+                if continued_num in self.link_dict['cur_links']:
+                    self.trs_parser.error_collector.add(ParserError('Ambiguous I%s in segment.' % (str(continued_num or '')), next_obj))
+                #otherwise, we're good to insert it
+                else:
+                    self.link_dict['cur_links'][continued_num] = next_obj
 
             continuation = hasattr(continuation_match, 'group') #this is a boolean - True if continuation_match is non-None
-            if continuation:
-                #if no number is present, use a 0 (i.e. match is just 'C' or 'IC')
-                continuation_num = continuation_match.groups()[0] or 0
-
-            #Note: if the utterance has an 'IC' code, it is possible that both continued and continuation are True at this point
-
             #if there was a C code (or an IC code), search for a matching 'I' code
             if continuation:
+                self.cur_depth = 0
+                #if no number is present, use a 0 (i.e. match is just 'C' or 'IC')
+                continuation_num = continuation_match.groups()[0] or 0
                 #the 'prev_links' sub-dict holds the continued utterances from last linkable segment - looking for a matching 'I' code there
                 if continuation_num in self.link_dict['prev_links']:
                     #remove (pop) the matching I/IC code from the 'prev_links' sub-dict
                     prev_obj = self.link_dict['prev_links'].pop(continuation_num)
-                    
+
                     #set the utterance pointers on both objects
                     prev_obj.next = next_obj
                     next_obj.prev = prev_obj
@@ -273,7 +282,7 @@ class LinkUttersStateMachine(object):
                 elif continuation_num in self.link_dict['cur_links']:
                     #remove (pop) the matching I/IC code from the 'cur_links' sub-dict
                     prev_obj = self.link_dict['cur_links'].pop(continuation_num)
-                    
+
                     #set the utterance pointers on both objects
                     prev_obj.next = next_obj
                     next_obj.prev = prev_obj
@@ -286,16 +295,10 @@ class LinkUttersStateMachine(object):
                         err_msg += self._get_seg_contents(self.last_linkable_seg)
                     
                     self.trs_parser.error_collector.add(ParserError(err_msg, next_obj))
-                    
 
-            #if there was an I code (or an IC code), insert the link number into the 'cur_links' sub-dictionary
-            if continued:
-                #first check if it's aready in the sub-dictionary. If so, we've encountered it before in this segment - therefore generate an 'ambiguous Is' error.
-                if continued_num in self.link_dict['cur_links']:
-                    self.trs_parser.error_collector.add(ParserError('Ambiguous I%s in segment.' % (str(continued_num or '')), next_obj))
-                #otherwise, we're good to insert it
-                else:
-                    self.link_dict['cur_links'][continued_num] = next_obj
+            # update previous links
+            self.link_dict['prev_links'].update(self.link_dict['cur_links'])
+            self.link_dict['cur_links'].clear()
 
     ## This method ensures that errors are generated for any utterances that are still waiting around for a link.
     #  This routine must be called after drive() - otherwise, you'll (potentially) be missing some errors.
