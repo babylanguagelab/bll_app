@@ -38,7 +38,7 @@ class Controller:
         self.folder = path
 
     def apply_file(self, filename):
-        parser = XMLParser2(filename)
+       parser = XMLParser2(filename)
         items = self.conf_info.items
         new_folder = os.path.dirname(filename) + '_processed/'
         message = [os.path.basename(filename)]
