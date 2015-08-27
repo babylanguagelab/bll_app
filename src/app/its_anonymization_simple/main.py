@@ -79,7 +79,7 @@ class XMLParser2:
     def save(self, filename):
         self.tree.write(filename)
 
-
+# main entrance for script
 class Main:
     def __init__(self):
         self.items = ["Serial Number",
@@ -99,41 +99,43 @@ class Main:
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
-        for name in glob.glob('*.xml'):
+        for name in glob.glob('*.its'):
             self.filter(name)
 
     def filter(self, filename):
         parser = XMLParser2(filename)
 
         for i in self.items:
-            config = CONF_DICT[i]
+            config = CONF_DICT[i][0]
             xpaths = PATH_DICT[i]
-
+            # delete
             if config == 1:
                 for j in xpaths:
-                    self.items_original = parser.get_attr(j[0], j[1])
+                    self.items_original[i] = parser.get_attr(j[0], j[1])
                     parser.del_attrs(j[0], j[1])
+            # change
             elif config == 2:
                 for j in xpaths:
-                    self.items_original = parser.get_attr(j[0], j[1])
+                    self.items_original[i] = parser.get_attr(j[0], j[1])
                     new_value = self.dummy(i)
                     parser.set_attrs(j[0], j[1], new_value)
-
         parser.save(self.output_path + '/' + filename)
 
     def dummy(self, key):
         value = " "
 
+        # new clock time will calculate base on the DOB.
         if key == 'Clock Time':
             # example: 2015-06-10T11:30:20Z
-            if self.items_original['Clock Time'][-1] == 'Z':
-                clock_time = datetime.datetime.strptime(self.original['Clock Time'], "%Y-%m-%dT%H:%M:%SZ")
+            if self.items_original['Clock Time'][-1] is 'Z':
+                clock_time = datetime.datetime.strptime(self.items_original['Clock Time'], "%Y-%m-%dT%H:%M:%SZ")
             else:
-                clock_time = datetime.datetime.strptime(self.original['Clock Time'], "%Y-%m-%dT%H:%M:%S")
-                dob_time = datetime.datetime.strptime(self.original['DOB'], "%Y-%m-%d")
-                new_time = datetime.date(2000, 01, 01) + relativedelta(clock_time, dob_time)
+                clock_time = datetime.datetime.strptime(self.items_original['Clock Time'], "%Y-%m-%dT%H:%M:%S")
+            
+            dob_time = datetime.datetime.strptime(self.items_original['DOB'], "%Y-%m-%d")
+            new_time = datetime.date(2000, 01, 01) + relativedelta(clock_time, dob_time)
 
-            if self.original['Clock Time'][-1] == 'Z':
+            if self.items_original['Clock Time'][-1] is 'Z':
                 value = new_time.strftime("%Y-%m-%dT%H:%M:%SZ")
             else:
                 value = new_time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -146,3 +148,4 @@ class Main:
 if __name__ == '__main__':
     main = Main()
     main.run()
+    print 'done!'
