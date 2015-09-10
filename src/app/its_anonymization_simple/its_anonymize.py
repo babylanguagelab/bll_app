@@ -124,6 +124,7 @@ class Main:
         self.overview.append(text)
 
         for name in glob.glob('*.its'):
+            print name
             self.filter(name)
 
         csv_writer(self.output_path + '/' + 'overview.csv', self.overview)
