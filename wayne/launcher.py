@@ -6,10 +6,11 @@
 import os
 import imp
 import sys
+from app.app import App
 from functools import reduce
 from utils.debug import myDebug
 
-BLL_APP_ROOT_DIR = os.getcwd() + '/' + 'src/app'
+BLL_APP_ROOT_DIR = os.getcwd() + '/app/'
 
 # this will allow all modules to access bll classes
 sys.path.append(BLL_APP_ROOT_DIR)
@@ -31,7 +32,11 @@ if para == "list":
 else:
     module_name = para
 
-module_path = '%s/%s.py' % (BLL_APP_ROOT_DIR, module_name)
+module_path = '%s%s.py' % (BLL_APP_ROOT_DIR, module_name)
+# the name of the class we will instantiate is the module name
+# with underscores removed, in camel-case
+cls_name = reduce(lambda accum,
+                  word: accum + word.capitalize(), module_name.split('_'), '')
 
 # attempt to dynamically import the module corresponding to
 # the app we are launching
