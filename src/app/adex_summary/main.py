@@ -10,14 +10,15 @@ import glob
 class ADEX_processor:
     def __init__(self):
         self.content = []
-        self.filename = []
-        self.child_ID = ""
-        self.child_age = ""
-        self.child_gender = ""
         self.ADEX_head = []
-        self.items = {'AWC': 0, 'Turn_Count': 0, 'Child_Voc_Duration': 0,
-                      'CHN': 0, 'FAN': 0, 'MAN': 0, 'CXN': 0, 'OLN': 0,
-                      'TVN': 0, 'NON': 0, 'SIL': 0, 'Audio_Duration': 0}
+        self.child_info = ['File_Name', 'Child_ChildID', 'Child_Gender']
+        # self.child_score = {'AWC': 0, 'Turn_Count': 0, 'Child_Voc_Duration': 0,
+        #                     'CHN': 0, 'FAN': 0, 'MAN': 0, 'CXN': 0, 'OLN': 0,
+        #                     'TVN': 0, 'NON': 0, 'SIL': 0, 'Audio_Duration': 0}
+
+        self.child_score = ['AWC', 'Turn_Count', 'Child_Voc_Duration', 'CHN',
+                            'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL',
+                            'Audio_Duration']
 
     def get_key(self, row, key):
         key_index = self.ADEX_head.index(key)
@@ -68,39 +69,45 @@ class ADEX_processor:
             self.items[i] = float("{0:.2f}".format(tmp))
             deg(i, self.items[i])
 
+    # remove unnecessary columns
     def filter_cols(self):
-        self.filename = self.content[0][1]
-        self.child_ID = self.content[0][4]
-        self.child_age = self.content[0][5]
-        self.child_gender = self.content[0][6]
+        new_head = self.child_info + self.child_score
+        deg(new_head)
+        # column number -> domain item table
+        new_head_dic = {}
+
+        k = 0
+        for i in range(0, len(self.ADEX_head)):
+            if (self.ADEX_head[i] == new_head[k]):
+                new_head_dic[i] = new_head[k]
+                k = k + 1
+
+        self.ADEX_head = new_head
+
         new_content = []
-
-        new_content.append([self.filename,
-                           self.child_ID,
-                           self.child_age,
-                           self.child_gender])
-
-        # write new head info
-        new_head = []
-        for col in range(7, len(self.ADEX_head)):
-            if self.ADEX_head[col] in self.items:
-                new_head.append(self.ADEX_head[col])
 
         # take any columns in self.items list
         for row in self.content:
             new_row = []
-            for col in range(7, len(row)):
-                if self.ADEX_head[col] in self.items:
+            for col in range(0, len(row)):
+                if col in new_head_dic:
                     new_row.append(row[col])
 
             new_content.append(new_row)
 
         self.content = new_content
-        self.ADEX_head = new_head
 
-    def run(self):
-        self.remove_5mins()
-        self.cal_average()
+    def dump(self):
+        content = self.ADEX_head + self.content
+        return content
+
+    def parse(self, csv_file):
+        self.content = mParser.csv_reader(csv_file)
+        self.ADEX_head = self.content[0]
+        del self.content[0]
+
+        # self.remove_5mins()
+        # self.cal_average()
         self.filter_cols()
 
 
@@ -110,12 +117,10 @@ class driver:
 
     def run(self):
         for name in glob.glob('*.csv'):
-            content = mParser.csv_reader(name)
-            self.mADEX.ADEX_head = content[0]
-            self.mADEX.content = content[1:]
+            self.mADEX.parse(name)
 
-        self.mADEX.run()
-        mParser.csv_writer('/tmp/tmp.csv', self.mADEX.content)
+        result = self.mADEX.dump()
+        mParser.csv_writer('/tmp/tmp.csv', result)
 
 
 if __name__ == '__main__':
