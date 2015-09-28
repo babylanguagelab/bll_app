@@ -360,7 +360,7 @@ class UIUtils(object):
 
         combobox = gtk.ComboBox(model=list_store)
         renderer = gtk.CellRendererText()
-        combobox.pack_start(renderer, True, False, 0)
+        combobox.pack_start(renderer, True)
         combobox.add_attribute(renderer, 'text', 0)
         
         combobox.set_active(active_index)
