@@ -3,22 +3,21 @@
 
 import ConfigParser as mParser
 from debug import my_print as deg
+from cusList import del_list_by_indices
 import glob
+import os
 
-
-# def combine
-class ADEX_processor:
+# read ADEX csv files to filter out required columns
+# then save the columns as intermediate results
+class ADEXProcessor:
     def __init__(self):
-        self.content = []
-        self.ADEX_head = []
-        self.child_info = ['File_Name', 'Child_ChildID', 'Child_Gender']
-        # self.child_score = {'AWC': 0, 'Turn_Count': 0, 'Child_Voc_Duration': 0,
-        #                     'CHN': 0, 'FAN': 0, 'MAN': 0, 'CXN': 0, 'OLN': 0,
-        #                     'TVN': 0, 'NON': 0, 'SIL': 0, 'Audio_Duration': 0}
-
-        self.child_score = ['AWC', 'Turn_Count', 'Child_Voc_Duration', 'CHN',
-                            'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL',
-                            'Audio_Duration']
+        self.head = ['File_Name', 'Child_ChildID', 'Child_Gender',
+                          'AWC', 'Turn_Count', 'Child_Voc_Duration',
+                          'CHN', 'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+        self.content = {}
+        self.length = 0
+        for i in self.head:
+            self.content[i] = []
 
     def get_key(self, row, key):
         key_index = self.ADEX_head.index(key)
@@ -97,32 +96,46 @@ class ADEX_processor:
 
         self.content = new_content
 
-    def dump(self):
-        content = self.ADEX_head + self.content
-        return content
-
     def parse(self, csv_file):
-        self.content = mParser.csv_reader(csv_file)
-        self.ADEX_head = self.content[0]
-        del self.content[0]
+        content = mParser.csv_reader(csv_file)
+        old_head = content[0]
 
-        # self.remove_5mins()
-        # self.cal_average()
-        self.filter_cols()
+        for row in range(1, len(content)):
+            for col in range(0, len(row)):
+                key = old_head[col]
+                if key in self.content:
+                    self.content[key].append(row[col])
+
+        self.length = len(content)
+
+    def dump(self):
+        filename = "childID"
+        result = []
+
+        if not os.path.exists(filename):
+            result.append(self.head)
+
+        for i in range(self.length):
+            new_row = []
+            for j in self.head:
+                new_row.append(self.content[j][i])
+            result.append(new_row)
+
+        mParser.csv_writer(filename, result)
 
 
-class driver:
+class Test:
     def __init__(self):
-        self.mADEX = ADEX_processor()
+        self.mADEX = ADEXProcessor()
 
     def run(self):
         for name in glob.glob('*.csv'):
             self.mADEX.parse(name)
 
-        result = self.mADEX.dump()
-        mParser.csv_writer('/tmp/tmp.csv', result)
+        # result = self.mADEX.dump()
+        # mParser.csv_writer('/tmp/tmp.csv', result)
 
 
 if __name__ == '__main__':
-    mDriver = driver()
-    mDriver.run()
+    mTest = Test()
+    mTest.run()
