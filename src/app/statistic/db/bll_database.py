@@ -1,8 +1,10 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 import os
 import re
 import logging
 from collections import OrderedDict
+
+from codes import Code, CodeInfo
 from database import Database
 from enum import Enum
 
@@ -92,7 +94,10 @@ class BLLDatabase(Database):
                 distances.NA,  # distance
                 cur_row[4],    # speaker_type
                 )
+
+            # position for transcriber code eg. 1, 2, 3, 4
             cur_dict = options_dicts[cur_row[2] - 1]
+            # hash: code -> code_info
             cur_dict[cur_row[1]] = code_info
 
         # create the Code objects, using the newly created CodeInfo objects
@@ -103,21 +108,21 @@ class BLLDatabase(Database):
 
         return codes
 
-    def _select_lena_notes_codes(self):
-        #select the data
-        rows = self.select('lena_notes_codes', 'id code speaker_type_id display_desc'.split())
-        distances = self.select_enum('speaker_distances')
+    def select_lena_notes_codes(self):
+        rows = self.select('lena_notes_codes',
+                           ['id', 'code', 'speaker_type_id', 'display_desc'])
+        distances = self.get_speaker_distances_enum()
 
-        #create a dictionary of CodeInfo objects (one for each option)
+        # create a dictionary of CodeInfo objects (one for each option)
         codes = {}
         for cur_row in rows:
             code_info = CodeInfo(
-                cur_row[0], #db_id,
-                cur_row[1], #code
-                cur_row[3], #desc
-                cur_row[1] == 'VOC' or cur_row[1] == 'FAN', #is_linkable
-                distances.NA, #distance
-                cur_row[2], #speaker_type
+                cur_row[0],  # db_id,
+                cur_row[1],  # code
+                cur_row[3],  # desc
+                cur_row[1] == 'VOC' or cur_row[1] == 'FAN',  # is_linkable
+                distances.NA,  # distance
+                cur_row[2],    # speaker_type
                 )
             codes[cur_row[1]] = code_info
 
@@ -213,4 +218,8 @@ def _get_constants():
 # _get_constants()
 
 mDB = BLLDatabase()
-print mDB.get_speaker_types_enum()
+a = mDB.select_transcriber_codes()
+for i in a:
+    j = i.get_option('M')
+    if j is not None:
+        print j.get_code_desc()
