@@ -1,5 +1,4 @@
 from gi.repository import Gtk
-from myDebug import myDebug
 from controller import Controller
 
 
