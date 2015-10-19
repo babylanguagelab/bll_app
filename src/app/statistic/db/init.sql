@@ -58,7 +58,7 @@ FOREIGN KEY(speaker_type_id) REFERENCES speaker_types(id) ON DELETE CASCADE
 INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('VOC', (SELECT id from speaker_types where code_name='NA'), 'Vocal');
 INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('SIL', (SELECT id from speaker_types where code_name='SILENCE'), 'Silence');
 INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('FAN', (SELECT id from speaker_types where code_name='FEMALE_ADULT'), 'Female Adult');
-INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('VFX', (SELECT id from speaker_types where code_name='NA'), ''); --not sure what LENA uses this one for...
+INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('VFX', (SELECT id from speaker_types where code_name='NA'), 'Vegetative/Fixed-Signal Sounds'); 
 INSERT INTO lena_notes_codes (code, speaker_type_id, display_desc) VALUES ('CRY', (SELECT id from speaker_types where code_name='NA'), 'Cry');
 
 
@@ -84,10 +84,10 @@ INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, dis
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('MAN', 'Male Adult Near', (SELECT id from speaker_types where code_name='MALE_ADULT'),   1,  1, 0, 0, 0);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('NOF', 'Noise Far', (SELECT id from speaker_types where code_name='NA'), 0,  2, 0, 1, 0);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('NON', 'Noise Near', (SELECT id from speaker_types where code_name='NA'), 0,  1, 0, 1, 0);
-INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('OLF', 'Overlapping Vocals Far', (SELECT id from speaker_types where code_name='NA'), 0,  2, 0, 0, 1);
+INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('OLF', 'Overlapping Vocals Far', (SELECT id from speaker_types where code_name='NA'), 0,  1, 0, 0, 1);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('OLN', 'Overlapping Vocals Near',  (SELECT id from speaker_types where code_name='NA'), 0,  1, 0, 0, 1);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('SIL', 'Silence', (SELECT id from speaker_types where code_name='SILENCE'), 0,  0, 0, 0, 0);
-INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('TVF', 'TV/Electronic Media Far',  (SELECT id from speaker_types where code_name='NA'), 0,  2, 1, 0, 0);
+INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('TVF', 'TV/Electronic Media Far',  (SELECT id from speaker_types where code_name='NA'), 0,  1, 1, 0, 0);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('TVN', 'TV/Electronic Media Near', (SELECT id from speaker_types where code_name='NA'), 0,  1, 1, 0, 0);
 INSERT INTO speaker_codes (code, display_desc, speaker_type_id, is_linkable, distance, is_media, is_nonverbal_noise, is_overlapping) VALUES ('FUZ', 'Uncertain/Fuzzy', (SELECT id from speaker_types where code_name='NA'), 0,  0, 0, 0, 0);
 

@@ -10,7 +10,7 @@ from app.app import App
 from functools import reduce
 from utils.debug import myDebug
 
-BLL_APP_ROOT_DIR = os.getcwd() + '/app/'
+BLL_APP_ROOT_DIR = os.getcwd() + '/app'
 
 # this will allow all modules to access bll classes
 sys.path.append(BLL_APP_ROOT_DIR)
@@ -22,22 +22,17 @@ if len(sys.argv) != 2:
 para = sys.argv[1]
 
 if para == "list":
-    myDebug("current programs:")
+    myDebug("CURRENT PROGRAMS:")
     app_list = [f for f in os.listdir(BLL_APP_ROOT_DIR)
-                if f != "__init__.py"]
+                if (f[0] != '_' and f[len(f) - 1] != 'c')]
     for i in app_list:
         myDebug(app_list.index(i), i)
-    select = input("select script to run: ")
-    module_name = app_list[int(select)]
+    select = input("SELECT THE SCRIPT NUMBER TO RUN(Q TO QUIT): ")
+    module_name = app_list[int(select)].split('.')[0]
 else:
     module_name = para
 
-module_path = '%s%s.py' % (BLL_APP_ROOT_DIR, module_name)
-# the name of the class we will instantiate is the module name
-# with underscores removed, in camel-case
-cls_name = reduce(lambda accum,
-                  word: accum + word.capitalize(), module_name.split('_'), '')
-
+module_path = '%s/%s.py' % (BLL_APP_ROOT_DIR, module_name)
 # attempt to dynamically import the module corresponding to
 # the app we are launching
 try:
@@ -47,10 +42,10 @@ except Exception as err:
     myDebug('Error loading launch module', module_name, ':', err)
     exit(2)
 
-# the name of the class we will instantiate is the module name,
+# the name of the class we will instantiate is the module name
 # with underscores removed, in camel-case
-cls_name = reduce(lambda accum, word: accum + word.capitalize(),
-                  module_name.split('_'), '')
+cls_name = reduce(lambda accum,
+                  word: accum + word.capitalize(), module_name.split('_'), '')
 
 # instantiate the app class, and call a few methods to get the app running
 cls = getattr(module, cls_name)

@@ -204,7 +204,7 @@ class ViewConfigsWindow():
                 if export_folder:
                     #trs_filenames = glob.glob(trs_folder + '\\*.trs')
                     trs_filenames = self._get_trs_filenames(trs_folder)
-                    export_filenames = map(lambda name: '%s\\%s-stats.csv' % (export_folder, os.path.basename(name)[:-4]), trs_filenames)
+                    export_filenames = map(lambda name: '%s/%s-stats.csv' % (export_folder, os.path.basename(name)[:-4]), trs_filenames)
                     
                     phases = ['File %d of %d' % (i + 1, len(trs_filenames)) for i in range(len(trs_filenames))]
                     dialog = ProgressDialog('Working...', phases)
@@ -226,7 +226,8 @@ class ViewConfigsWindow():
 
     def _get_trs_filenames(self, root_dir):
         out_filenames = []
-        in_filenames = glob.glob(root_dir + '\\*')
+        # in_filenames = glob.glob(root_dir + '\\*')
+        in_filenames = glob.glob(root_dir + '/*')
         
         for cur_name in in_filenames:
             if os.path.isdir(cur_name):

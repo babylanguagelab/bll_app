@@ -1,6 +1,4 @@
-#!/usr/bin/env python2
 import os
-import re
 import logging
 from collections import OrderedDict
 
@@ -15,6 +13,7 @@ DB_LOCATION = 'bll.db'
 # speaker_codes, transcriber_codes, etc.
 SQL_INIT_SCRIPT = 'init.sql'
 
+# number of codes in transcriber manual
 NUM_TRANS_CODES = 4
 
 
@@ -29,8 +28,16 @@ class BLLDatabase(Database):
             logging.info('No database found - creating one...')
             self.execute_script(SQL_INIT_SCRIPT)
 
+        self.TRANS_CODES = self.select_transcriber_codes()
+        self.LENA_NOTES_CODES = self.select_lena_notes_codes()
+
+        self.SPEAKER_CODES = self.select_speaker_codes()
+        self.SPEAKER_TYPES = self.get_speaker_types_enum()
+        self.SPEAKER_DISTANCES = self.get_speaker_distances_enum()
+        self.SPEAKER_PROPS = self.get_speaker_props_enum()
+
     def get_speaker_types_enum(self):
-        rows = self.select('speaker_types', 'id code_name'.split())
+        rows = self.select('speaker_types', ['id', 'code_name'])
         ids, code_names = zip(*rows)
 
         return Enum(code_names, ids)
@@ -40,35 +47,6 @@ class BLLDatabase(Database):
 
     def get_speaker_props_enum(self):
         return Enum(['MEDIA', 'OVERLAPPING', 'NON_VERBAL_NOISE'])
-
-    def _get_combo_groups_enum(self):
-        rows = self.select('combo_groups', 'id code_name'.split())
-        ids, code_names = zip(*rows)
-        return Enum(code_names, ids)
-
-    def _get_common_regexs_enum(self):
-        rows = self.select('common_regexs', 'code_name regex'.split())
-        code_names, regexs = zip(*rows)
-
-        return Enum(code_names, regexs)
-
-    def _get_combo_options_enum(self):
-        options = {}
-        groups = self._get_combo_groups_enum()
-        for i in range(len(groups)):
-            rows = self.select('combo_options', 'id code_name'.split(), 'combo_group_id=?', [groups[i]], 'id ASC')
-            ids, code_names = zip(*rows)
-            options[groups[i]] = Enum(code_names, ids)
-
-        return options
-
-    def _get_settings_enum(self):
-        settings = None
-        rows = self.select('settings', 'code_name val'.split())
-        (names, vals) = zip(*rows)
-        settings = Enum(names, vals)
-
-        return settings
 
     def select_transcriber_codes(self):
         rows = self.select('transcriber_codes',
@@ -128,16 +106,25 @@ class BLLDatabase(Database):
 
         return Code(codes)
 
-    def _select_speaker_codes(self):
+    def select_speaker_codes(self):
         # select the data
         rows = self.select('speaker_codes',
-                           'id code speaker_type_id display_desc distance is_linkable is_media is_nonverbal_noise is_overlapping'.split())
-        props_enum = self._get_speaker_props_enum()
+                           ['id',
+                            'code',
+                            'speaker_type_id',
+                            'display_desc',
+                            'distance',
+                            'is_linkable',
+                            'is_media',
+                            'is_nonverbal_noise',
+                            'is_overlapping'])
 
-        #build a dictionary of CodeInfo objects, one for each option
+        props_enum = self.get_speaker_props_enum()
+
+        # build a dictionary of CodeInfo objects, one for each option
         codes = {}
         for cur_row in rows:
-            #append any special properties recorded in the table
+            # append any special properties recorded in the table
             props = []
             if cur_row[6]:
                 props.append(props_enum.MEDIA)
@@ -147,79 +134,14 @@ class BLLDatabase(Database):
                 props.append(props_enum.OVERLAPPING)
 
             code_info = CodeInfo(
-                cur_row[0], #db_id
-                cur_row[1], #code
-                cur_row[3], # desc
-                cur_row[5], #is_linkable
-                cur_row[4], #distance
-                cur_row[2], #speaker_type
-                props, #properties
+                cur_row[0],  # db_id
+                cur_row[1],  # code
+                cur_row[2],  # speaker_type
+                cur_row[3],  # desc
+                cur_row[4],  # distance
+                cur_row[5],  # is_linkable
+                props,  # properties
                 )
             codes[cur_row[1]] = code_info
 
         return Code(codes)
-
-
-class DBConstants(object):
-    DB_DATETIME_FMT = '%Y-%m-%d %H:%M:%S'
-    TRANS_CODES = None
-    LENA_NOTES_CODES = None
-    SPEAKER_CODES = None
-    SPEAKER_TYPES = None
-    SPEAKER_DISTANCES = None
-    SPEAKER_PROPS = None
-    SETTINGS = None
-    COMMON_REGEXS = None
-    COMBO_GROUPS = None
-    COMBO_OPTIONS = None
-    COMBOS = None
-
-
-def _get_combos(db):
-    groups = db.select_enum('combo_groups')
-    rows = db.select('combo_options',
-                     'id code_name combo_group_id disp_desc hidden'.split(),
-                     None,
-                     [],
-                     'id ASC')
-    options = {}
-
-    for cur_row in rows:
-        group_id = cur_row[2]
-        opt_id = cur_row[0]
-        if group_id not in options:
-            options[group_id] = {}
-
-        options[group_id][opt_id] = ComboOption(*cur_row)
-
-    return options
-
-
-def _get_constants():
-    db = BLLDatabase()
-    DBConstants.TRANS_CODES = db.select_codes('transcriber_codes')
-    DBConstants.LENA_NOTES_CODES = db.select_codes('lena_notes_codes')
-    DBConstants.SPEAKER_CODES = db.select_codes('speaker_codes')
-
-    DBConstants.SPEAKER_TYPES = db.select_enum('speaker_types')
-    DBConstants.SPEAKER_DISTANCES = db.select_enum('speaker_distances')
-    DBConstants.SPEAKER_PROPS = db.select_enum('speaker_props')
-    DBConstants.COMMON_REGEXS = db.select_enum('common_regexs')
-    DBConstants.SETTINGS = db.select_enum('settings')
-
-    DBConstants.COMBO_GROUPS = db.select_enum('combo_groups')
-    DBConstants.COMBO_OPTIONS = db.select_enum('combo_options')
-    DBConstants.COMBOS = _get_combos(db)
-
-    db.close()
-
-# Note: this is only executed once,
-# the first time the Python interpreter encounters the file
-# _get_constants()
-
-mDB = BLLDatabase()
-a = mDB.select_transcriber_codes()
-for i in a:
-    j = i.get_option('M')
-    if j is not None:
-        print j.get_code_desc()
