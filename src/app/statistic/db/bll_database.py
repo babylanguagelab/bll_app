@@ -1,5 +1,4 @@
 import os
-import logging
 from collections import OrderedDict
 
 from codes import Code, CodeInfo
@@ -25,16 +24,7 @@ class BLLDatabase(Database):
         super(BLLDatabase, self).__init__(DB_LOCATION)
 
         if not tables_exist:
-            logging.info('No database found - creating one...')
             self.execute_script(SQL_INIT_SCRIPT)
-
-        self.TRANS_CODES = self.select_transcriber_codes()
-        self.LENA_NOTES_CODES = self.select_lena_notes_codes()
-
-        self.SPEAKER_CODES = self.select_speaker_codes()
-        self.SPEAKER_TYPES = self.get_speaker_types_enum()
-        self.SPEAKER_DISTANCES = self.get_speaker_distances_enum()
-        self.SPEAKER_PROPS = self.get_speaker_props_enum()
 
     def get_speaker_types_enum(self):
         rows = self.select('speaker_types', ['id', 'code_name'])
@@ -145,3 +135,27 @@ class BLLDatabase(Database):
             codes[cur_row[1]] = code_info
 
         return Code(codes)
+
+
+class BLLConstants():
+    TRANS_CODES = None
+    LENA_NOTES_CODES = None
+    SPEAKER_CODES = None
+    SPEAKER_TYPES = None
+    SPEAKER_DISTANCES = None
+    SPEAKER_PROPS = None
+
+
+def InitConstants():
+    db = BLLDatabase()
+    BLLConstants.TRANS_CODES = db.select_transcriber_codes()
+    BLLConstants.LENA_NOTES_CODES = db.select_lena_notes_codes()
+    BLLConstants.SPEAKER_CODES = db.select_speaker_codes()
+    BLLConstants.SPEAKER_TYPES = db.get_speaker_types_enum()
+    BLLConstants.SPEAKER_DISTANCES = db.get_speaker_distances_enum()
+    BLLConstants.SPEAKER_PROPS = db.get_speaker_props_enum()
+    db.close()
+
+# Note: this is only executed once,
+# the first time the Python interpreter encounters the file_out
+InitConstants()

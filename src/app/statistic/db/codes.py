@@ -23,21 +23,3 @@ class CodeInfo():
         self.distance = distance
         self.speaker_type = speaker_type
         self.props_dict = dict(zip(props, [True] * len(props)))
-
-    def has_property(self, prop):
-        return prop in self.props_dict
-
-    def is_linkable(self):
-        return self.is_linkable
-
-    def is_distance(self, distance):
-        return self.distance == distance
-
-    def is_speaker_type(self, speaker_type):
-        return self.speaker_type == speaker_type
-
-    def get_code_desc(self):
-        return self.desc
-
-    def get_code(self):
-        return self.code
