@@ -109,6 +109,10 @@ class Output(DBObject):
                 cur_filter.db_insert(db)
 
             #always insert a row into the relation table that maps outputs to their corresponding filters
+            print '\nInserting into outputs_to_seg_filters:'
+            print 'output_id: %s' % (str(self.db_id))
+            print 'filter_id: %s' % (str(cur_filter.db_id))
+
             db.insert('outputs_to_seg_filters',
                       'output_id seg_filter_id'.split(),
                       [[self.db_id, cur_filter.db_id]])
@@ -128,9 +132,7 @@ class Output(DBObject):
         #we still need to delete from seg_filters
         for cur_filter in self.filters:
             if cur_filter.db_id != None:
-                db.delete('seg_filters',
-                          'id=?',
-                          [cur_filter.db_id])
+                cur_filter.db_delete(db)
             
         self.db_id = None
 

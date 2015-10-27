@@ -60,3 +60,4 @@ logs/
 /test
 *.idea
 *.directory
+TAGS

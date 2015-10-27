@@ -31,6 +31,7 @@ class SegFilter(DBObject):
                              [[self.__class__.__name__, str(self.get_db_args())]]
                              )
         self.db_id = last_ids[0]
+        print 'Inserted seg_filter with id: %s' % (str(self.db_id))
 
     ## See superclass description.
     def db_delete(self, db):
@@ -38,6 +39,8 @@ class SegFilter(DBObject):
                   'id=?',
                   [self.db_id],
                   )
+        print 'Deleted seg_filter with id: %s' % (str(self.db_id))
+        self.db_id = None
 
     ## Constructs a list of SegFilter objects from data retreived from the DB.
     #  @param filter_rows (list) this should be a list of the form [ [id, class_name, args], ... ].

@@ -159,3 +159,4 @@ def InitConstants():
 # Note: this is only executed once,
 # the first time the Python interpreter encounters the file_out
 InitConstants()
+print BLLConstants.LENA_NOTES_CODES.get_all_options_codes()

@@ -17,6 +17,7 @@ class Utterance():
         self.prev = None
         self.is_trans_overlap = False
         self.seg = None
+        self.is_dot_split = False
         self.id = Utterance.next_id
         Utterance.next_id += 1
 

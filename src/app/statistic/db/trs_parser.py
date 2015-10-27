@@ -8,9 +8,6 @@ from utterance import Utterance
 from state_machines import ParseUttersStateMachine
 from debug import myDebug as de
 
-# from data_structs.segment import Segment
-# from data_structs.utterance import Utterance
-# from parsers.state_machines import *
 # from parsers.errors import *
 # from data_structs.error_collector import ErrorCollector
 # from parsers.parser_tools import *
@@ -110,8 +107,8 @@ class TRSParser():
                 # split at the '.' operator, if present.
                 # Transcribers use this to "split apart" segments that
                 # LENA has mistakenly put together.
-                if (re.search(r'\s*\.\s*', speaker_utters[i]) is not None)
-                have_multi_utters = re.search(r'\s*\.\s*', speaker_utters[i]) is not None
+                if (re.search(r'\s*\.\s*', speaker_utters[i]) is not None):
+                    have_multi_utters = True
                 multi_utters = re.split(r'\s*\.\s*', speaker_utters[i])
                 for j in range(len(multi_utters)):
                     utter = Utterance()
@@ -119,9 +116,10 @@ class TRSParser():
                     utter.is_dot_split = have_multi_utters
                     self.total_utters += 1
 
-                    #First line has the speaker indicated by LENA. Subsequent lines are considered to be other speakers.
+                    # First line has the speaker indicated by LENA.
+                    # Subsequent lines are considered to be other speakers.
                     if i == 0:
-                        self._assign_speaker(el, utter)
+                        self.assign_speaker(el, utter)
 
                     self._assign_utter_attribs(utter, multi_utters[j], remove_bad_trans_codes)
 
@@ -138,69 +136,52 @@ class TRSParser():
 
         return utter_list
 
-    ## Determines the speaker for an Utterance, and sets the Utterance speaker attribute to an appropriate Speaker object.
-    #  @param self
-    #  @param el (etree Element object) The XML element (with either a "sync" or a "who" tag) that corresponds to utter
-    #  @param utter (Utterance) The Utterance object to assign a speaker to
-    def _assign_speaker(self, el, utter):
-        #"sync" tags receive the enclosing segment's speaker, if any
+    def assign_speaker(self, el, utter):
         if el.tag == 'Sync':
-            utter.speaker = utter.seg.speakers[0] if len(utter.seg.speakers) > 0 else None
-        #For "who" tags, we need to examine the 'nb' attribute. This gives the index (starts at 1) of the speaker in the enclosing segment's speaker list.
+            utter.speaker = utter.seg.speakers[0]
+            # For "who" tags, we need to examine the 'nb' attribute.
+            # This gives the index (starts at 1) of in this segment.
         elif el.tag == 'Who':
             speaker_index = int(el.attrib['nb']) - 1
-            #sometimes there's human error and we do not have enough speakers in the enclosing segment
+            # sometimes there's human error
+            # and we do not have enough speakers in the enclosing segment
             if speaker_index < len(utter.seg.speakers):
                 utter.speaker = utter.seg.speakers[speaker_index]
 
-    ## Performs the actual assignment of utterance attributes (like transcription phrase, codes, etc.), based upon a line from the TRS file.
-    #  @param self
-    #  @param utter (Utterance) the object we are assigning attributes to
-    #  @param line (string) the text following a "sync" or "who" element. This contains LENA codes, plus transcriber added data (and more)
-    def _assign_utter_attribs(self, utter, line, remove_bad_trans_codes):
-        #sometimes there is no data...
+    def assign_utter_attribs(self, utter, line):
+        RE_PHRASE = '^\s*([^\|]*?)\s*('
+        RE_LENA_CODES = '|'.join(BLLConstants.LENA_NOTES_CODES.get_all_options_codes())
+        RE_TRANS_CODES = ')?\s*(?:\|(.*)\|)?\s*$'
+        # General format: "<transcription phrase>
+        #                  <lena notes>
+        #                  <pipe-delimited LENA codes>
+        #                  <pipe-delimited transcriber codes>"
+        TRANS_LINE_REGEX = RE_PHRASE + RE_LENA_CODES + RE_TRANS_CODES
+        # this regex is used to check for angle brackets to see
+        # if a particular transcription should be marked as 'overlapping'
+        TRANS_OVERLAP_REGEX = '\s*<.*>\s*'
+
         if (line):
-            #grab the data using regex capturing groups
-            match = re.search(TRSParser.TRANS_LINE_REGEX, line)
-            #the above match "should" never fail (the regex will match anything), but it may not capture groups if the corresponding text isn't present. Therefore we assign them carefully.
+            match = re.search(TRANS_LINE_REGEX, line)
             utter.trans_phrase = ''
             utter.lena_notes = ''
             codes = ''
             try:
-                utter.trans_phrase = match.groups()[0] or '' #change None into empty string
-                utter.is_trans_overlap = re.search(TRSParser.TRANS_OVERLAP_REGEX, utter.trans_phrase) != None
+                utter.trans_phrase = match.groups()[0] or ''
+                if (utter.trans_phrase):
+                    utter.is_trans_overlap = re.search(TRANS_OVERLAP_REGEX,
+                                                       utter.trans_phrase)
                 utter.lena_notes = match.groups()[1] or ''
                 codes = match.groups()[2] or ''
-            except Exception as err:
-                self.logger.error('Found invalid transcription line in TRS file: %s' % line)
+            except Exception:
+                de('Found invalid transcription line in TRS file:', line)
 
-            #assign any codes using another regex
             if codes:
-                codes_list = re.findall('[^\|]+', codes)
+                codes_list = codes.split('|')
 
-                #These have been verified through TRANS_LINE_REGEX.
-                lena_codes = codes_list[0: len(codes_list) - 4]
-                #These have not.
-                #We assume last 4 codes are transcriber codes, setting invalid ones to empty
-                #string if the remove_bad_trans_codes flag is set.
-                trans_codes = codes_list[len(codes_list) - 4:]
+                utter.lena_codes = codes_list[0: len(codes_list) - 4]
+                utter.trans_codes = codes_list[len(codes_list) - 4:]
 
-                if remove_bad_trans_codes:
-                    for i in range(len(trans_codes)):
-                        code = trans_codes[i]
-                        pattern = '^[%s]$' % (''.join(DBConstants.TRANS_CODES[i].get_all_options_codes()))
-
-                        #code 2 can have multiple chars, with numbers (I1, C1, etc.)
-                        if i == 2:
-                            pattern = '^([%s][1-9]?)+$' % (''.join(DBConstants.TRANS_CODES[i].get_all_options_codes()))
-
-                        if not re.match(pattern, code):
-                            trans_codes[i] = ''
-
-                utter.lena_codes = lena_codes
-                utter.trans_codes = trans_codes
-
-                #let the state machine know that we've got this data (this method should really be refactored so that this line can be moved to state_machines.py, where it belongs...)
                 self.link_sm.drive(utter)
 
     def parse_speakers(self):

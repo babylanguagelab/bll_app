@@ -17,92 +17,71 @@ class ParseUttersStateMachine():
             if next_obj.tag == 'Sync':
                 # grab the speech data from the element.
                 utters = self.trs_parser.parse_speech_data(self.seg, next_obj)
-                #set the start time
+
+                # set the start time
                 start_time = float(next_obj.attrib['time'])
                 map(lambda u: setattr(u, 'start', start_time), utters)
                 self.utter_list.extend(utters)
 
-                #move to next state
+                # move to next state
                 self.cur_state = self.States.INITIAL_SYNC_TAG
-
-        #In this state, we have encountered an initial sync tag, and potentially appended some new Utterances objects to self.utters_list.
-        #Here, we are waiting for one of two things: the next Sync tag, or a Who tag (indicating that there are multiple speakers following the previous sync)
         elif self.cur_state == self.States.INITIAL_SYNC_TAG:
-            #If we find another sync tag, it means the last one is done
             if next_obj.tag == 'Sync':
-                #add an end time to any utterances from a previous sync
                 end_time = float(next_obj.attrib['time'])
-                #work backward through the list until we reach the point at which utters already have an end time (or we reach the beginning of the list)
+                # work backward through the list until we reach the point at
+                # which utters already have an end time
+                # (or we reach the beginning of the list)
                 i = len(self.utter_list) - 1
-                while i >= 0 and self.utter_list[i].end == None:
+                while (i >= 0 and self.utter_list[i].end is None):
                     self.utter_list[i].end = end_time
                     i -= 1
 
-                #parse data following new sync, appending new Utterances to self.utter_list
-                new_utters = self.trs_parser._parse_speech_data(self.seg, next_obj, self.remove_bad_trans_codes)
+                new_utters = self.trs_parser.parse_speech_data(self.seg,
+                                                               next_obj)
                 start_time = float(next_obj.attrib['time'])
                 map(lambda u: setattr(u, 'start', start_time), new_utters)
                 self.utter_list.extend(new_utters)
-                
-                #leave self.cur_state the same; wait for another sync/who tag
-
-            #If we find a who tag, the previous sync has multiple speakers
             elif next_obj.tag == 'Who':
-                #pop utterance created from previous empty sync tag
-                #we should never have to pop multiple elements here because the previous sync's tail will have been be empty
+                # pop utterance created from previous empty sync tag
                 old_utter = self.utter_list.pop()
                 self.trs_parser.total_utters -= 1
-                
-                #create and insert new utterance (from who tag) instead
-                new_utters = self.trs_parser._parse_speech_data(self.seg, next_obj, self.remove_bad_trans_codes)
+
+                new_utters = self.trs_parser.parse_speech_data(self.seg,
+                                                               next_obj)
                 map(lambda u: setattr(u, 'start', old_utter.start), new_utters)
                 self.utter_list.extend(new_utters)
 
-                #go the the next state, in which we wait for the next sync/who tag (same as this state, but with some special cases).
                 self.cur_state = self.States.WHO_TAG
-
-        #In this state, we've encountered a who tag. Wait for the next sync/who tag. This state differs from the previous one in this way:
-        # Who tags contain no time data. If additional who tags are found (after the first who tag that got us to this state), they are given the start time of the last who tag. The first who tag was given the start time of the last sync tag (see previous state).
         elif self.cur_state == self.States.WHO_TAG:
             if next_obj.tag == 'Sync':
-                #finish previous utters by setting their end time
                 sync_time = float(next_obj.attrib['time'])
                 i = len(self.utter_list) - 1
-                while i >= 0 and self.utter_list[i].end == None: 
+                while i >= 0 and self.utter_list[i].end is None:
                     self.utter_list[i].end = sync_time
                     i -= 1
 
-                #create new utters
-                new_utters = self.trs_parser._parse_speech_data(self.seg, next_obj, self.remove_bad_trans_codes)
+                new_utters = self.trs_parser.parse_speech_data(self.seg,
+                                                               next_obj)
                 map(lambda u: setattr(u, 'start', sync_time), new_utters)
                 self.utter_list.extend(new_utters)
 
-                #move back to the initial sync tag state
                 self.cur_state = self.States.INITIAL_SYNC_TAG
 
             elif next_obj.tag == 'Who':
-                new_utters = self.trs_parser._parse_speech_data(self.seg, next_obj, self.remove_bad_trans_codes)
-                #give start times to previously encountered who tags
-                #note: the only way we can arrive in this state is if we've had at least one previous who tag in this segment.
-                #therefore the indexing below is safe.
-                map(lambda u: setattr(u, 'start', self.utter_list[-1].start), new_utters)
+                new_utters = self.trs_parser.parse_speech_data(self.seg,
+                                                               next_obj)
+                map(lambda u: setattr(u, 'start', self.utter_list[-1].start),
+                    new_utters)
                 self.utter_list.extend(new_utters)
-                
-                #leave self.cur_state the same; wait for another sync/who tag
 
-    ## Completes any unfinished Utterances that may be waiting for additional information (eg. end times).
-    #  @param self
-    #  @param final_obj (Element) a Python ElementTree library XML node object, representing the last tag encountered in the \verbatim<Turn></Turn>\endverbatim
     def finish(self, final_obj):
-        #grab the end time of the last node
         final_end_time = float(final_obj.attrib['endTime'])
 
-        #Append the end time to any outstanding Utterances in self.utter_list
-        #note: if state == States.INITIAL, the utter list is empty and nothing needs to be done - so we only need to worry about INITIAL_SYNC_TAG and WHO_TAG states
-        if self.cur_state == self.States.INITIAL_SYNC_TAG or self.cur_state == self.States.WHO_TAG:
-            #add the final end time onto the last utterances
+        # Append the end time to any outstanding Utterances in self.utter_list
+        if self.cur_state == self.States.INITIAL_SYNC_TAG or \
+           self.cur_state == self.States.WHO_TAG:
             i = len(self.utter_list) - 1
-            while i >= 0 and self.utter_list[i].end == None:
+            while i >= 0 and self.utter_list[i].end is None:
                 self.utter_list[i].end = final_end_time
                 i -= 1
 
