@@ -97,7 +97,8 @@ class CountOutputCalc(OutputCalc):
         i = 0
         while seg.utters and i < len(seg.utters):
             #search the phrase for regex matches
-            if seg.utters[i].trans_phrase:
+            # if seg.utters[i].trans_phrase:
+            if seg.utters[i].trans_phrase and seg.utters[i].trans_phras.lower() != 'xxx' and seg.utters[i].trans_phras.lower() != 'bbl':
                 count = len(re.findall(self.search_term, seg.utters[i].trans_phrase))
                 if count > self.max_count and self.max_count != -1:
                     count = self.max_count
@@ -113,7 +114,8 @@ class CountOutputCalc(OutputCalc):
             
     ## See superclass description.
     def add_chain(self, head):
-        if head.trans_phrase: #filter out untranscribed utterances
+        # if head.trans_phrase: #filter out untranscribed utterances
+        if head.trans_phrase and head.trans_phrase.lower() != 'xxx' and head.trans_phrase.lower() != 'bbl':
             full_phrase = ''
             cur = head
             while cur:
