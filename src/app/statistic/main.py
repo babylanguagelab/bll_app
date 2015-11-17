@@ -55,13 +55,13 @@ class main():
                       self._get_output_names_str(new_config.outputs),
                       new_config,
                       ])
-        
+
     def _edit_config(self, treeview):
         model, it = treeview.get_selection().get_selected()
         if it:
             config = model.get(it, 4)[0]
             ConfigWindow(lambda edited_config: self._edit_callback(treeview.get_model(), edited_config, it), config)
-            
+
         else:
             UIUtils.show_message_dialog('Please select a row.', Gtk.MessageTYpe.WARNING)
 
@@ -71,7 +71,7 @@ class main():
         model.set_value(row_it, 2, UIUtils.get_db_timestamp_str(edited_config.created) if edited_config.created else '-')
         model.set_value(row_it, 3, self._get_output_names_str(edited_config.outputs))
         model.set_value(row_it, 4, edited_config)
-        
+
     def _get_output_names_str(self, outputs):
         output_names = ''
         i = 0
@@ -100,7 +100,7 @@ class main():
         # for cur_config in configs:
         #     output_names = self._get_output_names_str(cur_config.outputs)
         #     created_str = UIUtils.get_db_timestamp_str(cur_config.created) if cur_config.created else '-'
-            
+
         #     list_store.append([
         #             cur_config.name,
         #             cur_config.desc,
@@ -108,11 +108,11 @@ class main():
         #             output_names,
         #             cur_config,
         #             ])
-        
+
         # db.close()
 
         return list_store
-        
+
     def build_treeview(self):
         list_store = self.build_list_store()
         treeview = Gtk.TreeView(list_store)
@@ -142,7 +142,7 @@ class main():
                     db.close()
         else:
             UIUtils.show_no_sel_dialog()
-            
+
     # def _run_config(self, treeview):
     #     model, it = treeview.get_selection().get_selected()
     #     if it:
@@ -152,7 +152,7 @@ class main():
     #             filters=[UIUtils.TRS_FILE_FILTER,
     #                      UIUtils.ALL_FILE_FILTER,
     #                      ])
-            
+
     #         if trs_filename: #will be None if user clicked 'cancel' or closed the dialog window
     #             export_filename, open_now = UIUtils.save_file(
     #                 title='Export to...',
@@ -160,16 +160,16 @@ class main():
     #                          UIUtils.ALL_FILE_FILTER,
     #                          ],
     #                 open_now_opt=True)
-                
+
     #             if export_filename:
     #                 exporter = StatsExporter(config, trs_filename, export_filename)
-                    
+
     #                 progress_phases = ['Parsing TRS File...']
     #                 i = 0
     #                 while i < len(config.outputs):
     #                     progress_phases.append('Processing output #%d' % (i + 1))
     #                     i += 1
-                        
+
     #                 progress_dialog = ProgressDialog('Working...', progress_phases)
     #                 progress_dialog.show()
     #                 exporter.export(progress_update_fcn=progress_dialog.set_fraction,
@@ -180,7 +180,7 @@ class main():
     #                     subprocess.Popen(['%s' % DBConstants.SETTINGS.SPREADSHEET_PATH, export_filename])
     #                 else:
     #                     UIUtils.show_message_dialog('Export successful.')
-            
+
     #     else:
     #         UIUtils.show_no_sel_dialog()
 
@@ -191,7 +191,7 @@ class main():
             trs_folder = UIUtils.open_folder(
                 title='Select TRS Folder...'
                 )
-            
+
             if trs_folder: #will be None if user clicked 'cancel' or closed the dialog window
                 export_folder = UIUtils.open_folder(
                     title='Select Output Folder...'
@@ -200,7 +200,7 @@ class main():
                     #trs_filenames = glob.glob(trs_folder + '\\*.trs')
                     trs_filenames = self._get_trs_filenames(trs_folder)
                     export_filenames = map(lambda name: '%s\\%s-stats.csv' % (export_folder, os.path.basename(name)[:-4]), trs_filenames)
-                    
+
                     phases = ['File %d of %d' % (i + 1, len(trs_filenames)) for i in range(len(trs_filenames))]
                     dialog = ProgressDialog('Working...', phases)
                     dialog.show()
@@ -211,7 +211,7 @@ class main():
                         dialog.set_fraction(1.0)
                         if j < len(trs_filenames) - 1:
                             dialog.next_phase()
-                    
+
                     dialog.ensure_finish()
 
                     UIUtils.show_message_dialog('Export successful.')
@@ -232,11 +232,6 @@ class main():
 
         return out_filenames
 
-    def show(self):
+    def run(self):
         self.window.show_all()
         Gtk.main()
-
-
-if __name__ == '__main__':
-    mWindow = main()
-    mWindow.show()
