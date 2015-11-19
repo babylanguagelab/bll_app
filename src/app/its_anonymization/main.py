@@ -2,7 +2,7 @@ from gi.repository import Gtk
 from controller import Controller
 
 
-class MainWindow:
+class main:
     def __init__(self):
         self.control = Controller()
         self.file_list = []
@@ -37,7 +37,7 @@ class MainWindow:
             "outMessage": self.restore_message,
             "saveConf": self.save_config,
             "finishConf": self.finish_config,
-            "run": self.run
+            "run": self.execute
         }
         self.builder.connect_signals(handlers)
 
@@ -111,7 +111,7 @@ class MainWindow:
     def restore_message(self, widget, data=None):
         self.config_statusbar.set_text("")
 
-    def run(self, widget):
+    def execute(self, widget):
         result = self.control.run()
         message = ""
 
@@ -131,12 +131,12 @@ class MainWindow:
         dialog.run()
         dialog.destroy()
 
-    def show(self):
+    def run(self):
         self.note.run()
         self.note.destroy()
         self.window.show_all()
         Gtk.main()
 
 if __name__ == '__main__':
-    mWindow = MainWindow()
-    mWindow.show()
+    mWindow = main()
+    mWindow.run()

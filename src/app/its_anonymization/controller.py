@@ -9,7 +9,7 @@ class Controller:
         self.my_conf = MyConfig()
         self.conf_info = ConfigInfo()
 
-        self.my_conf.json_reader('configs')
+        self.my_conf.json_reader(os.getcwd() + "/configs")
         for i in self.my_conf.content:
             self.conf_info.set_config(i, self.my_conf.content[i][0],
                                       self.my_conf.content[i][1])
