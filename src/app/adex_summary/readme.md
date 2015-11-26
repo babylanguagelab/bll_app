@@ -19,3 +19,9 @@ Experimental Data\Daycare Study\ADEX Output\ADEXAnalysis
 # Example:
 *The most recent example of this is called SummarySpreadsheetJuly2014 and is saved here:
 C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
+
+# ADEX Processor:
+- 1. read one CSV file as a list of list.
+- 2. get required columns.
+- 3. remove 5 minutes from beginning and end.
+- 4. put results into database.

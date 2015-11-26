@@ -17,14 +17,11 @@ class Database(object):
     def close(self):
         if self.conn:
             self.cursor.close()
-            self.conn.close() 
+            self.conn.close()
 
     # Reads and executes a sql script file.
-    def execute_script(self, filename):
+    def execute_script(self, sql_string):
         try:
-            sql_file = open(filename, 'r')
-            sql = sql_file.read()
-            sql_file.close()
             self.cursor.executescript(sql)
             self.conn.commit()
 

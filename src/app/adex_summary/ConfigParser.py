@@ -31,3 +31,11 @@ def csv_writer(filename, data):
         writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
         for row in data:
             writer.writerow(row)
+
+def csv_dict_reader(filename, head=None):
+    content = csv.DictReader(open(filename))
+    return content
+
+test = csv_dict_reader("C001A_20090615.csv", ["Index"])
+for i in test:
+    print(i["Index"])
