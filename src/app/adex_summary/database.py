@@ -18,6 +18,7 @@ class Database(object):
         if self.conn:
             self.cursor.close()
             self.conn.close() 
+
     # Reads and executes a sql script file.
     def execute_script(self, filename):
         try:
