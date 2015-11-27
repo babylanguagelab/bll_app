@@ -12,72 +12,37 @@ import os
 # then save the columns as intermediate results
 class ADEXProcessor:
     def __init__(self):
-        self.head = []
+        self.head = ['Index', 'Audio_Duration']
         self.content = []
 
     def readCSV(self, csv_file):
-        mContent = mParser.csv_reader(csv_file)
-        self.head = mContent[0]
-        self.content = mContent[1:]
-
-    # remove unnecessary columns
-    def filter_cols(self):
-        new_head = self.child_info + self.child_score
-        # column number -> domain item table
-        new_head_dic = {}
-
-        k = 0
-        for i in range(0, len(self.ADEX_head)):
-            if (self.ADEX_head[i] == new_head[k]):
-                new_head_dic[i] = new_head[k]
-                k = k + 1
-
-        self.ADEX_head = new_head
-
-        new_content = []
-
-        # take any columns in self.items list
-        for row in self.content:
-            new_row = []
-            for col in range(0, len(row)):
-                if col in new_head_dic:
-                    new_row.append(row[col])
-
-            new_content.append(new_row)
-
-        self.content = new_content
+       self.content = mParser.csv_dict_reader(csv_file, self.head)
 
     def remove_5mins(self):
-        start_lines = 0
-        end_lines = 0
-        content_length = len(self.content)
+        final_start = 0
+        final_end = len(self.content) - 1
         counter = 0
-        # remove 1800 sec at the begin
-        for x in range(content_length):
-            counter += float(self.get_key(x, 'Audio_Duration'))
+        index = self.head.index('Audio_Duration')
+
+        # remove first 1800 sec at the beginning
+        for row in self.content:
+            value = float(row[index])
+            counter += value
+            final_start += 1
             if counter >= 1800:
                 break
-            else:
-                start_lines += 1
 
-        # add extra line in order add up to 1800 sec
-        start_lines += 1
-        del self.content[:start_lines]
-
-        content_length = len(self.content)
-        counter = 0
         # remove 1800 sec at the end
-        for x in range(content_length):
-            counter += float(self.get_key(content_length - x - 1,
-                                          'Audio_Duration'))
+        counter = 0
+        for x in range(1, len(self.content)):
+            value = float(self.content[-x][index])
+            counter += value 
+            final_end -= 1
+            lg.debug("%s/%s\n" %(counter, final_end))
             if counter >= 1800:
                 break
-            else:
-                end_lines -= 1
 
-        # add extra line in order to add up to 1800 sec
-        end_lines -= 1
-        del self.content[end_lines:]
+        self.content = self.content[final_start+1:final_end-1]
 
     def cal_average(self):
         for row in self.content:
@@ -99,10 +64,10 @@ class Test:
     def run(self):
         for name in glob.glob('*.csv'):
             self.mADEX.readCSV(name)
-
+            self.mADEX.remove_5mins()
+            lg.debug(self.mADEX.content)
         # result = self.mADEX.dump()
         # mParser.csv_writer('/tmp/tmp.csv', result)
-
 
 mTest = Test()
 mTest.run()

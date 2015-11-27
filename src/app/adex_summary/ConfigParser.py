@@ -32,10 +32,14 @@ def csv_writer(filename, data):
         for row in data:
             writer.writerow(row)
 
-def csv_dict_reader(filename, head=None):
-    content = csv.DictReader(open(filename))
+# read CSV with specified header(column) names
+def csv_dict_reader(filename, header):
+    content = []
+    with open(filename, 'rt') as fp:
+        csv_content = csv.DictReader(fp)
+        for row in csv_content:
+            new_row = []
+            for i in header:
+                new_row.append(row[i])
+            content.append(new_row)
     return content
-
-test = csv_dict_reader("C001A_20090615.csv", ["Index"])
-for i in test:
-    print(i["Index"])
