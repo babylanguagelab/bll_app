@@ -8,12 +8,13 @@ import logging as lg
 import glob
 import os
 
-# read ADEX csv files to filter out required columns
-# then save the columns as intermediate results
+# read ADEX csv files with required columns only
+# then save these columns to DB
 class ADEXProcessor:
     def __init__(self):
-        self.head = ['Index', 'Audio_Duration']
+        self.head = ['Index', 'Child_ChildID', 'Audio_Duration']
         self.content = []
+        self.child_id = ""
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -21,6 +22,7 @@ class ADEXProcessor:
     def remove_5mins(self):
         final_start = 0
         final_end = len(self.content) - 1
+        lg.debug(len(self.content))
         counter = 0
         index = self.head.index('Audio_Duration')
 
@@ -36,25 +38,23 @@ class ADEXProcessor:
         counter = 0
         for x in range(1, len(self.content)):
             value = float(self.content[-x][index])
-            counter += value 
+            counter += value
             final_end -= 1
-            lg.debug("%s/%s\n" %(counter, final_end))
             if counter >= 1800:
                 break
 
-        self.content = self.content[final_start+1:final_end-1]
+        self.content = self.content[final_start+1:final_end+1]
 
-    def cal_average(self):
-        for row in self.content:
-            for col in range(0, len(row)):
-                key = self.ADEX_head[col]
-                if key in self.items:
-                    self.items[key] += float(row[col])
+        def getChildID(self):
+            index = self.head.index('Child_ChildID')
+            if (self.content):
+                self.child_id = self.content[0][index]
 
-        for i in self.items:
-            tmp = self.items[i] / len(self.content)
-            # keep only two digits
-            self.items[i] = float("{0:.2f}".format(tmp))
+        def saveToDB(self):
+            sql = ""
+
+        # def getAverage(self, column)
+        # def saveResults(self)
 
 class Test:
     def __init__(self):
@@ -66,8 +66,6 @@ class Test:
             self.mADEX.readCSV(name)
             self.mADEX.remove_5mins()
             lg.debug(self.mADEX.content)
-        # result = self.mADEX.dump()
-        # mParser.csv_writer('/tmp/tmp.csv', result)
 
 mTest = Test()
 mTest.run()
