@@ -1,7 +1,7 @@
 import sqlite3
 import logging as lg
 
-class Database(object):
+class Database:
     def __init__(self, db_filename):
         try:
 
@@ -11,7 +11,7 @@ class Database(object):
             # turn on foreign keys - they're disabled by default in sqlite
             self.conn.execute("PRAGMA foreign_keys = ON")
         except sqlite3.Error as e:
-            logging.error("Error " + e.args[0])
+            lg.error(e.args[0])
             sys.exit(1)
 
     def close(self):
@@ -24,7 +24,6 @@ class Database(object):
         try:
             self.cursor.executescript(sql)
             self.conn.commit()
-
         # rollback on error
         except Exception:
             self.conn.rollback()
@@ -39,12 +38,12 @@ class Database(object):
         try:
             self.cursor.execute(sql, lvalues)
             self.conn.commit()
-
         except sqlite3.Error as e:
-            lg.error("Error " + e.args[0])
+            lg.error(e.args[0])
             self.conn.rollback()
 
     # select rows from a table
+    # cols must be a list
     def select(self, table, cols, where=None, group_by=None, order_by=None):
         sql = 'SELECT %s FROM %s' % (','.join(cols), table)
         if where:
@@ -59,8 +58,13 @@ class Database(object):
         sql += ';'
 
         lg.debug(sql)
-        self.cursor.execute(sql)
-        return self.cursor.fetchall()
+
+        try:
+            self.cursor.execute(sql)
+            return self.cursor.fetchall()
+        except sqlite3.Error as e:
+            lg.warning(e.args[0])
+            return None
 
     # deletes rows from a table
     def delete(self, table, where=None):
@@ -75,7 +79,7 @@ class Database(object):
             self.conn.commit()
 
         except sqlite3.Error as e:
-            logging.error("Error " + e.args[0])
+            lg.error(e.args[0])
             self.conn.rollback()
 
     # Updates rows in a table.
@@ -93,5 +97,5 @@ class Database(object):
             self.conn.commit()
 
         except sqlite3.Error as e:
-            logging.error("Error " + e.args[0])
+            lg.error(e.args[0])
             self.conn.rollback()

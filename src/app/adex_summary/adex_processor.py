@@ -4,6 +4,7 @@
 import ConfigParser as mParser
 from cusList import del_list_by_indices
 from debug import init_debug
+from database import Database
 import logging as lg
 import glob
 import os
@@ -12,9 +13,29 @@ import os
 # then save these columns to DB
 class ADEXProcessor:
     def __init__(self):
-        self.head = ['Index', 'Child_ChildID', 'Audio_Duration']
+        self.head = ['Index',
+                     'File_Name',
+                     'Number_Recordings',
+                     'File_Hours',
+                     'Child_ChildID',
+                     'Child_Age',
+                     'Child_Gender',
+                     'AWC',
+                     'Turn_Count',
+                     'Child_Voc_Duration',
+                     'FAN_Word_Count',
+                     'FAN',
+                     'MAN_Word_Count',
+                     'MAN',
+                     'CXN',
+                     'OLN',
+                     'TVN',
+                     'NON',
+                     'SIL',
+                     'Audio_Duration']
         self.content = []
         self.child_id = ""
+        self.db = Database('test.db')
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -45,27 +66,59 @@ class ADEXProcessor:
 
         self.content = self.content[final_start+1:final_end+1]
 
-        def getChildID(self):
-            index = self.head.index('Child_ChildID')
-            if (self.content):
-                self.child_id = self.content[0][index]
+    def getChildID(self):
+        index = self.head.index('Child_ChildID')
+        if (self.content):
+            self.child_id = self.content[0][index]
 
-        def saveToDB(self):
-            sql = ""
+    def saveToDB(self):
+        if (len(self.child_id) == 0):
+            self.getChildID()
+        sql = ""
+        # check existence of table
+        if self.db.select('sqlite_master',
+                            ['name'],
+                            where="type='table' AND name="+self.child_id) is None:
+            typeList = ['INT PRIMARY KEY',
+                        'TEXT',
+                        'INT',
+                        'File_Hours',
+                        'TEXT',
+                        'INT',
+                        'TEXT',
+                        'AWC',
+                        'INT',
+                        'Child_Voc_Duration',
+                        'INT',
+                        'FAN',
+                        'INT',
+                        'MAN',
+                        'CXN',
+                        'OLN',
+                        'TVN',
+                        'NON',
+                        'SIL',
+                        'REAL']
 
-        # def getAverage(self, column)
-        # def saveResults(self)
+            param = map(lambda x,y: x + ' ' + y, self.head, typeList)
+            sql = "CREATE TABLE " + self.Child_Id + "(" + param + ")"
+
+        # insert data into DB
+        # sql excute many
+
+    # def getAverage(self, column)
+    # def saveResults(self)
 
 class Test:
     def __init__(self):
-        self.mADEX = ADEXProcessor()
         init_debug()
+        self.mADEX = ADEXProcessor()
 
     def run(self):
         for name in glob.glob('*.csv'):
             self.mADEX.readCSV(name)
             self.mADEX.remove_5mins()
-            lg.debug(self.mADEX.content)
+            self.mADEX.saveToDB()
 
 mTest = Test()
 mTest.run()
