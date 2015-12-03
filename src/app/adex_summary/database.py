@@ -21,20 +21,29 @@ class Database:
 
     # Reads and executes a sql script file.
     def execute_script(self, sql_string):
+        lg.debug(sql_string)
         try:
-            self.cursor.executescript(sql)
+            self.cursor.executescript(sql_string)
             self.conn.commit()
+            result = self.cursor.fetchall()
+            if len(result) == 0:
+                return None;
+
+            return result
+
         # rollback on error
-        except Exception:
+        except sqlite3.Error as e:
+            lg.error(e.args[0])
             self.conn.rollback()
+            return None
 
     # insert one row(tuple) into a table
     def insert(self, table, cols, lvalues):
         sql = "INSERT INTO " + table + \
               ' (' + ','.join(cols) + ') ' + \
-              "VALUES(" + (len(lvalues) - 1) * '?,' + '?)'
+              "VALUES(" + (len(cols) - 1) * '?,' + '?)'
 
-        lg.debug(sql + str(lvalues))
+        # lg.debug(sql + str(lvalues))
         try:
             self.cursor.execute(sql, lvalues)
             self.conn.commit()
@@ -42,18 +51,32 @@ class Database:
             lg.error(e.args[0])
             self.conn.rollback()
 
+    # insert one table into a table
+    def insert_table(self, table, cols, tvalues):
+        sql = "INSERT INTO " + table + \
+              ' (' + ','.join(cols) + ') ' + \
+              "VALUES(" + (len(cols) - 1)*'?,' + '?)'
+
+        try:
+            self.cursor.executemany(sql, tvalues)
+            self.conn.commit()
+        except sqlite3.Error as e:
+            lg.error(e.args[0])
+            self.conn.rollback()
+
+
     # select rows from a table
     # cols must be a list
     def select(self, table, cols, where=None, group_by=None, order_by=None):
         sql = 'SELECT %s FROM %s' % (','.join(cols), table)
         if where:
-            sql += ' WHERE %s' % (where)
+            sql += " WHERE %s" % (where)
 
         if group_by:
-            sql += ' GROUP BY %s' % (group_by)
+            sql += " GROUP BY %s" % (group_by)
 
         if order_by:
-            sql += ' ORDER BY %s' % (order_by)
+            sql += " ORDER BY %s" % (order_by)
 
         sql += ';'
 
@@ -61,9 +84,13 @@ class Database:
 
         try:
             self.cursor.execute(sql)
-            return self.cursor.fetchall()
+            result = self.cursor.fetchall()
+            if len(result) == 0:
+                return None;
+
+            return result
         except sqlite3.Error as e:
-            lg.warning(e.args[0])
+            lg.error(e.args[0])
             return None
 
     # deletes rows from a table

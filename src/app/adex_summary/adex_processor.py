@@ -13,8 +13,7 @@ import os
 # then save these columns to DB
 class ADEXProcessor:
     def __init__(self):
-        self.head = ['Index',
-                     'File_Name',
+        self.head = ['File_Name',
                      'Number_Recordings',
                      'File_Hours',
                      'Child_ChildID',
@@ -78,36 +77,41 @@ class ADEXProcessor:
         # check existence of table
         if self.db.select('sqlite_master',
                             ['name'],
-                            where="type='table' AND name="+self.child_id) is None:
-            typeList = ['INT PRIMARY KEY',
+                            where="type='table' AND name='"+self.child_id +"'") is None:
+            lg.debug(self.child_id + " is not in database")
+            typeList = ['TEXT',
+                        'INT',
+                        'REAL',
                         'TEXT',
                         'INT',
-                        'File_Hours',
                         'TEXT',
                         'INT',
-                        'TEXT',
-                        'AWC',
                         'INT',
-                        'Child_Voc_Duration',
                         'INT',
-                        'FAN',
                         'INT',
-                        'MAN',
-                        'CXN',
-                        'OLN',
-                        'TVN',
-                        'NON',
-                        'SIL',
+                        'REAL',
+                        'INT',
+                        'REAL',
+                        'REAL',
+                        'REAL',
+                        'REAL',
+                        'REAL',
+                        'REAL',
                         'REAL']
 
             param = map(lambda x,y: x + ' ' + y, self.head, typeList)
-            sql = "CREATE TABLE " + self.Child_Id + "(" + param + ")"
+            param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
+            param = ",".join(param)
+            sql = "CREATE TABLE " + self.child_id + "(" + param + ")"
+            self.db.execute_script(sql)
 
-        # insert data into DB
-        # sql excute many
+        # insert content into DB
+        self.db.insert_table(self.child_id, self.head, self.content)
 
-    # def getAverage(self, column)
-    # def saveResults(self)
+    def getAverage(self, table, column):
+        sql = "SELECT AVG(%s) from %s " %(table, column)
+        return self.db.execute_script()
+
 
 class Test:
     def __init__(self):
