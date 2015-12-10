@@ -1,4 +1,5 @@
 # ADEX summary generator
+# grub required information from ADEX files
 # author: zhangh15@myumanitoba.com
 
 import ConfigParser as mParser
