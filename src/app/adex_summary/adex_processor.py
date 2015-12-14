@@ -2,7 +2,6 @@
 # author: zhangh15@myumanitoba.com
 
 import ConfigParser as mParser
-from cusList import del_list_by_indices
 from debug import init_debug
 from database import Database
 import logging as lg
@@ -34,7 +33,7 @@ class ADEXProcessor:
                      'Audio_Duration']
         self.content = []
         self.child_id = ""
-        self.db = Database('test.db')
+        self.db = Database('adex.db')
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
