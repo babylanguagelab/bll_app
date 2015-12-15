@@ -70,6 +70,10 @@ class ADEXProcessor:
         if (self.content):
             self.child_id = self.content[0][index]
 
+    #def remove_naptime(self, list_of_naptime_pair)
+    #for start,end in list_of_naptime_pair
+    #del self.content[start, end]
+
     def saveToDB(self):
         if (len(self.child_id) == 0):
             self.getChildID()

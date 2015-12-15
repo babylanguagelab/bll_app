@@ -12,8 +12,9 @@
     <property name="width_request">800</property>
     <property name="height_request">600</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">ADEX summary generator</property>
     <property name="window_position">center-always</property>
-    <property name="icon_name">document-page-setup</property>
+    <property name="icon_name">preferences-system</property>
     <property name="gravity">center</property>
     <property name="show_menubar">False</property>
     <signal name="destroy" handler="mainExit" swapped="no"/>
@@ -193,6 +194,7 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">configuration</property>
     <property name="window_position">center</property>
+    <property name="destroy_with_parent">True</property>
     <property name="type_hint">normal</property>
     <property name="transient_for">main</property>
     <child internal-child="vbox">
