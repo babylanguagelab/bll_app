@@ -6,18 +6,17 @@ from gi.repository import Gtk
 class MainWindow:
     def __init__(self):
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("ui.glade")
+        self.builder.add_from_file("UI.glade")
 
-        self.window = self.builder.get_object("main")
-        self.config = self.builder.get_object("config")
+        self.window = self.builder.get_object("g_main_window")
         self.connect_signals()
 
     def connect_signals(self):
         handlers = {
-            "mainExit": Gtk.main_quit,
-            "addNewOutput": self.add_new_output,
-            "selectAdexFiles": self.add_Adex_files,
-            "finishConfig": self.finish_config,
+            "g_main_quit": Gtk.main_quit,
+            # "addNewOutput": self.add_new_output,
+            # "selectAdexFiles": self.add_Adex_files,
+            # "finishConfig": self.finish_config,
         }
         self.builder.connect_signals(handlers)
 
