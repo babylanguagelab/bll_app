@@ -9,32 +9,37 @@ import logging as lg
 import glob
 import os
 
+TYPE_LIST = {'File_Name'          :'TEXT',
+             'Number_Recordings'  :'INT',
+             'File_Hours'         :'REAL',
+             'Child_ChildID'      :'TEXT',
+             'Child_Age'          :'INT',
+             'Child_Gender'       :'TEXT',
+             'AWC'                :'INT',
+             'Turn_Count'         :'INT',
+             'Child_Voc_Duration' :'INT',
+             'FAN_Word_Count'     :'INT',
+             'FAN'                :'REAL',
+             'MAN_Word_Count'     :'INT',
+             'MAN'                :'REAL',
+             'CXN'                :'REAL',
+             'OLN'                :'REAL',
+             'TVN'                :'REAL',
+             'NON'                :'REAL',
+             'SIL'                :'REAL',
+             'Audio_Duration'     :'REAL'}
+
 # read ADEX csv files with required columns only
 # then save these columns to DB
 class ADEXProcessor:
     def __init__(self):
-        self.head = ['File_Name',
-                     'Number_Recordings',
-                     'File_Hours',
-                     'Child_ChildID',
-                     'Child_Age',
-                     'Child_Gender',
-                     'AWC',
-                     'Turn_Count',
-                     'Child_Voc_Duration',
-                     'FAN_Word_Count',
-                     'FAN',
-                     'MAN_Word_Count',
-                     'MAN',
-                     'CXN',
-                     'OLN',
-                     'TVN',
-                     'NON',
-                     'SIL',
-                     'Audio_Duration']
+        self.head = []
         self.content = []
         self.child_id = ""
         self.db = Database('adex.db')
+
+    def set_head(self, heads):
+        self.head = heads
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
