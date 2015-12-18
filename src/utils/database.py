@@ -57,6 +57,7 @@ class Database:
               ' (' + ','.join(cols) + ') ' + \
               "VALUES(" + (len(cols) - 1)*'?,' + '?)'
 
+        # lg.debug(sql + str(tvalues))
         try:
             self.cursor.executemany(sql, tvalues)
             self.conn.commit()
