@@ -31,14 +31,11 @@ HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
 # read ADEX csv files with required columns only
 # then save these columns to DB
 class ADEXProcessor:
-    def __init__(self):
-        self.head = []
+    def __init__(self, ADEX_heads, db_name):
+        self.head = ADEX_heads
         self.content = []
         self.child_id = ""
-        self.db = Database('adex.db')
-
-    def set_head(self, heads):
-        self.head = heads
+        self.db = Database(db_name)
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -97,3 +94,8 @@ class ADEXProcessor:
     def getAverage(self, table, column):
         sql = "SELECT AVG(%s) from %s " %(table, column)
         return self.db.execute_script()
+
+    def run(self, filename):
+        self.readCSV(filename)
+        self.remove_5mins()
+        self.saveToDB()
