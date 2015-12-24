@@ -35,7 +35,7 @@ class ADEXProcessor:
         self.head = ADEX_heads
         self.content = []
         self.child_id = ""
-        self.db = Database(db_name)
+        self.db = Database(db_name+".sqlite3")
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -77,7 +77,7 @@ class ADEXProcessor:
         if (len(self.child_id) == 0):
             self.getChildID()
         sql = ""
-        # check existence of table
+        # check the existence of childID
         if self.db.select('sqlite_master',
                             ['name'],
                             where="type='table' AND name='"+self.child_id +"'") is None:

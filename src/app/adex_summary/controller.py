@@ -1,5 +1,5 @@
-# core parts to glue each processor 
-#  
+# core parts to glue each processor
+#
 # author: zhangh15@myumanitoba.com
 
 import logging as lg
@@ -17,6 +17,7 @@ class Controller:
         self.ADEX_folders = []
         self.useNaptime = False
         self.useTranscribed = False
+        self.output_file = ""
 
     def run(self):
         for path in self.ADEX_folders:
@@ -26,11 +27,11 @@ class Controller:
             for file in filelist:
                 if not file.endswith(".csv"):
                     continue
-                lg.debug(file)
-                # mADEX = ADEXProcessor(self.ADEX_HEAD, basename)
-                # mADEX.run(file)
+                mADEX = ADEXProcessor(self.ADEX_HEAD, basename)
+                mADEX.run(file)
+        lg.debug("Done")
 
     def clean(self):
          for path in self.ADEX_folders:
              basename = os.path.basename(path)
-             os.remove(basename + ".sql")
+             os.remove(basename + ".sqlite3")

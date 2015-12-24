@@ -61,3 +61,4 @@ logs/
 *.idea
 *.directory
 TAGS
+*.sqlite3
