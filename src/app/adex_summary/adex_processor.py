@@ -63,7 +63,8 @@ class ADEXProcessor:
             if counter >= 1800:
                 break
 
-        self.content = self.content[final_start+1:final_end+1]
+        # items start through final_end
+        self.content = self.content[final_start:final_end+1]
 
     def getChildID(self):
         index = self.head.index('Child_ChildID')
@@ -99,3 +100,9 @@ class ADEXProcessor:
         self.readCSV(filename)
         self.remove_5mins()
         self.saveToDB()
+
+
+# init_debug()
+# pro = ADEXProcessor(['AWC', 'Audio_Duration'], "test")
+# pro.readCSV("C001A_20090630.csv")
+# pro.remove_5mins()

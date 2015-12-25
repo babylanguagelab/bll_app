@@ -8,8 +8,8 @@ from controller import Controller
 
 
 class MainWindow(GObject.GObject):
-    __gsignals__ = {"start_task": (GObject.SIGNAL_RUN_LAST, None, (int,)),
-                    "stop_task": (GObject.SIGNAL_RUN_LAST, None, (int,))}
+    __gsignals__ = {"start_task": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+                    "stop_task": (GObject.SIGNAL_RUN_FIRST, None, (int,))}
 
     def __init__(self):
         GObject.GObject.__init__(self)
