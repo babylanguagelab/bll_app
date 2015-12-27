@@ -17,7 +17,21 @@ class MainWindow(GObject.GObject):
         self.builder = Gtk.Builder()
         self.builder.add_from_file("UI.glade")
 
-        self.window = self.builder.get_object("g_main_window")
+        self.window = self.builder.get_object("win_main")
+
+        self.dia_adex = self.builder.get_object("dia_adex")
+        self.list_adex_conf = self.builder.get_object("list_adex_conf")
+
+        treeview_adex_conf = self.builder.get_object("treeview_adex_conf")
+        renderer = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Name", renderer, text=0)
+        treeview_adex_conf.append_column(column)
+
+        render_toggle = Gtk.CellRendererToggle()
+        render_toggle.connect("toggled", self.toggle_adex_conf)
+        column_toogle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
+        treeview_adex_conf.append_column(column_toogle)
+
         self.run_dialog = self.builder.get_object("g_run_dialog")
         self.connect_signals()
 
@@ -32,12 +46,34 @@ class MainWindow(GObject.GObject):
 
     def connect_signals(self):
         handlers = {
-            "g_main_quit": Gtk.main_quit,
-            "g_add_ADEX": self.add_Adex_files,
+            "quit_main": Gtk.main_quit,
+            "config_adex": self.config_adex,
+            "add_adex_folders": self.add_Adex_files,
             "g_run_finish": self.run_finish,
             "g_run_configs": self.run_configs
         }
         self.builder.connect_signals(handlers)
+
+    # show ADEX configuration
+    def config_adex(self, button):
+        adex_head_name_list = ['File_Name', 'Number_Recordings', 'File_Hours',
+                               'Child_ChildID', 'Child_Age', 'Child_Gender',
+                               'AWC', 'Turn_Count', 'Child_Voc_Duration',
+                               'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
+                               'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+        configs = zip(adex_head_name_list, self.controller.adex_config)
+        for i in configs:
+            self.list_adex_conf.append(list(i))
+
+        self.dia_adex.run()
+
+        result = []
+        for row in self.list_adex_conf:
+            result.append(row[1])
+        self.controller.adex_config = result
+        self.list_adex_conf.clear()
+
+        Gtk.Widget.hide(self.dia_adex)
 
     # choose ADEX folders
     def add_Adex_files(self, button):
@@ -54,6 +90,10 @@ class MainWindow(GObject.GObject):
             self.controller.ADEX_folders = dialog.get_filenames()
 
         dialog.destroy()
+
+    # change ADEX configurations
+    def toggle_adex_conf(self, widget, path):
+        self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
 
     # run on all configurations
     def run_configs(self, button):

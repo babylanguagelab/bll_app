@@ -28,11 +28,19 @@ HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'SIL'                :'REAL',
                   'Audio_Duration'     :'REAL'}
 
+HEAD_NAME_LIST = ['File_Name', 'Number_Recordings', 'File_Hours',
+                  'Child_ChildID', 'Child_Age', 'Child_Gender',
+                  'AWC', 'Turn_Count', 'Child_Voc_Duration',
+                  'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
+                  'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+
+
 # read ADEX csv files with required columns only
 # then save these columns to DB
 class ADEXProcessor:
-    def __init__(self, ADEX_heads, db_name):
-        self.head = ADEX_heads
+    def __init__(self, adex_config, db_name):
+        tmp = list(zip(HEAD_NAME_LIST, adex_config))
+        self.head = [x[0] for x in tmp if x[1] is True]
         self.content = []
         self.child_id = ""
         self.db = Database(db_name+".sqlite3")
@@ -91,6 +99,9 @@ class ADEXProcessor:
 
         # insert content into DB
         self.db.insert_table(self.child_id, self.head, self.content)
+
+    def getHEADNAMELIST(self):
+        return HEAD_NAME_LIST
 
     def getAverage(self, table, column):
         sql = "SELECT AVG(%s) from %s " %(table, column)

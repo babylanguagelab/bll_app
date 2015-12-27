@@ -8,13 +8,8 @@ from adex_processor import ADEXProcessor
 
 class Controller:
     def __init__(self):
-        self.ADEX_HEAD = ['File_Name', 'Number_Recordings', 'File_Hours',
-                          'Child_ChildID', 'Child_Age', 'Child_Gender',
-                          'AWC', 'Turn_Count', 'Child_Voc_Duration',
-                          'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
-                          'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
-
         self.ADEX_folders = []
+        self.adex_config = [True] * 16
         self.useNaptime = False
         self.useTranscribed = False
         self.output_file = ""
@@ -27,9 +22,9 @@ class Controller:
             for file in filelist:
                 if not file.endswith(".csv"):
                     continue
-                mADEX = ADEXProcessor(self.ADEX_HEAD, basename)
+                mADEX = ADEXProcessor(self.adex_config, basename)
                 mADEX.run(file)
-        lg.debug("Done")
+        lg.debug("Job Complete!")
 
     def clean(self):
          for path in self.ADEX_folders:
