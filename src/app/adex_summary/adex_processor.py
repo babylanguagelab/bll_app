@@ -34,16 +34,38 @@ HEAD_NAME_LIST = ['File_Name', 'Number_Recordings', 'File_Hours',
                   'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
                   'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
 
+class ADEXControl:
+    def __init__(self):
+        self.db = ""
+        self.useNaptime = False
+        self.remove5mins = False
+        self.switches = []
+
+    def set_db_name(self, name):
+        self.db = name
+
+    def set_use_naptime(self, ifuse):
+        self.useNaptime = ifuse
+
+    def set_remove_5mins(self, ifuse):
+        self.remove5mins = ifuse
+
+    def set_switches(self, switches):
+        self.switches = switches
+
+    def dump(self):
+        return [1, self.useNaptime, self.remove5mins, self.configs]
 
 # read ADEX csv files with required columns only
 # then save these columns to DB
 class ADEXProcessor:
-    def __init__(self, adex_config, db_name):
-        tmp = list(zip(HEAD_NAME_LIST, adex_config))
+    def __init__(self, adex_control):
+        self.control = adex_control
+        tmp = list(zip(HEAD_NAME_LIST, self.control.switches))
         self.head = [x[0] for x in tmp if x[1] is True]
         self.content = []
         self.child_id = ""
-        self.db = Database(db_name+".sqlite3")
+        self.db = Database(self.control.db + ".sqlite3")
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -109,11 +131,6 @@ class ADEXProcessor:
 
     def run(self, filename):
         self.readCSV(filename)
-        self.remove_5mins()
+        if (self.control.remove5mins):
+            self.remove_5mins()
         self.saveToDB()
-
-
-# init_debug()
-# pro = ADEXProcessor(['AWC', 'Audio_Duration'], "test")
-# pro.readCSV("C001A_20090630.csv")
-# pro.remove_5mins()

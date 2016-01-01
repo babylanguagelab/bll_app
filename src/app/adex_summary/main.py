@@ -22,6 +22,7 @@ class MainWindow(GObject.GObject):
         self.dia_adex = self.builder.get_object("dia_adex")
         self.list_adex_conf = self.builder.get_object("list_adex_conf")
 
+        # adex switches tree view
         treeview_adex_conf = self.builder.get_object("treeview_adex_conf")
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Name", renderer, text=0)
@@ -47,7 +48,9 @@ class MainWindow(GObject.GObject):
         handlers = {
             "quit_main": Gtk.main_quit,
             "config_adex": self.config_adex,
-            "add_adex_folders": self.add_Adex_files,
+            "add_adex_folders": self.add_adex_files,
+            "adex_use_naptime": self.adex_use_naptime,
+            "adex_remove_5mins": self.adex_remove_5mins,
             "g_run_finish": self.run_finish,
             "g_run_configs": self.run_configs
         }
@@ -60,7 +63,7 @@ class MainWindow(GObject.GObject):
                                'AWC', 'Turn_Count', 'Child_Voc_Duration',
                                'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
                                'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
-        # sync
+        # sync with controller
         self.list_adex_conf.clear()
         configs = zip(adex_head_name_list, self.controller.adex_config)
         for i in configs:
@@ -76,7 +79,7 @@ class MainWindow(GObject.GObject):
         Gtk.Widget.hide(self.dia_adex)
 
     # ADEX folders choose dialog
-    def add_Adex_files(self, button):
+    def add_adex_files(self, button):
         dialog = Gtk.FileChooserDialog("Please choose ADEX folders",
                                        self.window,
                                        Gtk.FileChooserAction.SELECT_FOLDER,
@@ -94,6 +97,18 @@ class MainWindow(GObject.GObject):
     # change ADEX configurations
     def toggle_adex_conf(self, widget, path):
         self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
+
+    def adex_use_naptime(self, button, name):
+        if button.get_active():
+            self.controller.adex_control.set_use_naptime(True)
+        else:
+            self.controller.adex_control.set_use_naptime(False)
+
+    def adex_remove_5mins(self, button, name):
+         if button.get_active():
+            self.controller.adex_control.set_remove_5mins(True)
+         else:
+            self.controller.adex_control.set_remove_5mins(False)
 
     # run on all configurations
     def run_configs(self, button):
