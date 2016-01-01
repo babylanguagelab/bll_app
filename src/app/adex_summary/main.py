@@ -38,7 +38,6 @@ class MainWindow(GObject.GObject):
         self.controller = Controller()
 
     def do_start_task(self, data):
-        self.controller.run()
         self.emit("stop_task", 0)
 
     def do_stop_task(self, data):
@@ -54,13 +53,15 @@ class MainWindow(GObject.GObject):
         }
         self.builder.connect_signals(handlers)
 
-    # show ADEX configuration
+    # ADEX configuration dialog
     def config_adex(self, button):
         adex_head_name_list = ['File_Name', 'Number_Recordings', 'File_Hours',
                                'Child_ChildID', 'Child_Age', 'Child_Gender',
                                'AWC', 'Turn_Count', 'Child_Voc_Duration',
                                'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
                                'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+        # sync
+        self.list_adex_conf.clear()
         configs = zip(adex_head_name_list, self.controller.adex_config)
         for i in configs:
             self.list_adex_conf.append(list(i))
@@ -71,11 +72,10 @@ class MainWindow(GObject.GObject):
         for row in self.list_adex_conf:
             result.append(row[1])
         self.controller.adex_config = result
-        self.list_adex_conf.clear()
 
         Gtk.Widget.hide(self.dia_adex)
 
-    # choose ADEX folders
+    # ADEX folders choose dialog
     def add_Adex_files(self, button):
         dialog = Gtk.FileChooserDialog("Please choose ADEX folders",
                                        self.window,
@@ -126,6 +126,7 @@ class MainWindow(GObject.GObject):
         while(Gtk.events_pending()):
             Gtk.main_iteration()
 
+        self.controller.run()
         self.emit("start-task", 0)
 
     def run_finish(self, button):

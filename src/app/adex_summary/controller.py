@@ -26,6 +26,12 @@ class Controller:
                 mADEX.run(file)
         lg.debug("Job Complete!")
 
+    def read_config(self):
+        lg.debug("read config")
+
+    def save_config(self):
+        lg.debug("save config")
+
     def clean(self):
          for path in self.ADEX_folders:
              basename = os.path.basename(path)
