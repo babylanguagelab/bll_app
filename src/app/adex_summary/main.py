@@ -62,10 +62,13 @@ class MainWindow(GObject.GObject):
                                'Child_ChildID', 'Child_Age', 'Child_Gender',
                                'AWC', 'Turn_Count', 'Child_Voc_Duration',
                                'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
-                               'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+                               'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Clock_Time_TZAdj',
+                               'Audio_Duration']
+
         # sync with controller
         self.list_adex_conf.clear()
-        configs = zip(adex_head_name_list, self.controller.adex_config)
+        configs = zip(adex_head_name_list,
+                      self.controller.adex_control.switches)
         for i in configs:
             self.list_adex_conf.append(list(i))
 
@@ -74,7 +77,7 @@ class MainWindow(GObject.GObject):
         result = []
         for row in self.list_adex_conf:
             result.append(row[1])
-        self.controller.adex_config = result
+        self.controller.adex_control.switches = result
 
         Gtk.Widget.hide(self.dia_adex)
 
@@ -98,13 +101,13 @@ class MainWindow(GObject.GObject):
     def toggle_adex_conf(self, widget, path):
         self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
 
-    def adex_use_naptime(self, button, name):
+    def adex_use_naptime(self, button):
         if button.get_active():
             self.controller.adex_control.set_use_naptime(True)
         else:
             self.controller.adex_control.set_use_naptime(False)
 
-    def adex_remove_5mins(self, button, name):
+    def adex_remove_5mins(self, button):
          if button.get_active():
             self.controller.adex_control.set_remove_5mins(True)
          else:

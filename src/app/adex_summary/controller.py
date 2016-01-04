@@ -12,8 +12,13 @@ class Controller:
         self.ADEX_folders = []
         self.adex_control = ADEXControl()
         self.output_file = ""
+        self.read_config()
 
     def run(self):
+        self.save_config()
+        #self.run_adex()
+
+    def run_adex(self):
         for path in self.ADEX_folders:
             basename = os.path.basename(path)
             self.adex_control.set_db_name(basename)
@@ -27,11 +32,12 @@ class Controller:
         lg.debug("Job Complete!")
 
     def read_config(self):
+        self.adex_control.set_switches([True] * 20)
         lg.debug("read config")
 
     def save_config(self):
         configs = [self.adex_control.dump()]
-        lg.debug("save config")
+        lg.debug(configs)
 
     def clean(self):
          for path in self.ADEX_folders:

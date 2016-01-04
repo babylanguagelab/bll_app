@@ -2,11 +2,13 @@
 # grub required information from ADEX files
 # author: zhangh15@myumanitoba.com
 
-import ConfigParser as mParser
-from database import Database
 import logging as lg
 import glob
 import os
+import time
+import ConfigParser as mParser
+from database import Database
+from debug import init_debug
 
 HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'Number_Recordings'  :'INT',
@@ -26,13 +28,15 @@ HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'TVN'                :'REAL',
                   'NON'                :'REAL',
                   'SIL'                :'REAL',
+                  'Clock_Time_TZAdj'   :'TEXT',
                   'Audio_Duration'     :'REAL'}
 
 HEAD_NAME_LIST = ['File_Name', 'Number_Recordings', 'File_Hours',
                   'Child_ChildID', 'Child_Age', 'Child_Gender',
                   'AWC', 'Turn_Count', 'Child_Voc_Duration',
                   'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
-                  'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Audio_Duration']
+                  'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Clock_Time_TZAdj',
+                  'Audio_Duration']
 
 class ADEXControl:
     def __init__(self):
@@ -40,6 +44,8 @@ class ADEXControl:
         self.useNaptime = False
         self.remove5mins = False
         self.switches = []
+        # child_ID:(date, time_start, time_end)
+        self.naptime = {}
 
     def set_db_name(self, name):
         self.db = name
@@ -53,8 +59,22 @@ class ADEXControl:
     def set_switches(self, switches):
         self.switches = switches
 
+    def read_naptime(self):
+        db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
+        naptime_db = Database(db_name)
+        naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
+        naptime_db.close()
+
+        for entry in naptime_list:
+            child_id = entry[0].split('_')[0]
+            date = entry[0].split('_')[1]
+            if child_id not in self.naptime:
+                self.naptime[child_id] = [(date, entry[1], entry[2])]
+            else:
+                self.naptime[child_id].append((date, entry[1], entry[2]))
+
     def dump(self):
-        return [1, self.useNaptime, self.remove5mins, self.configs]
+        return [True, self.useNaptime, self.remove5mins, self.switches]
 
 # read ADEX csv files with required columns only
 # then save these columns to DB
@@ -64,6 +84,7 @@ class ADEXProcessor:
         tmp = list(zip(HEAD_NAME_LIST, self.control.switches))
         self.head = [x[0] for x in tmp if x[1] is True]
         self.content = []
+        self.start_time = 0
         self.child_id = ""
         self.db = Database(self.control.db + ".sqlite3")
 
@@ -100,9 +121,44 @@ class ADEXProcessor:
         index = self.head.index('Child_ChildID')
         self.child_id = self.content[0][index]
 
-    #def remove_naptime(self, list_of_naptime_pair)
-    #for start,end in list_of_naptime_pair
-    #del self.content[start, end]
+    def getStartTime(self):
+        index = self.head.index('Clock_Time_TZAdj')
+        self.start_time = self.timeToSecond(self.content[0][index])
+
+    # convert time string to seconds
+    def timeToSecond(self, string):
+        # string = 6/10/2009 8:37:45
+        return time.mktime(time.strptime(string, '%d/%m/%Y %H:%M:%S'))
+
+    # convert seconds to human readable string
+    def SecondTotime(self, second):
+        return time.ctime(second)
+
+    def check_naptime(self):
+        if self.child_id in self.control.naptime:
+            date = time.strftime('%Y%m%d', time.localtime(self.start_time))
+            for i in self.control.naptime[self.child_id]:
+                if i[0] == date:
+                    self.remove_time(self.start_time + i[1],
+                                     self.start_time + i[2])
+
+    def remove_time(self, start_time, end_time):
+        start = 0
+        end = len(self.content)
+        count = 0
+        index = self.head.index('Clock_Time_TZAdj')
+
+        for row in self.content:
+            time = self.timeToSecond(row[index])
+
+            if time > start_time:
+                start = count
+            if time > end_time:
+                end = count
+
+            count += 1
+
+        self.content = self.content[start:end]
 
     def saveToDB(self):
         if (len(self.child_id) == 0):
@@ -122,15 +178,19 @@ class ADEXProcessor:
         # insert content into DB
         self.db.insert_table(self.child_id, self.head, self.content)
 
-    def getHEADNAMELIST(self):
-        return HEAD_NAME_LIST
-
     def getAverage(self, table, column):
         sql = "SELECT AVG(%s) from %s " %(table, column)
         return self.db.execute_script()
 
     def run(self, filename):
         self.readCSV(filename)
+        self.getChildID()
+        self.getStartTime()
+
+        if (self.control.useNaptime):
+            self.check_naptime()
+
         if (self.control.remove5mins):
             self.remove_5mins()
+
         self.saveToDB()
