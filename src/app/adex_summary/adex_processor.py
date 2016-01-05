@@ -8,7 +8,6 @@ import os
 import time
 import ConfigParser as mParser
 from database import Database
-from debug import init_debug
 
 HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'Number_Recordings'  :'INT',
@@ -60,13 +59,13 @@ class ADEXControl:
         self.switches = switches
 
     def read_naptime(self):
-        db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
+        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
 
         for entry in naptime_list:
-            child_id = entry[0].split('_')[0]
+            child_id = entry[0].split('_')[0].lower()
             date = entry[0].split('_')[1]
             if child_id not in self.naptime:
                 self.naptime[child_id] = [(date, entry[1], entry[2])]
@@ -115,11 +114,12 @@ class ADEXProcessor:
                 break
 
         # items start through final_end
+        lg.debug("removing 5 minutes...")
         self.content = self.content[final_start:final_end+1]
 
     def getChildID(self):
         index = self.head.index('Child_ChildID')
-        self.child_id = self.content[0][index]
+        self.child_id = self.content[0][index].lower()
 
     def getStartTime(self):
         index = self.head.index('Clock_Time_TZAdj')
@@ -128,7 +128,7 @@ class ADEXProcessor:
     # convert time string to seconds
     def timeToSecond(self, string):
         # string = 6/10/2009 8:37:45
-        return time.mktime(time.strptime(string, '%d/%m/%Y %H:%M:%S'))
+        return time.mktime(time.strptime(string, '%m/%d/%Y %H:%M:%S'))
 
     # convert seconds to human readable string
     def SecondTotime(self, second):
@@ -138,6 +138,7 @@ class ADEXProcessor:
         if self.child_id in self.control.naptime:
             date = time.strftime('%Y%m%d', time.localtime(self.start_time))
             for i in self.control.naptime[self.child_id]:
+                lg.debug("removing naptime...")
                 if i[0] == date:
                     self.remove_time(self.start_time + i[1],
                                      self.start_time + i[2])
@@ -151,14 +152,14 @@ class ADEXProcessor:
         for row in self.content:
             time = self.timeToSecond(row[index])
 
-            if time > start_time:
+            if (time >= start_time) and (start == 0):
                 start = count
-            if time > end_time:
+            if (time > end_time) and (end == len(self.content)):
                 end = count
 
             count += 1
 
-        self.content = self.content[start:end]
+        del self.content[start:end]
 
     def saveToDB(self):
         if (len(self.child_id) == 0):
@@ -185,6 +186,7 @@ class ADEXProcessor:
     def run(self, filename):
         self.readCSV(filename)
         self.getChildID()
+        lg.debug("Processing: " + self.child_id)
         self.getStartTime()
 
         if (self.control.useNaptime):

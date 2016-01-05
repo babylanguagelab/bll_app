@@ -32,6 +32,8 @@ class MainWindow(GObject.GObject):
         render_toggle.connect("toggled", self.toggle_adex_conf)
         column_toogle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
         treeview_adex_conf.append_column(column_toogle)
+        self.adex_naptime_toggle = self.builder.get_object("adex_naptime_check")
+        self.adex_5mins_toggle = self.builder.get_object("adex_5mins_check")
 
         self.run_dialog = self.builder.get_object("g_run_dialog")
         self.connect_signals()
@@ -72,6 +74,12 @@ class MainWindow(GObject.GObject):
         for i in configs:
             self.list_adex_conf.append(list(i))
 
+        if self.controller.adex_control.naptime:
+            self.adex_naptime_toggle.set_active(True)
+
+        if self.controller.adex_control.remove5mins:
+            self.adex_naptime_toggle.set_active(True)
+
         self.dia_adex.run()
 
         result = []
@@ -102,19 +110,14 @@ class MainWindow(GObject.GObject):
         self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
 
     def adex_use_naptime(self, button):
-        if button.get_active():
-            self.controller.adex_control.set_use_naptime(True)
-        else:
-            self.controller.adex_control.set_use_naptime(False)
+        self.controller.adex_control.set_use_naptime(button.get_active())
 
     def adex_remove_5mins(self, button):
-         if button.get_active():
-            self.controller.adex_control.set_remove_5mins(True)
-         else:
-            self.controller.adex_control.set_remove_5mins(False)
+        self.controller.adex_control.set_remove_5mins(button.get_active())
 
     # run on all configurations
     def run_configs(self, button):
+        #self.controller.ADEX_folders=['/home/hao/Develop/projects/bll/bll_app/test/sample']
         if (len(self.controller.ADEX_folders) == 0):
             dialog = Gtk.MessageDialog(self.window,
                                        Gtk.DialogFlags.DESTROY_WITH_PARENT,
@@ -124,21 +127,21 @@ class MainWindow(GObject.GObject):
             dialog.destroy()
             return
 
-        save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
-                                       self.window,
-                                       Gtk.FileChooserAction.SAVE,
-                                       (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                                        Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
-        save_dialog.set_local_only(True)
-        response = save_dialog.run()
+        # save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
+        #                                self.window,
+        #                                Gtk.FileChooserAction.SAVE,
+        #                                (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+        #                                 Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+        # save_dialog.set_local_only(True)
+        # response = save_dialog.run()
 
-        if response == Gtk.ResponseType.ACCEPT:
-            self.controller.output_file = save_dialog.get_filename()
+        # if response == Gtk.ResponseType.ACCEPT:
+        #     self.controller.output_file = save_dialog.get_filename()
 
-        save_dialog.destroy()
-        if not self.controller.output_file:
-            lg.error("You haven't choose the place for output yet!")
-            return
+        # save_dialog.destroy()
+        # if not self.controller.output_file:
+        #     lg.error("You haven't choose the place for output yet!")
+        #     return
 
         self.run_dialog.show_all()
         while(Gtk.events_pending()):

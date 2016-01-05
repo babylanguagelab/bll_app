@@ -81,7 +81,7 @@ class Database:
 
         sql += ';'
 
-        lg.debug(sql)
+        #lg.debug(sql)
 
         try:
             self.cursor.execute(sql)

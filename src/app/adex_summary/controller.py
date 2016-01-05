@@ -15,8 +15,7 @@ class Controller:
         self.read_config()
 
     def run(self):
-        self.save_config()
-        #self.run_adex()
+        self.run_adex()
 
     def run_adex(self):
         for path in self.ADEX_folders:
@@ -32,12 +31,13 @@ class Controller:
         lg.debug("Job Complete!")
 
     def read_config(self):
+        self.adex_control.set_remove_5mins(False)
+        self.adex_control.set_use_naptime(True)
+        self.adex_control.read_naptime()
         self.adex_control.set_switches([True] * 20)
-        lg.debug("read config")
 
     def save_config(self):
         configs = [self.adex_control.dump()]
-        lg.debug(configs)
 
     def clean(self):
          for path in self.ADEX_folders:
