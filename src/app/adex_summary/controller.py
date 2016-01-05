@@ -19,19 +19,23 @@ class Controller:
 
     def run_adex(self):
         for path in self.ADEX_folders:
-            basename = os.path.basename(path)
-            self.adex_control.set_db_name(basename)
-            filelist = os.listdir(path)
             os.chdir(path)
-            for file in filelist:
-                if not file.endswith(".csv"):
-                    continue
-                mADEX = ADEXProcessor(self.adex_control)
-                mADEX.run(file)
+            basename = os.path.basename(path)
+            self.adex_control.open_db(basename)
+
+            # filelist = os.listdir(path)
+            # for file in filelist:
+            #     if not file.endswith(".csv"):
+            #         continue
+            #     mADEX = ADEXProcessor(self.adex_control)
+            #     mADEX.run(file)
+
+            self.adex_control.get_average()
+            self.adex_control.close_db()
         lg.debug("Job Complete!")
 
     def read_config(self):
-        self.adex_control.set_remove_5mins(False)
+        self.adex_control.set_remove_5mins(True)
         self.adex_control.set_use_naptime(True)
         self.adex_control.read_naptime()
         self.adex_control.set_switches([True] * 20)

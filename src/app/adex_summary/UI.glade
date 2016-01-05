@@ -324,7 +324,7 @@ THE SOFTWARE.
   <object class="GtkDialog" id="dia_adex">
     <property name="can_focus">False</property>
     <property name="modal">True</property>
-    <property name="window_position">center</property>
+    <property name="window_position">center-always</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">win_main</property>
     <child internal-child="vbox">

@@ -1,4 +1,5 @@
 import sqlite3
+import sys
 import logging as lg
 
 class Database:
@@ -11,7 +12,7 @@ class Database:
             # turn on foreign keys - they're disabled by default in sqlite
             self.conn.execute("PRAGMA foreign_keys = ON")
         except sqlite3.Error as e:
-            lg.error(e.args[0])
+            lg.error(e.args[0] + db_filename)
             sys.exit(1)
 
     def close(self):
@@ -68,8 +69,12 @@ class Database:
 
     # select rows from a table
     # cols must be a list
-    def select(self, table, cols, where=None, group_by=None, order_by=None):
-        sql = 'SELECT %s FROM %s' % (','.join(cols), table)
+    def select(self, table, cols, distinct=False, where=None, group_by=None, order_by=None):
+        if distinct:
+            sql = 'SELECT DISTINCT %s FROM %s' % (','.join(cols), table)
+        else:
+            sql = 'SELECT %s FROM %s' % (','.join(cols), table)
+            
         if where:
             sql += " WHERE %s" % (where)
 

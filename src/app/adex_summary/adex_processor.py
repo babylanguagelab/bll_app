@@ -46,8 +46,11 @@ class ADEXControl:
         # child_ID:(date, time_start, time_end)
         self.naptime = {}
 
-    def set_db_name(self, name):
-        self.db = name
+    def open_db(self, name):
+        self.db = Database(name + ".sqlite3")
+
+    def close_db(self):
+        self.db.close()
 
     def set_use_naptime(self, ifuse):
         self.useNaptime = ifuse
@@ -59,7 +62,8 @@ class ADEXControl:
         self.switches = switches
 
     def read_naptime(self):
-        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
+        db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
@@ -71,6 +75,13 @@ class ADEXControl:
                 self.naptime[child_id] = [(date, entry[1], entry[2])]
             else:
                 self.naptime[child_id].append((date, entry[1], entry[2]))
+
+    def get_average(self):
+        id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
+        id_list = [x[0] for x in id_list] 
+        for i in id_list:
+            file_list = self.db.select(i, ['File_Name'], distinct=True, order_by='File_Name ASC')
+            file_list = [x[0] for x in file_list]
 
     def dump(self):
         return [True, self.useNaptime, self.remove5mins, self.switches]
@@ -85,7 +96,6 @@ class ADEXProcessor:
         self.content = []
         self.start_time = 0
         self.child_id = ""
-        self.db = Database(self.control.db + ".sqlite3")
 
     def readCSV(self, csv_file):
        self.content = mParser.csv_dict_reader(csv_file, self.head)
@@ -162,26 +172,19 @@ class ADEXProcessor:
         del self.content[start:end]
 
     def saveToDB(self):
-        if (len(self.child_id) == 0):
-            self.getChildID()
         sql = ""
         # check the existence of childID
-        if self.db.select('sqlite_master',
-                            ['name'],
-                            where="type='table' AND name='"+self.child_id +"'") is None:
+        if self.control.db.select('sqlite_master', ['name'],
+                                  where="type='table' AND name='"+self.child_id +"'") is None:
             lg.debug(self.child_id + " is not in database")
             param = [i + ' ' + HEAD_TYPE_LIST[i] for i in self.head]
             param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
             param = ",".join(param)
             sql = "CREATE TABLE " + self.child_id + "(" + param + ")"
-            self.db.execute_script(sql)
+            self.control.db.execute_script(sql)
 
         # insert content into DB
-        self.db.insert_table(self.child_id, self.head, self.content)
-
-    def getAverage(self, table, column):
-        sql = "SELECT AVG(%s) from %s " %(table, column)
-        return self.db.execute_script()
+        self.control.db.insert_table(self.child_id, self.head, self.content)
 
     def run(self, filename):
         self.readCSV(filename)

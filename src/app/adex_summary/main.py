@@ -78,7 +78,7 @@ class MainWindow(GObject.GObject):
             self.adex_naptime_toggle.set_active(True)
 
         if self.controller.adex_control.remove5mins:
-            self.adex_naptime_toggle.set_active(True)
+            self.adex_5mins_toggle.set_active(True)
 
         self.dia_adex.run()
 
