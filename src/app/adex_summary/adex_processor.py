@@ -80,8 +80,8 @@ class ADEXControl:
         self.switches = switches
 
     def read_naptime(self):
-        #db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
-        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
+        db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
@@ -125,17 +125,19 @@ class ADEXControl:
             self.summary[id].insert(0, summary)
 
     def save_results(self):
-        result = [['ID', 'AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
-                  'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']]
+        result = ['ID', 'AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
+                  'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
         id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
         id_list = [x[0] for x in id_list]
+        result_entry_list = [result]
 
         for id in id_list:
-            result.append(self.summary[id][0])
+            entry = [id+":"+str(self.summary[id][0][0])]
+            for item in range(1, len(result)):
+               entry.append("{:.2f}".format(self.summary[id][0][item]))
+            result_entry_list.append(entry)
 
-        #mParser.csv_writer("result.csv", result)
-        lg.debug(result)
-
+        mParser.csv_writer("result.csv", result_entry_list)
 
     def dump(self):
         return [True, self.useNaptime, self.remove5mins, self.switches]
