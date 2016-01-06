@@ -60,11 +60,27 @@ class MainWindow(GObject.GObject):
 
     # ADEX configuration dialog
     def config_adex(self, button):
-        adex_head_name_list = ['File_Name', 'Number_Recordings', 'File_Hours',
-                               'Child_ChildID', 'Child_Age', 'Child_Gender',
-                               'AWC', 'Turn_Count', 'Child_Voc_Duration',
-                               'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
-                               'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Clock_Time_TZAdj',
+        adex_head_name_list = ['File_Name',
+                               'Number_Recordings',
+                               'File_Hours',
+                               'Child_ChildID',
+                               'Child_Age',
+                               'Child_Gender',
+                               'AWC',
+                               'Turn_Count',  
+                               'Child_Voc_Count',
+                               'CHN',
+                               'Child_Voc_Duration',
+                               'FAN_Word_Count',
+                               'FAN',
+                               'MAN_Word_Count',
+                               'MAN',
+                               'CXN',
+                               'OLN',
+                               'TVN',
+                               'NON',
+                               'SIL',
+                               'Clock_Time_TZAdj',
                                'Audio_Duration']
 
         # sync with controller

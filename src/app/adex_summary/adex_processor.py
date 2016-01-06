@@ -17,6 +17,8 @@ HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'Child_Gender'       :'TEXT',
                   'AWC'                :'INT',
                   'Turn_Count'         :'INT',
+                  'Child_Voc_Count'    :'INT',
+                  'CHN'                :'REAL',
                   'Child_Voc_Duration' :'INT',
                   'FAN_Word_Count'     :'INT',
                   'FAN'                :'REAL',
@@ -30,11 +32,27 @@ HEAD_TYPE_LIST = {'File_Name'          :'TEXT',
                   'Clock_Time_TZAdj'   :'TEXT',
                   'Audio_Duration'     :'REAL'}
 
-HEAD_NAME_LIST = ['File_Name', 'Number_Recordings', 'File_Hours',
-                  'Child_ChildID', 'Child_Age', 'Child_Gender',
-                  'AWC', 'Turn_Count', 'Child_Voc_Duration',
-                  'FAN_Word_Count', 'FAN', 'MAN_Word_Count', 'MAN',
-                  'CXN', 'OLN', 'TVN', 'NON', 'SIL', 'Clock_Time_TZAdj',
+HEAD_NAME_LIST = ['File_Name',
+                  'Number_Recordings',
+                  'File_Hours',
+                  'Child_ChildID',
+                  'Child_Age',
+                  'Child_Gender',
+                  'AWC',
+                  'Turn_Count',  
+                  'Child_Voc_Count',
+                  'CHN',
+                  'Child_Voc_Duration',
+                  'FAN_Word_Count',
+                  'FAN',
+                  'MAN_Word_Count',
+                  'MAN',
+                  'CXN',
+                  'OLN',
+                  'TVN',
+                  'NON',
+                  'SIL',
+                  'Clock_Time_TZAdj',
                   'Audio_Duration']
 
 class ADEXControl:
@@ -43,7 +61,6 @@ class ADEXControl:
         self.useNaptime = False
         self.remove5mins = False
         self.switches = []
-        # child_ID:(date, time_start, time_end)
         self.naptime = {}
 
     def open_db(self, name):
@@ -79,9 +96,37 @@ class ADEXControl:
     def get_average(self):
         id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
         id_list = [x[0] for x in id_list] 
-        for i in id_list:
-            file_list = self.db.select(i, ['File_Name'], distinct=True, order_by='File_Name ASC')
+        item_list = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
+                     'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
+        avg_list = ['AVG(' + x + ')' for x in item_list]
+        child_summary = {}
+
+        for id in id_list:
+            file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
             file_list = [x[0] for x in file_list]
+            for file in file_list:
+                wcondition = 'File_Name=\'' + file  + '\''
+                preliminary = self.db.select(id, avg_list, where=wcondition)
+                if id in child_summary:
+                    child_summary[id].append([file, preliminary[0]])
+                else:
+                    child_summary[id] = [[file, preliminary[0]]]
+
+        for id in id_list:
+            summary = [0] * (len(item_list) + 1)
+            summary[0] = len(child_summary[id])
+            for entry in child_summary[id]:
+                for item in range(len(item_list)):
+                    summary[item+1] += entry[1][item]
+
+            for item in range(len(item_list)):
+                summary[item+1] = summary[item+1] / summary[0]
+
+            child_summary[id].insert(0, summary)
+
+        for id in id_list:
+            lg.debug(child_summary[id])
+                
 
     def dump(self):
         return [True, self.useNaptime, self.remove5mins, self.switches]

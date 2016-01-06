@@ -38,7 +38,7 @@ class Controller:
         self.adex_control.set_remove_5mins(True)
         self.adex_control.set_use_naptime(True)
         self.adex_control.read_naptime()
-        self.adex_control.set_switches([True] * 20)
+        self.adex_control.set_switches([True] * 22)
 
     def save_config(self):
         configs = [self.adex_control.dump()]
