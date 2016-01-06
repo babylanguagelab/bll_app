@@ -25,7 +25,7 @@ def csv_reader(filename):
             content.append(row)
     return content
 
-
+# write a list into a csv file
 def csv_writer(filename, data):
     with open(filename, 'wb') as fp:
         writer = csv.writer(fp, quoting=csv.QUOTE_ALL)

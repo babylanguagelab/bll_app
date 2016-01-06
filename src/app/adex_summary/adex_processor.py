@@ -39,7 +39,7 @@ HEAD_NAME_LIST = ['File_Name',
                   'Child_Age',
                   'Child_Gender',
                   'AWC',
-                  'Turn_Count',  
+                  'Turn_Count',
                   'Child_Voc_Count',
                   'CHN',
                   'Child_Voc_Duration',
@@ -62,6 +62,7 @@ class ADEXControl:
         self.remove5mins = False
         self.switches = []
         self.naptime = {}
+        self.summary = {}
 
     def open_db(self, name):
         self.db = Database(name + ".sqlite3")
@@ -79,8 +80,8 @@ class ADEXControl:
         self.switches = switches
 
     def read_naptime(self):
-        db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
-        #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
+        #db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
@@ -95,11 +96,10 @@ class ADEXControl:
 
     def get_average(self):
         id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
-        id_list = [x[0] for x in id_list] 
+        id_list = [x[0] for x in id_list]
         item_list = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
                      'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
         avg_list = ['AVG(' + x + ')' for x in item_list]
-        child_summary = {}
 
         for id in id_list:
             file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
@@ -107,26 +107,35 @@ class ADEXControl:
             for file in file_list:
                 wcondition = 'File_Name=\'' + file  + '\''
                 preliminary = self.db.select(id, avg_list, where=wcondition)
-                if id in child_summary:
-                    child_summary[id].append([file, preliminary[0]])
+                if id in self.summary:
+                    self.summary[id].append([file, preliminary[0]])
                 else:
-                    child_summary[id] = [[file, preliminary[0]]]
+                    self.summary[id] = [[file, preliminary[0]]]
 
         for id in id_list:
             summary = [0] * (len(item_list) + 1)
-            summary[0] = len(child_summary[id])
-            for entry in child_summary[id]:
+            summary[0] = len(self.summary[id])
+            for entry in self.summary[id]:
                 for item in range(len(item_list)):
                     summary[item+1] += entry[1][item]
 
             for item in range(len(item_list)):
                 summary[item+1] = summary[item+1] / summary[0]
 
-            child_summary[id].insert(0, summary)
+            self.summary[id].insert(0, summary)
+
+    def save_results(self):
+        result = [['ID', 'AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
+                  'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']]
+        id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
+        id_list = [x[0] for x in id_list]
 
         for id in id_list:
-            lg.debug(child_summary[id])
-                
+            result.append(self.summary[id][0])
+
+        #mParser.csv_writer("result.csv", result)
+        lg.debug(result)
+
 
     def dump(self):
         return [True, self.useNaptime, self.remove5mins, self.switches]

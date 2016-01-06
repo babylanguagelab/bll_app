@@ -23,14 +23,15 @@ class Controller:
             basename = os.path.basename(path)
             self.adex_control.open_db(basename)
 
-            # filelist = os.listdir(path)
-            # for file in filelist:
-            #     if not file.endswith(".csv"):
-            #         continue
-            #     mADEX = ADEXProcessor(self.adex_control)
-            #     mADEX.run(file)
+            filelist = os.listdir(path)
+            for file in filelist:
+                if not file.endswith(".csv"):
+                    continue
+                mADEX = ADEXProcessor(self.adex_control)
+                mADEX.run(file)
 
             self.adex_control.get_average()
+            self.adex_control.save_results()
             self.adex_control.close_db()
         lg.debug("Job Complete!")
 
