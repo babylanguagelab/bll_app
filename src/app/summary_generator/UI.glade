@@ -38,9 +38,11 @@ THE SOFTWARE.
   <object class="GtkListStore" id="list_confs"/>
   <object class="GtkWindow" id="win_main">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">summary generator</property>
     <property name="window_position">center-always</property>
     <property name="default_width">525</property>
     <property name="default_height">395</property>
+    <property name="icon_name">package-x-generic</property>
     <signal name="destroy" handler="quit_main" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
@@ -323,6 +325,7 @@ THE SOFTWARE.
   </object>
   <object class="GtkDialog" id="dia_adex">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">ADEX filter</property>
     <property name="modal">True</property>
     <property name="window_position">center-always</property>
     <property name="type_hint">dialog</property>

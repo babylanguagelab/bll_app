@@ -85,8 +85,8 @@ class ADEXControl:
 
     def read_naptime(self):
         #db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
-        db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
-        #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
+        #db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
+        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
