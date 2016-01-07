@@ -60,37 +60,14 @@ class MainWindow(GObject.GObject):
 
     # ADEX configuration dialog
     def config_adex(self, button):
-        adex_head_name_list = ['File_Name',
-                               'Number_Recordings',
-                               'File_Hours',
-                               'Child_ChildID',
-                               'Child_Age',
-                               'Child_Gender',
-                               'AWC',
-                               'Turn_Count',  
-                               'Child_Voc_Count',
-                               'CHN',
-                               'Child_Voc_Duration',
-                               'FAN_Word_Count',
-                               'FAN',
-                               'MAN_Word_Count',
-                               'MAN',
-                               'CXN',
-                               'OLN',
-                               'TVN',
-                               'NON',
-                               'SIL',
-                               'Clock_Time_TZAdj',
-                               'Audio_Duration']
+
+        self.list_adex_conf.clear()
 
         # sync with controller
-        self.list_adex_conf.clear()
-        configs = zip(adex_head_name_list,
-                      self.controller.adex_control.switches)
-        for i in configs:
-            self.list_adex_conf.append(list(i))
+        for i in self.controller.adex_control.switches:
+            self.list_adex_conf.append(i)
 
-        if self.controller.adex_control.naptime:
+        if self.controller.adex_control.useNaptime:
             self.adex_naptime_toggle.set_active(True)
 
         if self.controller.adex_control.remove5mins:
@@ -98,9 +75,10 @@ class MainWindow(GObject.GObject):
 
         self.dia_adex.run()
 
+        # sync with controller
         result = []
         for row in self.list_adex_conf:
-            result.append(row[1])
+            result.append([row[0], row[1]])
         self.controller.adex_control.switches = result
 
         Gtk.Widget.hide(self.dia_adex)
@@ -126,10 +104,10 @@ class MainWindow(GObject.GObject):
         self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
 
     def adex_use_naptime(self, button):
-        self.controller.adex_control.set_use_naptime(button.get_active())
+        self.controller.adex_control.useNaptime = button.get_active()
 
     def adex_remove_5mins(self, button):
-        self.controller.adex_control.set_remove_5mins(button.get_active())
+        self.controller.adex_control.remove5mins = button.get_active()
 
     # run on all configurations
     def run_configs(self, button):

@@ -57,12 +57,25 @@ HEAD_NAME_LIST = ['File_Name',
 
 class ADEXControl:
     def __init__(self):
-        self.db = ""
+        self.adex_db = ""
+
         self.useNaptime = False
+        self.naptime_dict = {}
+
         self.remove5mins = False
-        self.switches = []
-        self.naptime = {}
-        self.summary = {}
+
+        self.switches = [['AWC', True],
+                         ['Turn_Count', True],
+                         ['Child_Voc_Count', True],
+                         ['CHN', True],
+                         ['FAN', True],
+                         ['MAN', True],
+                         ['CXN', True],
+                         ['OLN', True],
+                         ['TVN', True],
+                         ['NON', True],
+                         ['SIL', True]]
+        self.summary_dict = {}
 
     def open_db(self, name):
         self.db = Database(name + ".sqlite3")
@@ -70,17 +83,9 @@ class ADEXControl:
     def close_db(self):
         self.db.close()
 
-    def set_use_naptime(self, ifuse):
-        self.useNaptime = ifuse
-
-    def set_remove_5mins(self, ifuse):
-        self.remove5mins = ifuse
-
-    def set_switches(self, switches):
-        self.switches = switches
-
     def read_naptime(self):
-        db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        #db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
         #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
@@ -89,55 +94,47 @@ class ADEXControl:
         for entry in naptime_list:
             child_id = entry[0].split('_')[0].lower()
             date = entry[0].split('_')[1]
-            if child_id not in self.naptime:
-                self.naptime[child_id] = [(date, entry[1], entry[2])]
+            if child_id not in self.naptime_dict:
+                self.naptime_dict[child_id] = [(date, entry[1], entry[2])]
             else:
-                self.naptime[child_id].append((date, entry[1], entry[2]))
+                self.naptime_dict[child_id].append((date, entry[1], entry[2]))
 
-    def get_average(self):
+    def save_avg_results(self):
         id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
         id_list = [x[0] for x in id_list]
-        item_list = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
-                     'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
+
+        item_list = [x[0] for x in self.switches if x[1] is True]
         avg_list = ['AVG(' + x + ')' for x in item_list]
 
+        # # generate preliminary results for each ID (every file is separated)
+        # for id in id_list:
+        #     file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
+        #     file_list = [x[0] for x in file_list]
+
+        #     for file in file_list:
+        #         wcondition = 'File_Name=\'' + file  + '\''
+        #         preliminary = self.db.select(id, avg_list, where=wcondition)
+        #         if id in self.summary_dict:
+        #             self.summary_dict[id].append([file, preliminary[0]])
+        #         else:
+        #             self.summary_dict[id] = [[file, preliminary[0]]]
+
+        # generate average values for each ID (all files)
         for id in id_list:
-            file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
-            file_list = [x[0] for x in file_list]
-            for file in file_list:
-                wcondition = 'File_Name=\'' + file  + '\''
-                preliminary = self.db.select(id, avg_list, where=wcondition)
-                if id in self.summary:
-                    self.summary[id].append([file, preliminary[0]])
-                else:
-                    self.summary[id] = [[file, preliminary[0]]]
+            count = len(self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC'))
+            result = list(self.db.select(id, avg_list)[0])
+            for i in range(len(result)):
+                result[i] = "{:.2f}".format(result[i])
 
-        for id in id_list:
-            summary = [0] * (len(item_list) + 1)
-            summary[0] = len(self.summary[id])
-            for entry in self.summary[id]:
-                for item in range(len(item_list)):
-                    summary[item+1] += entry[1][item]
+            self.summary_dict[id] = [id] + result
 
-            for item in range(len(item_list)):
-                summary[item+1] = summary[item+1] / summary[0]
-
-            self.summary[id].insert(0, summary)
-
-    def save_results(self):
-        result = ['ID', 'AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN',
-                  'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
-        id_list = self.db.select('sqlite_sequence', ['name'], order_by='name ASC')
-        id_list = [x[0] for x in id_list]
-        result_entry_list = [result]
+        summary_title = ['ID'] + item_list
+        summary = [summary_title]
 
         for id in id_list:
-            entry = [id+":"+str(self.summary[id][0][0])]
-            for item in range(1, len(result)):
-               entry.append("{:.2f}".format(self.summary[id][0][item]))
-            result_entry_list.append(entry)
+            summary.append(self.summary_dict[id])
 
-        mParser.csv_writer("result.csv", result_entry_list)
+        mParser.csv_writer("result.csv", summary)
 
     def dump(self):
         return [True, self.useNaptime, self.remove5mins, self.switches]
@@ -147,20 +144,18 @@ class ADEXControl:
 class ADEXProcessor:
     def __init__(self, adex_control):
         self.control = adex_control
-        tmp = list(zip(HEAD_NAME_LIST, self.control.switches))
-        self.head = [x[0] for x in tmp if x[1] is True]
         self.content = []
         self.start_time = 0
         self.child_id = ""
 
     def readCSV(self, csv_file):
-       self.content = mParser.csv_dict_reader(csv_file, self.head)
+       self.content = mParser.csv_dict_reader(csv_file, HEAD_NAME_LIST)
 
     def remove_5mins(self):
         final_start = 0
         final_end = len(self.content) - 1
         counter = 0
-        index = self.head.index('Audio_Duration')
+        index = HEAD_NAME_LIST.index('Audio_Duration')
 
         # remove first 1800 sec at the beginning
         for row in self.content:
@@ -184,11 +179,11 @@ class ADEXProcessor:
         self.content = self.content[final_start:final_end+1]
 
     def getChildID(self):
-        index = self.head.index('Child_ChildID')
+        index = HEAD_NAME_LIST.index('Child_ChildID')
         self.child_id = self.content[0][index].lower()
 
     def getStartTime(self):
-        index = self.head.index('Clock_Time_TZAdj')
+        index = HEAD_NAME_LIST.index('Clock_Time_TZAdj')
         self.start_time = self.timeToSecond(self.content[0][index])
 
     # convert time string to seconds
@@ -201,31 +196,31 @@ class ADEXProcessor:
         return time.ctime(second)
 
     def check_naptime(self):
-        if self.child_id in self.control.naptime:
-            date = time.strftime('%Y%m%d', time.localtime(self.start_time))
-            for i in self.control.naptime[self.child_id]:
-                lg.debug("removing naptime...")
-                if i[0] == date:
+        if self.child_id in self.control.naptime_dict:
+            start_date = time.strftime('%Y%m%d', time.localtime(self.start_time))
+            for i in self.control.naptime_dict[self.child_id]:
+                if i[0] == start_date:
                     self.remove_time(self.start_time + i[1],
                                      self.start_time + i[2])
 
     def remove_time(self, start_time, end_time):
-        start = 0
-        end = len(self.content)
+        lg.debug("removing naptime...")
+        nap_start = 0
+        nap_end = len(self.content)
         count = 0
-        index = self.head.index('Clock_Time_TZAdj')
+        index = HEAD_NAME_LIST.index('Clock_Time_TZAdj')
 
         for row in self.content:
-            time = self.timeToSecond(row[index])
+            cur_time = self.timeToSecond(row[index])
 
-            if (time >= start_time) and (start == 0):
-                start = count
-            if (time > end_time) and (end == len(self.content)):
-                end = count
+            if (cur_time >= start_time) and (nap_start == 0):
+                nap_start = count
+            if (cur_time > end_time) and (nap_end == len(self.content)):
+                nap_end = count
 
             count += 1
 
-        del self.content[start:end]
+        del self.content[nap_start : nap_end]
 
     def saveToDB(self):
         sql = ""
@@ -233,20 +228,20 @@ class ADEXProcessor:
         if self.control.db.select('sqlite_master', ['name'],
                                   where="type='table' AND name='"+self.child_id +"'") is None:
             lg.debug(self.child_id + " is not in database")
-            param = [i + ' ' + HEAD_TYPE_LIST[i] for i in self.head]
+            param = [i + ' ' + HEAD_TYPE_LIST[i] for i in HEAD_NAME_LIST]
             param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
             param = ",".join(param)
             sql = "CREATE TABLE " + self.child_id + "(" + param + ")"
             self.control.db.execute_script(sql)
 
         # insert content into DB
-        self.control.db.insert_table(self.child_id, self.head, self.content)
+        self.control.db.insert_table(self.child_id, HEAD_NAME_LIST, self.content)
 
     def run(self, filename):
         self.readCSV(filename)
         self.getChildID()
-        lg.debug("Processing: " + self.child_id)
         self.getStartTime()
+        lg.debug("Processing: " + self.child_id)
 
         if (self.control.useNaptime):
             self.check_naptime()
