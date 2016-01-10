@@ -84,9 +84,9 @@ class ADEXControl:
         self.db.close()
 
     def read_naptime(self):
-        #db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
+        db_name = "/home/zhangh15/Dev/bll_app/test/bll_db.db"
         #db_name = "/home/hao/Develop/bll/bll_app/test/bll_db.db"
-        db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
+        #db_name = "/home/hao/Develop/projects/bll/bll_app/test/bll_db.db"
         naptime_db = Database(db_name)
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
@@ -106,18 +106,18 @@ class ADEXControl:
         item_list = [x[0] for x in self.switches if x[1] is True]
         avg_list = ['AVG(' + x + ')' for x in item_list]
 
-        # # generate preliminary results for each ID (every file is separated)
-        # for id in id_list:
-        #     file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
-        #     file_list = [x[0] for x in file_list]
+        # generate preliminary results for each ID (every file is separated)
+        for id in id_list:
+            file_list = self.db.select(id, ['File_Name'], distinct=True, order_by='File_Name ASC')
+            file_list = [x[0] for x in file_list]
 
-        #     for file in file_list:
-        #         wcondition = 'File_Name=\'' + file  + '\''
-        #         preliminary = self.db.select(id, avg_list, where=wcondition)
-        #         if id in self.summary_dict:
-        #             self.summary_dict[id].append([file, preliminary[0]])
-        #         else:
-        #             self.summary_dict[id] = [[file, preliminary[0]]]
+            for file in file_list:
+                wcondition = 'File_Name=\'' + file  + '\''
+                preliminary = self.db.select(id, avg_list, where=wcondition)
+                if id in self.summary_dict:
+                    self.summary_dict[id].append([file, preliminary[0]])
+                else:
+                    self.summary_dict[id] = [[file, preliminary[0]]]
 
         # generate average values for each ID (all files)
         for id in id_list:
