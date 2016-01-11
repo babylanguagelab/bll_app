@@ -1,8 +1,10 @@
 # csv and json reader and writer
 # author: unioah@gmail.com
 
+import os.path
 import csv
 import json
+import openpyxl
 
 
 def json_reader(filename):
@@ -43,3 +45,18 @@ def csv_dict_reader(filename, header):
                 new_row.append(row[i])
             content.append(new_row)
     return content
+
+def excel_writer(filename, sheetname, data):
+    if os.path.isfile(filename):
+        wb = openpyxl.load_workbook(filename)
+    else:
+        wb = openpyxl.Workbook()
+        wb.remove_sheet(wb.get_sheet_by_name('Sheet'))
+
+    sheet = wb.create_sheet(title=sheetname)
+
+    for x in range(len(data)):
+            for y in range(len(data[x])):
+                sheet.cell(row=x+1, column=y+1).value = data[x][y]
+
+    wb.save(filename)

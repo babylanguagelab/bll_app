@@ -5,46 +5,34 @@
 import logging as lg
 import os
 from adex_processor import ADEXProcessor
-from adex_processor import ADEXControl
+from comment_processor import CommentProcessor
+
+COMMENT_SHEET = "/home/hao/Develop/projects/bll/bll_app/test/LENASpreadsheet.xlsx"
 
 class Controller:
     def __init__(self):
         self.ADEX_folders = []
-        self.adex_control = ADEXControl()
-        self.output_file = ""
-        self.read_config()
+        self.ADEX_proc = ADEXProcessor()
+        self.CMT_proc = CommentProcessor()
+        self.loadConfigs()
 
     def run(self):
-        self.run_adex()
-        self.clean()
+        self.ADEX_proc.run(self.ADEX_folders)
+        self.CMT_proc.run()
+        lg.debug("Done!")
 
-    def run_adex(self):
-        for path in self.ADEX_folders:
-            os.chdir(path)
-            basename = os.path.basename(path)
-            self.adex_control.open_db(basename)
+    def saveOutput(self, filename):
+        self.ADEX_proc.saveResults(filename)
+        self.CMT_proc.saveResults(filename)
 
-            filelist = os.listdir(path)
-            for file in filelist:
-                if not file.endswith(".csv"):
-                    continue
-                mADEX = ADEXProcessor(self.adex_control)
-                mADEX.run(file)
-
-            self.adex_control.save_avg_results()
-            self.adex_control.close_db()
-        lg.debug("Job Complete!")
-
-    def read_config(self):
+    def loadConfigs(self):
         # ADEX configurations
-        self.adex_control.remove5mins = True
-        self.adex_control.useNaptime = True
-        self.adex_control.read_naptime()
+        self.ADEX_proc.setSwitches([True]*11)
+        self.ADEX_proc.remove5mins = True
+        self.ADEX_proc.removeNaptime = True
 
-    def save_config(self):
-        configs = [self.adex_control.dump()]
+        # CMT configurations:
+        self.CMT_proc.setSwitches([True]*14)
 
-    def clean(self):
-         for path in self.ADEX_folders:
-             basename = os.path.basename(path)
-             os.remove(basename + ".sqlite3")
+    def saveConfigs(self):
+        configs = [self.ADEX_proc.getConfigs()]

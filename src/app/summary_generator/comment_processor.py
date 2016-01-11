@@ -1,8 +1,6 @@
 import openpyxl
 import logging as lg
-from debug import init_debug
-
-COMMENT_SHEET = "/home/zhangh15/Dev/bll_app/src/app/summary_generator/LENASpreadsheet.xlsx"
+import ConfigParser as mParser
 
 COMMENT_LIST = [
     'Study Number',
@@ -25,48 +23,50 @@ COMMENT_LIST = [
 
 class CommentProcessor:
     def __init__(self):
-        self.heads = []
-        self.content = []
-
-    def saveResults(self, filename):
-        newWB = openpyxl.Workbook()
-        newWB.create_sheet(title='Special Cases')
-        sheet = newWB.get_sheet_by_name("Special Cases")
-
-        for row_index in range(len(self.content)):
-            for col_index in range(len(self.content[row_index])):
-                sheet.cell(row=row_index+1, column=col_index+1).value = self.content[row_index][col_index]
-
-        newWB.save(filename)
-
+        self.switches = [
+            ['Recording', True],
+            ['Recording Dates', True],
+            ['Recording Type', True],
+            ['ITS File', True],
+            ['Recording Notes/Errors?', True],
+            ['Language Other than English', True],
+            ['Child Sick', True],
+            ['Short Recording', True],
+            ['Pause in Recording', True],
+            ['Unusual Behaviour', True],
+            ['LENA Device off Child', True],
+            ['Paired Recording [home AND homedaycare/daycare]', True],
+            ['Child Development Concern', True],
+            ['Clock Drift', True]]
 
     def openCommentFile(self, filename):
         wb = openpyxl.load_workbook(filename)
         self.sheet = wb.get_sheet_by_name("Special Cases")
         self.heads = [x.value for x in self.sheet.rows[0]]
+        self.content = [self.heads]
 
-    def setSwitches(self, switch):
-        self.switch = [(x, True) for x in self.heads]
+    def setSwitches(self, switches):
+        for i in range(len(self.switches)):
+            if self.switches[i][1] != switches[i]:
+                self.switches[i][1] = switches[i]
 
     # process switches and filter content
     def run(self):
-        switch_dict = dict(self.switch)
+        switch_dict = dict(self.switches)
+        switch_dict['Study Number'] = True
         new_heads = []
 
         for index in range(len(self.heads)):
-            if switch_dict[self.heads[index]]:
-                new_heads.append(index)
+            if self.heads[index] in switch_dict:
+                if switch_dict[self.heads[index]]:
+                    new_heads.append(index)
 
-        for row_index in range(self.sheet.max_row):
+        for row_index in range(1, self.sheet.max_row):
             line = []
             for column_index in new_heads:
-                line.append(self.sheet.cell(row=row_index+1, column=column_index+1).value)
+                line.append(self.sheet.cell(row=row_index+1,
+                                            column=column_index+1).value)
             self.content.append(line)
 
-
-init_debug()
-mProcess = CommentProcessor()
-mProcess.openCommentFile(COMMENT_SHEET)
-mProcess.setSwitches([1])
-mProcess.run()
-mProcess.saveResults('result.xlsx')
+    def saveResults(self, filename):
+        mParser.excel_writer(filename, 'Special Cases', self.content)
