@@ -33,6 +33,7 @@ class MainWindow(GObject.GObject):
         self.adex_5mins_toggle = self.builder.get_object("adex_5mins_check")
 
         self.initCMT()
+        self.init_save_config()
 
         self.run_dialog = self.builder.get_object("g_run_dialog")
         self.connect_signals()
@@ -53,6 +54,32 @@ class MainWindow(GObject.GObject):
         column_toggle = Gtk.TreeViewColumn("Choose", toggle_render, active=1)
         treeview_conf.append_column(column_toggle)
 
+    def init_save_config(self):
+        self.config_dialog = self.builder.get_object("save_config_dialog")
+        self.config_title = self.builder.get_object("save_config_titile")
+        self.config_desc = self.builder.get_object("save_config_desc")
+
+        self.list_configs = self.builder.get_object("list_conf")
+        treeview_conf = self.builder.get_object("treeview_conf")
+
+        text_render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("ID", text_render, text=0)
+        treeview_conf.append_column(column)
+
+        text_render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Title", text_render, text=1)
+        treeview_conf.append_column(column)
+
+        text_render = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("Description", text_render, text=2)
+        treeview_conf.append_column(column)
+
+        self.list_configs.append((1, "Adex's config", "Sample Description"))
+
+
+    def save_config_dialog(self, button):
+        self
+
     def do_start_task(self, data):
         self.emit("stop_task", 0)
 
@@ -68,6 +95,7 @@ class MainWindow(GObject.GObject):
             "adex_remove_5mins": self.adex_remove_5mins,
             "show_comment_dialog": self.CMT_show_dialog,
             "add_comment_file": self.CMT_add_file,
+            "show_config_dialog": self.config_show_dialog,
             "g_run_configs": self.run
         }
         self.builder.connect_signals(handlers)
@@ -156,6 +184,10 @@ class MainWindow(GObject.GObject):
 
     def CMT_toggle_conf(self, widget, path):
         self.list_CMT_conf[path][1] = not self.list_CMT_conf[path][1]
+
+    def config_show_dialog(self, button):
+        self.config_dialog.run()
+        Gtk.Widget.hide(self.config_dialog)
 
     # run on all configurations
     def run(self, button):
