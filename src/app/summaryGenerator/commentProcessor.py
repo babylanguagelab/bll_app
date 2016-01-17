@@ -1,6 +1,10 @@
-import openpyxl
+# Description:
+# Author: zhangh15@myumanitoba.ca
+# Date: 2016-01-17
+
 import logging as lg
-import ConfigParser as mParser
+import openpyxl
+import myUtils.ConfigParser as mParser
 
 COMMENT_LIST = [
     'Study Number',
@@ -21,7 +25,7 @@ COMMENT_LIST = [
     'Clock Drift']
 
 
-class CommentProcessor:
+class commentProcessor:
     def __init__(self):
         self.switches = [
             ['Recording', True],
@@ -39,13 +43,13 @@ class CommentProcessor:
             ['Child Development Concern', True],
             ['Clock Drift', True]]
 
-    def openCommentFile(self, filename):
+    def open_comment_file(self, filename):
         wb = openpyxl.load_workbook(filename)
         self.sheet = wb.get_sheet_by_name("Special Cases")
         self.heads = [x.value for x in self.sheet.rows[0]]
         self.content = [self.heads]
 
-    def setSwitches(self, switches):
+    def set_switches(self, switches):
         for i in range(len(self.switches)):
             if self.switches[i][1] != switches[i]:
                 self.switches[i][1] = switches[i]
@@ -68,5 +72,5 @@ class CommentProcessor:
                                             column=column_index+1).value)
             self.content.append(line)
 
-    def saveResults(self, filename):
+    def save_results(self, filename):
         mParser.excel_writer(filename, 'Special Cases', self.content)

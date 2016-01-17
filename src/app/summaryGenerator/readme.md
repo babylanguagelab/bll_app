@@ -1,3 +1,7 @@
+Author: zhangh15@myumanitoba.ca
+Date: 2016-01-17
+-------
+
 # ADEX Summary Spreadsheet:
 The most current set of spreadsheets is saved here:
 Experimental Data\Daycare Study\ADEX Output\ADEXAnalysis
@@ -25,3 +29,7 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 - 2. get required columns.
 - 3. remove 5 minutes from beginning and end.
 - 4. put results into database.
+
+# Comment Processor:
+- 1. filter required column.
+- 2. generate output.
