@@ -1,4 +1,4 @@
-# Description: main entry point 
+# Description: main entry point
 # Author: zhangh15@myumanitoba.ca
 # Date: 2016-07-17
 
@@ -28,16 +28,28 @@ class mainWindow(object):
     def init_ADEX_dialog(self, gbuilder):
         self.dialog_ADEX = gbuilder.get_object("dialog_ADEX")
 
-        self.list_adex_conf = gbuilder.get_object("list_adex_conf")
-        treeview_adex_conf = gbuilder.get_object("treeview_adex_conf")
+        self.list_ADEX_switch = gbuilder.get_object("list_ADEX_switch")
+        treeview_ADEX_switch = gbuilder.get_object("treeview_ADEX_switch")
+
         renderer = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn("Name", renderer, text=0)
-        treeview_adex_conf.append_column(column)
+        treeview_ADEX_switch.append_column(column)
 
         render_toggle = Gtk.CellRendererToggle()
         render_toggle.connect("toggled", self.toggle_ADEX_switches)
         column_toogle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
-        treeview_adex_conf.append_column(column_toogle)
+        treeview_ADEX_switch.append_column(column_toogle)
+
+        self.combo_time = gbuilder.get_object("combo_ADEX_time")
+        list_time_interval = gbuilder.get_object("list_ADEX_time")
+        list_time_interval.append(["5 minutes"])
+        list_time_interval.append(["10 minutes"])
+        list_time_interval.append(["30 minutes"])
+        list_time_interval.append(["60 minutes"])
+        renderer_text = Gtk.CellRendererText()
+        self.combo_time.pack_start(renderer_text, True)
+        self.combo_time.add_attribute(renderer_text, "text", 0)
+        self.combo_time.set_active(0)
 
         self.adex_naptime_toggle = gbuilder.get_object("adex_naptime_check")
         self.adex_5mins_toggle = gbuilder.get_object("adex_5mins_check")
@@ -86,6 +98,7 @@ class mainWindow(object):
             "add_ADEX_folders": self.add_ADEX_folders,
             "toggle_ADEX_naptime": self.toggle_ADEX_naptime,
             "toggle_ADEX_5mins": self.toggle_ADEX_5mins,
+            "combo_ADEX_time_changed_cb": self.change_ADEX_time,
             "show_CMT_dialog": self.show_CMT_dialog,
             "add_CMT_file": self.add_CMT_file,
             "show_config_dialog": self.show_config_dialog,
@@ -96,10 +109,10 @@ class mainWindow(object):
     # ADEX configuration dialog
     def show_ADEX_dialog(self, button):
 
-        self.list_adex_conf.clear()
+        self.list_ADEX_switch.clear()
         # sync with controller
         for i in self.con.ADEX_proc.switches:
-            self.list_adex_conf.append(i)
+            self.list_ADEX_switch.append(i)
 
         if self.con.ADEX_proc.removeNaptime:
             self.adex_naptime_toggle.set_active(True)
@@ -111,9 +124,9 @@ class mainWindow(object):
 
         # sync with controller
         switches = []
-        for row in self.list_adex_conf:
+        for row in self.list_ADEX_switch:
             switches.append(row[1])
-        self.con.ADEX_proc.setSwitches(switches)
+        self.con.ADEX_proc.set_switches(switches)
 
         Gtk.Widget.hide(self.dialog_ADEX)
 
@@ -135,13 +148,20 @@ class mainWindow(object):
 
     # change ADEX configurations
     def toggle_ADEX_switches(self, widget, path):
-        self.list_adex_conf[path][1] = not self.list_adex_conf[path][1]
+        self.list_ADEX_switch[path][1] = not self.list_adex_conf[path][1]
 
     def toggle_ADEX_naptime(self, button):
         self.con.ADEX_proc.removeNaptime = button.get_active()
 
     def toggle_ADEX_5mins(self, button):
         self.con.ADEX_proc.remove5mins = button.get_active()
+
+    def change_ADEX_time(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter != None:
+            model = combo.get_model()
+            select = model[tree_iter][0]
+            print(select)
 
     def show_CMT_dialog(self, button):
         self.list_CMT_conf.clear()
@@ -156,7 +176,7 @@ class mainWindow(object):
 
         for row in self.list_CMT_conf:
             switches.append(row[1])
-        self.con.CMT_proc.setSwitches(switches)
+        self.con.CMT_proc.set_switches(switches)
 
         Gtk.Widget.hide(self.dialog_CMT)
 
@@ -224,4 +244,3 @@ class main(object):
 
     def run(self):
         self.mWin.show()
-        lg.debug("start!")

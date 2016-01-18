@@ -41,6 +41,7 @@ class ADEXProcessor:
         self.keep_5mins = False
         self.naptime_dict = {}
         self.child = {}
+        self.time_interval = 5
         self.switches = [['AWC', True],
                          ['Turn_Count', True],
                          ['Child_Voc_Count', True],
