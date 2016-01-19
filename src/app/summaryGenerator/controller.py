@@ -11,6 +11,7 @@ class controller(object):
     def __init__(self):
         self.ADEX_folders = []
         self.ADEX_proc = ADEXProcessor()
+        self.enable_CMT = True;
         self.CMT_proc = commentProcessor()
         self.load_configs()
 
@@ -20,14 +21,14 @@ class controller(object):
         lg.debug("Done!")
 
     def save_output(self, filename):
-        self.ADEX_proc.saveResults(filename)
+        self.ADEX_proc.save_results(filename)
         self.CMT_proc.save_results(filename)
 
     def load_configs(self):
         # ADEX configurations
         self.ADEX_proc.set_switches([True]*11)
-        self.ADEX_proc.remove5mins = True
-        self.ADEX_proc.removeNaptime = True
+        self.ADEX_proc.no_naptime = True
+        self.ADEX_proc.no_5mins = True
 
         # CMT configurations:
         self.CMT_proc.set_switches([True]*14)

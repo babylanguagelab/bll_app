@@ -99,6 +99,7 @@ class mainWindow(object):
             "toggle_ADEX_naptime": self.toggle_ADEX_naptime,
             "toggle_ADEX_5mins": self.toggle_ADEX_5mins,
             "combo_ADEX_time_changed_cb": self.change_ADEX_time,
+            "check_CMT_toggled_cb": self.toggle_CMT,
             "show_CMT_dialog": self.show_CMT_dialog,
             "add_CMT_file": self.add_CMT_file,
             "show_config_dialog": self.show_config_dialog,
@@ -114,10 +115,10 @@ class mainWindow(object):
         for i in self.con.ADEX_proc.switches:
             self.list_ADEX_switch.append(i)
 
-        if self.con.ADEX_proc.removeNaptime:
+        if self.con.ADEX_proc.no_naptime:
             self.adex_naptime_toggle.set_active(True)
 
-        if self.con.ADEX_proc.remove5mins:
+        if self.con.ADEX_proc.no_5mins:
             self.adex_5mins_toggle.set_active(True)
 
         self.dialog_ADEX.run()
@@ -151,17 +152,20 @@ class mainWindow(object):
         self.list_ADEX_switch[path][1] = not self.list_adex_conf[path][1]
 
     def toggle_ADEX_naptime(self, button):
-        self.con.ADEX_proc.removeNaptime = button.get_active()
+        self.con.ADEX_proc.no_naptime = button.get_active()
 
     def toggle_ADEX_5mins(self, button):
-        self.con.ADEX_proc.remove5mins = button.get_active()
+        self.con.ADEX_proc.no_5mins = button.get_active()
 
     def change_ADEX_time(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()
             select = model[tree_iter][0]
-            print(select)
+            self.con.ADEX_proc.time_interval = select
+
+    def toggle_CMT(self, button):
+        self.con.enable_CMT = button.get_active()
 
     def show_CMT_dialog(self, button):
         self.list_CMT_conf.clear()
@@ -190,7 +194,7 @@ class mainWindow(object):
         response = file_dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
-            self.con.CMT_proc.openCommentFile(file_dialog.get_filename())
+            self.con.CMT_proc.open_comment_file(file_dialog.get_filename())
 
         file_dialog.destroy()
 

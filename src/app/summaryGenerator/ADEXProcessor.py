@@ -37,11 +37,11 @@ HEAD_TYPE_DICT = dict(HEAD_NAME_LIST)
 
 class ADEXProcessor:
     def __init__(self):
-        self.keep_naptime = False
-        self.keep_5mins = False
+        self.no_naptime = False
+        self.no_5mins = False
         self.naptime_dict = {}
         self.child = {}
-        self.time_interval = 5
+        self.time_interval = "5 minutes"
         self.switches = [['AWC', True],
                          ['Turn_Count', True],
                          ['Child_Voc_Count', True],
@@ -78,24 +78,24 @@ class ADEXProcessor:
     def get_average(self, DB):
         id_list = DB.select('sqlite_sequence', ['name'], order_by='name ASC')
         id_list = [x[0] for x in id_list]
-        avg_param = ['AVG(' + x + ')' for x in item_list]
+        avg_param = ['AVG(' + x + ')' for x in self.item_list]
 
         # generate average values for each ID (all files)
         for child_id in id_list:
             count = len(DB.select(child_id, ['File_Name'], distinct=True, order_by='File_Name ASC'))
             result = list(DB.select(child_id, avg_param)[0])
 
-            # format to keep only two digits
+            # format to no only two digits
             for i in range(len(result)):
                 result[i] = "{:.2f}".format(result[i])
 
-            self.summary.append([child_id,
+            self.summary.append([child_id + str(count) + self.time_interval,
                                  self.child[child_id][0],
                                  self.child[child_id][1]] + result)
 
     def run(self, dir_list):
-        if self.keep_naptime:
-            self.read_naptime("/home/hao/Develop/projects/bll/bll_app/test/bll_db.db")
+        if self.no_naptime:
+            self.read_naptime("/home/zhangh15/Dev/bll_app/test/bll_db.db")
 
         for path in dir_list:
             basename = os.path.basename(path)
@@ -108,16 +108,16 @@ class ADEXProcessor:
 
                 mADEX = ADEXFileProcessor(path + '/' + ADEX_file)
                 if mADEX.child_id not in self.child:
-                    self.child[mADEX.child_id] = [mADEX.getChildAge(),
-                                                  mADEX.getChildGender()]
+                    self.child[mADEX.child_id] = [mADEX.get_ChildAge(),
+                                                  mADEX.get_ChildGender()]
 
-                if self.keep_5mins:
-                    ADEX_file.remove_5mins()
+                if self.no_5mins:
+                    mADEX.remove_5mins()
 
-                if self.keep_naptime:
-                    ADEX_file.remove_naptime(self.naptime_dict)
+                if self.no_naptime:
+                    mADEX.remove_naptime(self.naptime_dict)
 
-                ADEX_file.save_DB(current_DB)
+                mADEX.save_DB(current_DB)
 
             self.get_average(current_DB)
             current_DB.close()
@@ -138,7 +138,6 @@ class ADEXFileProcessor:
 
     def remove_5mins(self):
         final_start = 0
-        final_end = len(self.content) - 1
         counter = 0
         index = self.heads.index('Audio_Duration')
 
@@ -151,17 +150,43 @@ class ADEXFileProcessor:
                 break
 
         # remove 1800 sec at the end
-        counter = 0
-        for x in range(1, len(self.content)):
-            value = float(self.content[-x][index])
-            counter += value
-            final_end -= 1
-            if counter >= 1800:
-                break
+        # final_end = len(self.content) - 1
+        # counter = 0
+        # for x in range(1, len(self.content)):
+        #     value = float(self.content[-x][index])
+        #     counter += value
+        #     final_end -= 1
+        #     if counter >= 1800:
+        #         break
 
         # items start through final_end
+
         lg.debug("removing 5 minutes...")
-        self.content = self.content[final_start:final_end+1]
+        self.content = self.content[final_start:]
+
+    def remove_last2rows(self):
+        final_end = len(self.content) - 1
+        final_end = final_end - 2
+        self.content = self.content[:final_end]
+
+    # find any time duration not up to the time interval
+    def remove_break_time(self, time_interval):
+        index = self.heads.index('Audio_Duration')
+        interval_sec = int(time_interval.split()[0]) * 60
+        clock_index = self.heads.index('Clock_Time_TZAdj')
+        start_time = 0
+        end_time = 0
+
+        for row in self.content:
+            value = float(row[index])
+            if value < interval_sec:
+                if start_time == 0:
+                    start_time = row[clock_index] - interval_sec
+                end_time = row[clock_index] + value + interval_sec
+            else:
+                if start_time != 0:
+                    self.remove_time(start_time, end_time)
+                start_time = 0
 
     def get_ChildID(self):
         index = self.heads.index('Child_ChildID')
@@ -198,22 +223,22 @@ class ADEXFileProcessor:
 
     def remove_time(self, start_time, end_time):
         lg.debug("removing naptime...")
-        nap_start = 0
-        nap_end = len(self.content)
+        time_start = 0
+        time_end = len(self.content)
         count = 0
         index = self.heads.index('Clock_Time_TZAdj')
 
         for row in self.content:
             cur_time = self.time_to_second(row[index])
 
-            if (cur_time >= start_time) and (nap_start == 0):
-                nap_start = count
-            if (cur_time > end_time) and (nap_end == len(self.content)):
-                nap_end = count
+            if (cur_time >= start_time) and (time_start == 0):
+                time_start = count
+            if (cur_time > end_time) and (time_end == len(self.content)):
+                time_end = count
 
             count += 1
 
-        del self.content[nap_start : nap_end]
+        del self.content[time_start : time_end]
 
     def save_DB(self, DB):
         sql = ""
