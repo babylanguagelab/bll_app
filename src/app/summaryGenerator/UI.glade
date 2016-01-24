@@ -462,7 +462,7 @@ THE SOFTWARE.
                   <object class="GtkLabel" id="label4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Output filter:</property>
+                    <property name="label" translatable="yes">Output Filter:</property>
                   </object>
                 </child>
               </object>
@@ -511,7 +511,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="adex_5mins_check">
-                <property name="label" translatable="yes">remove 5 minutes records at the begin</property>
+                <property name="label" translatable="yes">remove the rows in the first 30 minutes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -528,7 +528,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="checkbutton4">
-                <property name="label" translatable="yes">remove records with insufficient time</property>
+                <property name="label" translatable="yes">remove the partial records (base on time inverval)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -544,7 +544,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="adex_naptime_check">
-                <property name="label" translatable="yes">remove records in naptime</property>
+                <property name="label" translatable="yes">remove the nap-time and noisy recording</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -561,7 +561,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="checkbutton1">
-                <property name="label" translatable="yes">remove the last two records</property>
+                <property name="label" translatable="yes">remove the last two rows</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -670,7 +670,7 @@ THE SOFTWARE.
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Output filter:</property>
+                    <property name="label" translatable="yes">Output Filter:</property>
                   </object>
                 </child>
               </object>
@@ -775,10 +775,11 @@ THE SOFTWARE.
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -788,10 +789,11 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkButton" id="button11">
-                <property name="label" translatable="yes">Cancel</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>

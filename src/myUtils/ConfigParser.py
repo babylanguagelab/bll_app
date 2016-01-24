@@ -1,5 +1,5 @@
-# csv and json reader and writer
-# author: unioah@gmail.com
+# csv, json, excel reader and writer
+# author: zhangh15@myumanitoba.ca
 
 import os.path
 import csv
@@ -9,15 +9,13 @@ import openpyxl
 
 def json_reader(filename):
     content = {}
-    with open(filename, 'rb') as fp:
+    with open(filename, 'rt') as fp:
         content = json.load(fp)
     return content
 
-
 def json_writer(filename, data):
-    with open(filename, 'wb') as fp:
+    with open(filename, 'wt') as fp:
         json.dump(data, fp)
-
 
 def csv_reader(filename):
     content = []
