@@ -38,7 +38,9 @@ HEAD_TYPE_DICT = dict(HEAD_NAME_LIST)
 class ADEXProcessor:
     def __init__(self):
         self.no_naptime = False
-        self.no_5mins = False
+        self.no_30mins = False
+        self.no_partial = False
+        self.no_last2rows = False
         self.naptime_dict = {}
         self.child = {}
         self.time_interval = "5 minutes"
@@ -111,8 +113,8 @@ class ADEXProcessor:
                     self.child[mADEX.child_id] = [mADEX.get_ChildAge(),
                                                   mADEX.get_ChildGender()]
 
-                if self.no_5mins:
-                    mADEX.remove_5mins()
+                if self.no_30mins:
+                    mADEX.remove_30mins()
 
                 if self.no_naptime:
                     mADEX.remove_naptime(self.naptime_dict)
@@ -126,6 +128,19 @@ class ADEXProcessor:
     def save_results(self, filename):
         mParser.excel_writer(filename, 'ADEX_OUTPUT', self.summary)
 
+    def get_config(self):
+        config_dict = {}
+
+        config_dict['enable'] = True
+        config_dict['time_interval'] = self.time_interval
+        config_dict['no_30mins'] = self.no_30mins
+        config_dict['no_naptime'] = self.no_naptime
+        config_dict['no_partial'] = self.no_partial
+        config_dict['no_last2rows'] = self.no_last2rows
+        config_dict['switches'] = self.switches
+
+        return config_dict
+
 # read ADEX csv files with required columns only
 # then save these columns to DB
 class ADEXFileProcessor:
@@ -136,7 +151,7 @@ class ADEXFileProcessor:
         self.child_id = self.get_ChildID()
         self.start_time  = self.get_start_time()
 
-    def remove_5mins(self):
+    def remove_30mins(self):
         final_start = 0
         counter = 0
         index = self.heads.index('Audio_Duration')

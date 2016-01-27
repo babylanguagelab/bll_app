@@ -52,7 +52,7 @@ class mainWindow(object):
         self.combo_time.set_active(0)
 
         self.adex_naptime_toggle = gbuilder.get_object("adex_naptime_check")
-        self.adex_5mins_toggle = gbuilder.get_object("adex_5mins_check")
+        self.adex_30mins_toggle = gbuilder.get_object("adex_30mins_check")
 
     def init_CMT_dialog(self, gbuilder):
         self.dialog_CMT = gbuilder.get_object("dialog_comment")
@@ -97,7 +97,9 @@ class mainWindow(object):
             "show_ADEX_dialog": self.show_ADEX_dialog,
             "add_ADEX_folders": self.add_ADEX_folders,
             "toggle_ADEX_naptime": self.toggle_ADEX_naptime,
-            "toggle_ADEX_5mins": self.toggle_ADEX_5mins,
+            "toggle_ADEX_partial": self.toggle_partial_records,
+            "toggle_ADEX_30mins": self.toggle_ADEX_30mins,
+            "toggle_ADEX_last2": self.toggle_ADEX_last2,
             "combo_ADEX_time_changed_cb": self.change_ADEX_time,
             "check_CMT_toggled_cb": self.toggle_CMT,
             "show_CMT_dialog": self.show_CMT_dialog,
@@ -118,8 +120,8 @@ class mainWindow(object):
         if self.con.ADEX_proc.no_naptime:
             self.adex_naptime_toggle.set_active(True)
 
-        if self.con.ADEX_proc.no_5mins:
-            self.adex_5mins_toggle.set_active(True)
+        if self.con.ADEX_proc.no_30mins:
+            self.adex_30mins_toggle.set_active(True)
 
         self.dialog_ADEX.run()
 
@@ -151,18 +153,24 @@ class mainWindow(object):
     def toggle_ADEX_switches(self, widget, path):
         self.list_ADEX_switch[path][1] = not self.list_adex_conf[path][1]
 
-    def toggle_ADEX_naptime(self, button):
-        self.con.ADEX_proc.no_naptime = button.get_active()
-
-    def toggle_ADEX_5mins(self, button):
-        self.con.ADEX_proc.no_5mins = button.get_active()
-
     def change_ADEX_time(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()
             select = model[tree_iter][0]
             self.con.ADEX_proc.time_interval = select
+
+    def toggle_ADEX_30mins(self, button):
+        self.con.ADEX_proc.no_30mins = button.get_active()
+
+    def toggle_partial_records(self, button):
+        self.con.ADEX_proc.no_partial = button.get_active()
+
+    def toggle_ADEX_naptime(self, button):
+        self.con.ADEX_proc.no_naptime = button.get_active()
+
+    def toggle_ADEX_last2(self, button):
+        self.con.ADEX_proc.no_last2rows = button.get_active()
 
     def toggle_CMT(self, button):
         self.con.enable_CMT = button.get_active()

@@ -28,10 +28,10 @@ class controller(object):
         # ADEX configurations
         self.ADEX_proc.set_switches([True]*11)
         self.ADEX_proc.no_naptime = True
-        self.ADEX_proc.no_5mins = True
+        self.ADEX_proc.no_30mins = True
 
         # CMT configurations:
         self.CMT_proc.set_switches([True]*14)
 
     def save_configs(self):
-        configs = [self.ADEX_proc.getConfigs()]
+        configs = {"ADEX":self.ADEX_proc.getConfigs()}

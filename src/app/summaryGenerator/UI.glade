@@ -510,7 +510,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="adex_5mins_check">
+              <object class="GtkCheckButton" id="checkbutton2">
                 <property name="label" translatable="yes">remove the rows in the first 30 minutes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -518,7 +518,7 @@ THE SOFTWARE.
                 <property name="xalign">0</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="toggle_ADEX_5mins" swapped="no"/>
+                <signal name="toggled" handler="toggle_ADEX_30mins" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -535,6 +535,7 @@ THE SOFTWARE.
                 <property name="xalign">0</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="toggle_ADEX_partial" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -543,7 +544,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="adex_naptime_check">
+              <object class="GtkCheckButton" id="checkbutton5">
                 <property name="label" translatable="yes">remove the nap-time and noisy recording</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -568,6 +569,7 @@ THE SOFTWARE.
                 <property name="xalign">0</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="toggle_ADEX_last2" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
