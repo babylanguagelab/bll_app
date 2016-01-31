@@ -6,12 +6,11 @@ import logging as lg
 from ADEXProcessor import ADEXProcessor
 from commentProcessor import commentProcessor
 
-
 class controller(object):
     def __init__(self):
         self.ADEX_folders = []
         self.ADEX_proc = ADEXProcessor()
-        self.enable_CMT = True;
+        self.enable_CMT = True
         self.CMT_proc = commentProcessor()
         self.load_configs()
 

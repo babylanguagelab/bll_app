@@ -510,7 +510,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton2">
+              <object class="GtkCheckButton" id="adex_30mins_check">
                 <property name="label" translatable="yes">remove the rows in the first 30 minutes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -527,7 +527,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton4">
+              <object class="GtkCheckButton" id="adex_partial_check">
                 <property name="label" translatable="yes">remove the partial records (base on time inverval)</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -544,7 +544,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton5">
+              <object class="GtkCheckButton" id="adex_naptime_check">
                 <property name="label" translatable="yes">remove the nap-time and noisy recording</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -561,7 +561,7 @@ THE SOFTWARE.
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="checkbutton1">
+              <object class="GtkCheckButton" id="adex_last2_check">
                 <property name="label" translatable="yes">remove the last two rows</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>

@@ -56,10 +56,11 @@ class ADEXProcessor:
                          ['NON', True],
                          ['SIL', True]]
 
+    # [Todo] change switches to item name
     def set_switches(self, switches):
-        for x in range(len(switches)):
-            self.switches[x][1] != switches[x]
-            self.switches[x][1] = switches[x]
+        for i, item in enumerate(switches):
+            self.switches[i][1] != item
+            self.switches[i][1] = item
 
         self.item_list = [x[0] for x in self.switches if x[1] is True]
         self.summary = [['ID', 'Age', 'Gender'] + self.item_list]
@@ -185,7 +186,7 @@ class ADEXFileProcessor:
         self.content = self.content[:final_end]
 
     # find any time duration not up to the time interval
-    def remove_break_time(self, time_interval):
+    def remove_partial_time(self, time_interval):
         index = self.heads.index('Audio_Duration')
         interval_sec = int(time_interval.split()[0]) * 60
         clock_index = self.heads.index('Clock_Time_TZAdj')
@@ -194,14 +195,19 @@ class ADEXFileProcessor:
 
         for row in self.content:
             value = float(row[index])
-            if value < interval_sec:
+            if value != interval_sec:
                 if start_time == 0:
-                    start_time = row[clock_index] - interval_sec
-                end_time = row[clock_index] + value + interval_sec
+                    start_time = self.timestr_to_second(row[clock_index]) - interval_sec
+                end_time = self.timestr_to_second(row[clock_index]) + value + interval_sec
             else:
                 if start_time != 0:
                     self.remove_time(start_time, end_time)
+                    start_time = 0
                 start_time = 0
+
+            # for the last row
+            if start_time != 0:
+                self.remove_time(start_time, end_time)
 
     def get_ChildID(self):
         index = self.heads.index('Child_ChildID')
@@ -217,15 +223,15 @@ class ADEXFileProcessor:
 
     def get_start_time(self):
         index = self.heads.index('Clock_Time_TZAdj')
-        return self.time_to_second(self.content[0][index])
+        return self.timestr_to_second(self.content[0][index])
 
     # convert time string to seconds
-    def time_to_second(self, string):
+    def timestr_to_second(self, string):
         # string = 6/10/2009 8:37:45
         return time.mktime(time.strptime(string, '%m/%d/%Y %H:%M:%S'))
 
     # convert seconds to human readable string
-    def second_to_time(self, second):
+    def second_to_timestr(self, second):
         return time.ctime(second)
 
     def remove_naptime(self, naptime_dict):
@@ -244,7 +250,7 @@ class ADEXFileProcessor:
         index = self.heads.index('Clock_Time_TZAdj')
 
         for row in self.content:
-            cur_time = self.time_to_second(row[index])
+            cur_time = self.timestr_to_second(row[index])
 
             if (cur_time >= start_time) and (time_start == 0):
                 time_start = count

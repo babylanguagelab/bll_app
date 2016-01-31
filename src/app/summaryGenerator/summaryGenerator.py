@@ -51,8 +51,10 @@ class mainWindow(object):
         self.combo_time.add_attribute(renderer_text, "text", 0)
         self.combo_time.set_active(0)
 
-        self.adex_naptime_toggle = gbuilder.get_object("adex_naptime_check")
         self.adex_30mins_toggle = gbuilder.get_object("adex_30mins_check")
+        self.adex_partial_toggle = gbuilder.get_object("adex_partial_check")
+        self.adex_naptime_toggle = gbuilder.get_object("adex_naptime_check")
+        self.adex_last2_toggle = gbuilder.get_object("adex_last2_check")
 
     def init_CMT_dialog(self, gbuilder):
         self.dialog_CMT = gbuilder.get_object("dialog_comment")
