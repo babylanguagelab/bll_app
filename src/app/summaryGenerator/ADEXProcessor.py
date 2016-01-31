@@ -5,8 +5,10 @@
 import logging as lg
 import os
 import time
-import myUtils.ConfigParser as mParser
-from myUtils.database import Database
+#import myUtils.ConfigParser as mParser
+import ConfigParser as mParser
+#from myUtils.database import Database
+from database import Database
 
 
 HEAD_NAME_LIST = [['File_Name'          ,'TEXT'],
@@ -56,7 +58,7 @@ class ADEXProcessor:
                          ['NON', True],
                          ['SIL', True]]
 
-    # [Todo] change switches to item name
+    # [Todo] change switches to item name only
     def set_switches(self, switches):
         for i, item in enumerate(switches):
             self.switches[i][1] != item
@@ -88,7 +90,7 @@ class ADEXProcessor:
             count = len(DB.select(child_id, ['File_Name'], distinct=True, order_by='File_Name ASC'))
             result = list(DB.select(child_id, avg_param)[0])
 
-            # format to no only two digits
+            # format to show only two digits
             for i in range(len(result)):
                 result[i] = "{:.2f}".format(result[i])
 
@@ -96,12 +98,17 @@ class ADEXProcessor:
                                  self.child[child_id][0],
                                  self.child[child_id][1]] + result)
 
-    def run(self, dir_list):
+    def run(self, dir_list, result_file):
         if self.no_naptime:
             self.read_naptime("/home/zhangh15/Dev/bll_app/test/bll_db.db")
 
+        result_dir = os.path.dirname(result_file) + "/report"
+        if not os.path.exists(result_dir):
+            os.mkdir(result_dir)
+
         for path in dir_list:
             basename = os.path.basename(path)
+            os.chdir(path)
             current_DB = Database(basename+'.sqlite3')
             file_list = os.listdir(path)
 
@@ -117,14 +124,38 @@ class ADEXProcessor:
                 if self.no_30mins:
                     mADEX.remove_30mins()
 
+                # remove last 2 rows before nap time and partial
+                if self.no_last2rows:
+                    mADEX.remove_last2rows()
+
                 if self.no_naptime:
                     mADEX.remove_naptime(self.naptime_dict)
 
+                if self.no_partial:
+                    interval_sec = int(self.time_interval.split()[0]) * 60
+                    mADEX.remove_partial_time(interval_sec)
+
                 mADEX.save_DB(current_DB)
 
+            self.save_middle_results(current_DB, result_dir + "/preliminary.xlsx")
             self.get_average(current_DB)
+
             current_DB.close()
             os.remove(basename + ".sqlite3")
+
+        self.save_results(result_file)
+
+    # preliminary results for references
+    def save_middle_results(self, DB, filename):
+        id_list = DB.select('sqlite_sequence', ['name'], order_by='name ASC')
+        id_list = [x[0] for x in id_list]
+        head_list = [x[0] for x in HEAD_NAME_LIST]
+        head_list.insert(0, "Index")
+
+        for child_id in id_list:
+            result = DB.select(child_id, '*', order_by='File_Name ASC')
+            result.insert(0, head_list)
+            mParser.excel_writer(filename, child_id, result)
 
     def save_results(self, filename):
         mParser.excel_writer(filename, 'ADEX_OUTPUT', self.summary)
@@ -181,14 +212,13 @@ class ADEXFileProcessor:
         self.content = self.content[final_start:]
 
     def remove_last2rows(self):
-        final_end = len(self.content) - 1
-        final_end = final_end - 2
-        self.content = self.content[:final_end]
+        final_end = len(self.content) - 2
+        if final_end > 0:
+            self.content = self.content[:final_end]
 
     # find any time duration not up to the time interval
-    def remove_partial_time(self, time_interval):
+    def remove_partial_time(self, interval_sec):
         index = self.heads.index('Audio_Duration')
-        interval_sec = int(time_interval.split()[0]) * 60
         clock_index = self.heads.index('Clock_Time_TZAdj')
         start_time = 0
         end_time = 0
@@ -198,12 +228,11 @@ class ADEXFileProcessor:
             if value != interval_sec:
                 if start_time == 0:
                     start_time = self.timestr_to_second(row[clock_index]) - interval_sec
-                end_time = self.timestr_to_second(row[clock_index]) + value + interval_sec
+                end_time = self.timestr_to_second(row[clock_index]) + interval_sec
             else:
                 if start_time != 0:
                     self.remove_time(start_time, end_time)
                     start_time = 0
-                start_time = 0
 
             # for the last row
             if start_time != 0:
@@ -255,6 +284,7 @@ class ADEXFileProcessor:
             if (cur_time >= start_time) and (time_start == 0):
                 time_start = count
             if (cur_time > end_time) and (time_end == len(self.content)):
+
                 time_end = count
 
             count += 1
@@ -275,3 +305,15 @@ class ADEXFileProcessor:
 
         # insert content into DB
         DB.insert_table(self.child_id, self.heads, self.content)
+
+# for test
+if os.path.exists("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx"):
+    os.remove("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")
+
+ADEX_proc = ADEXProcessor()
+ADEX_proc.set_switches([True]*11)
+ADEX_proc.no_30mins = True
+ADEX_proc.no_last2rows = True
+ADEX_proc.no_partial = True
+ADEX_proc.run(["/home/hao/Develop/projects/bll/bll_app/test/sample"],
+              "/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")
