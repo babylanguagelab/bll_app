@@ -5,10 +5,8 @@
 import logging as lg
 import os
 import time
-#import myUtils.ConfigParser as mParser
-import ConfigParser as mParser
-#from myUtils.database import Database
-from database import Database
+import myUtils.ConfigParser as mParser
+from myUtils.database import Database
 
 
 HEAD_NAME_LIST = [['File_Name'          ,'TEXT'],
@@ -108,7 +106,7 @@ class ADEXProcessor:
 
         for path in dir_list:
             basename = os.path.basename(path)
-            os.chdir(path)
+            #os.chdir(path)
             current_DB = Database(basename+'.sqlite3')
             file_list = os.listdir(path)
 
@@ -307,13 +305,13 @@ class ADEXFileProcessor:
         DB.insert_table(self.child_id, self.heads, self.content)
 
 # for test
-if os.path.exists("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx"):
-    os.remove("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")
+# if os.path.exists("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx"):
+#     os.remove("/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")
 
-ADEX_proc = ADEXProcessor()
-ADEX_proc.set_switches([True]*11)
-ADEX_proc.no_30mins = True
-ADEX_proc.no_last2rows = True
-ADEX_proc.no_partial = True
-ADEX_proc.run(["/home/hao/Develop/projects/bll/bll_app/test/sample"],
-              "/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")
+# ADEX_proc = ADEXProcessor()
+# ADEX_proc.set_switches([True]*11)
+# ADEX_proc.no_30mins = True
+# ADEX_proc.no_last2rows = True
+# ADEX_proc.no_partial = True
+# ADEX_proc.run(["/home/hao/Develop/projects/bll/bll_app/test/sample"],
+#               "/home/hao/Develop/projects/bll/bll_app/test/sample/output.xlsx")

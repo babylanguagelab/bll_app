@@ -12,6 +12,7 @@ class controller(object):
         self.ADEX_proc = ADEXProcessor()
         self.enable_CMT = True
         self.CMT_proc = commentProcessor()
+        self.CMT_file = ""
         self.load_configs()
 
     def run(self):
@@ -30,7 +31,7 @@ class controller(object):
         self.ADEX_proc.no_30mins = True
 
         # CMT configurations:
-        self.CMT_proc.set_switches([True]*14)
+        #self.CMT_proc.set_switches([True]*14)
 
     def save_configs(self):
         configs = {"ADEX":self.ADEX_proc.getConfigs()}

@@ -60,15 +60,19 @@ class mainWindow(object):
         self.dialog_CMT = gbuilder.get_object("dialog_comment")
         self.list_CMT_conf = gbuilder.get_object("list_comments_conf")
         treeview_conf = gbuilder.get_object("treeview_comment_conf")
+        treeview_conf.connect("cursor-changed", self.change_CMT_cursor)
 
-        text_render = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn("Name", text_render, text=0)
-        treeview_conf.append_column(column)
+        text_render1 = Gtk.CellRendererText()
+        column1 = Gtk.TreeViewColumn("Name", text_render1, text=0)
+        treeview_conf.append_column(column1)
 
-        toggle_render = Gtk.CellRendererToggle()
-        toggle_render.connect("toggled", self.toggle_CMT_switches)
-        column_toggle = Gtk.TreeViewColumn("Choose", toggle_render, active=1)
-        treeview_conf.append_column(column_toggle)
+        self.CMT_combo_render2 = Gtk.CellRendererCombo()
+        self.CMT_combo_render2.set_property("editable", True)
+        self.CMT_combo_render2.set_property("text-column", 0)
+        self.CMT_combo_render2.set_property("has-entry", False)
+        self.CMT_combo_render2.connect("edited", self.on_CMT_combo_changed)
+        column2 = Gtk.TreeViewColumn("Options", self.CMT_combo_render2, text=1)
+        treeview_conf.append_column(column2)
 
     def init_config_dialog(self, gbuilder):
         self.dialog_config = gbuilder.get_object("save_config_dialog")
@@ -97,7 +101,6 @@ class mainWindow(object):
         handlers = {
             "quit_main": Gtk.main_quit,
             "show_ADEX_dialog": self.show_ADEX_dialog,
-            "add_ADEX_folders": self.add_ADEX_folders,
             "toggle_ADEX_naptime": self.toggle_ADEX_naptime,
             "toggle_ADEX_partial": self.toggle_partial_records,
             "toggle_ADEX_30mins": self.toggle_ADEX_30mins,
@@ -105,7 +108,6 @@ class mainWindow(object):
             "combo_ADEX_time_changed_cb": self.change_ADEX_time,
             "check_CMT_toggled_cb": self.toggle_CMT,
             "show_CMT_dialog": self.show_CMT_dialog,
-            "add_CMT_file": self.add_CMT_file,
             "show_config_dialog": self.show_config_dialog,
             "run": self.run
         }
@@ -113,6 +115,8 @@ class mainWindow(object):
 
     # ADEX configuration dialog
     def show_ADEX_dialog(self, button):
+        if len(self.con.ADEX_folders) == 0:
+            self.add_ADEX_folders()
 
         self.list_ADEX_switch.clear()
         # sync with controller
@@ -136,7 +140,7 @@ class mainWindow(object):
         Gtk.Widget.hide(self.dialog_ADEX)
 
     # ADEX folders choose dialog
-    def add_ADEX_folders(self, button):
+    def add_ADEX_folders(self):
         dialog = Gtk.FileChooserDialog("Please choose ADEX folders",
                                        self.window,
                                        Gtk.FileChooserAction.SELECT_FOLDER,
@@ -178,23 +182,34 @@ class mainWindow(object):
         self.con.enable_CMT = button.get_active()
 
     def show_CMT_dialog(self, button):
+        if len(self.con.CMT_file) == 0:
+            self.add_CMT_file()
+
         self.list_CMT_conf.clear()
 
-        # sync with controller
-        for i in self.con.CMT_proc.switches:
-            self.list_CMT_conf.append(i)
+        options = self.con.CMT_proc.get_options()
+        self.liststore_CMT_all = []
+
+        for key in self.con.CMT_proc.heads:
+            self.list_CMT_conf.append([key, options[key][0]])
+            liststore_CMT_one = Gtk.ListStore(str)
+            for item in options[key]:
+                liststore_CMT_one.append([item])
+            self.liststore_CMT_all.append(liststore_CMT_one)
 
         self.dialog_CMT.run()
 
-        switches = []
-
-        for row in self.list_CMT_conf:
-            switches.append(row[1])
-        self.con.CMT_proc.set_switches(switches)
-
         Gtk.Widget.hide(self.dialog_CMT)
 
-    def add_CMT_file(self, button):
+    def change_CMT_cursor(self, widget):
+        path = int(widget.get_cursor()[0].to_string())
+        self.CMT_combo_render2.set_property("model",
+                                            self.liststore_CMT_all[path])
+
+    def on_CMT_combo_changed(self, widget, path, text):
+        self.list_CMT_conf[path][1] = text
+
+    def add_CMT_file(self):
         file_dialog = Gtk.FileChooserDialog("Please choose special case file",
                                             self.window,
                                             Gtk.FileChooserAction.SAVE,
@@ -204,12 +219,10 @@ class mainWindow(object):
         response = file_dialog.run()
 
         if response == Gtk.ResponseType.ACCEPT:
-            self.con.CMT_proc.open_comment_file(file_dialog.get_filename())
+            self.con.CMT_file = file_dialog.get_filename()
+            self.con.CMT_proc.open_comment_file(self.con.CMT_file)
 
         file_dialog.destroy()
-
-    def toggle_CMT_switches(self, widget, path):
-        self.list_CMT_conf[path][1] = not self.list_CMT_conf[path][1]
 
     def show_config_dialog(self, button):
         self.dialog_config.run()

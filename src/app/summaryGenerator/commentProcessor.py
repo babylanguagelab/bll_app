@@ -6,71 +6,78 @@ import logging as lg
 import openpyxl
 import myUtils.ConfigParser as mParser
 
-COMMENT_LIST = [
-    'Study Number',
-    'Recording',
-    'Recording Dates',
-    'Recording Type',
-    'ITS File',
-    'Recording Notes/Errors?',
-    'Note in File',
-    'Language Other than English',
-    'Child Sick',
-    'Short Recording',
-    'Pause in Recording',
-    'Unusual Behaviour',
-    'LENA Device off Child',
-    'Paired Recording (home AND homedaycare/daycare)',
-    'Child Development Concern',
-    'Clock Drift']
 
-
-class commentProcessor:
+class commentProcessor(object):
     def __init__(self):
-        self.switches = [
-            ['Recording', True],
-            ['Recording Dates', True],
-            ['Recording Type', True],
-            ['ITS File', True],
-            ['Recording Notes/Errors?', True],
-            ['Language Other than English', True],
-            ['Child Sick', True],
-            ['Short Recording', True],
-            ['Pause in Recording', True],
-            ['Unusual Behaviour', True],
-            ['LENA Device off Child', True],
-            ['Paired Recording [home AND homedaycare/daycare]', True],
-            ['Child Development Concern', True],
-            ['Clock Drift', True]]
+        self.content = {}
+        self.heads = []
 
     def open_comment_file(self, filename):
         wb = openpyxl.load_workbook(filename)
         self.sheet = wb.get_sheet_by_name("Special Cases")
-        self.heads = [x.value for x in self.sheet.rows[0]]
-        self.content = [self.heads]
+        self.heads = [x.value for x in self.sheet.rows[0] if x.value is not None]
 
-    def set_switches(self, switches):
-        for i in range(len(self.switches)):
-            if self.switches[i][1] != switches[i]:
-                self.switches[i][1] = switches[i]
+        child_id = ""
+        for rnum in range(2, self.sheet.max_row):
+            if self.sheet.cell(row=rnum, column=1).value is not None:
+                child_id = self.sheet.cell(row=rnum, column=1).value
+                self.content[child_id] = {}
+
+            content_dict = {}
+            for i, item in enumerate(self.heads):
+                content_dict[item] = self.sheet.cell(row=rnum, column=i+1).value
+
+            ITS_file = self.sheet.cell(row=rnum, column=3).value
+            if ITS_file is not None:
+                self.content[child_id][ITS_file] = content_dict
+
+    def get_options(self):
+        option_dict = {}
+
+        for item in self.heads:
+            option_dict[item] = self.get_options_from_title(item)
+
+        return option_dict
+
+    def get_options_from_title(self, title):
+        CMT_options = []
+
+        if title == "Recording Notes/Errors?" or \
+           title == "Child Sick" or \
+           title == "Child Development Concern" or \
+           title == "Withdrew from Study":
+            CMT_options = ["Yes", "No", "Both"]
+
+        elif title == "Language Other than English":
+            CMT_options.append("English")
+            for key1 in sorted(self.content.keys()):
+                for key2 in sorted(self.content[key1].keys()):
+                    note = self.content[key1][key2][title]
+                    if (note is not None) and (note not in CMT_options):
+                        CMT_options.append(note)
+            CMT_options.append("All")
+
+        else:
+            for key1 in sorted(self.content.keys()):
+                for key2 in sorted(self.content[key1].keys()):
+                    note = self.content[key1][key2][title]
+                    if note is not None and note not in CMT_options:
+                        CMT_options.append(note)
+
+        return CMT_options
+
+    #def filter_options_from_title(self, title, options)
+
 
     # process switches and filter content
-    def run(self):
-        switch_dict = dict(self.switches)
-        switch_dict['Study Number'] = True
-        new_heads = []
-
-        for index in range(len(self.heads)):
-            if self.heads[index] in switch_dict:
-                if switch_dict[self.heads[index]]:
-                    new_heads.append(index)
-
-        for row_index in range(1, self.sheet.max_row):
-            line = []
-            for column_index in new_heads:
-                line.append(self.sheet.cell(row=row_index+1,
-                                            column=column_index+1).value)
-            self.content.append(line)
+    #def run(self):
 
     def save_results(self, filename):
         mParser.excel_writer(filename, 'Special Cases', self.content)
+
+
+# for test
+# mCP = commentProcessor()
+# mCP.open_comment_file("/home/hao/Develop/projects/bll/bll_app/test/test.xlsx")
+# options = mCP.get_options()
+# print(options["Recording Notes/Errors?"])
