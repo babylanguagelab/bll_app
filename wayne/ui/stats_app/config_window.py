@@ -61,6 +61,9 @@ class ConfigWindow():
         #table.attach(desc_entry_hbox, 1, 2, 1, 2)#, ypadding=3) #ypadding adds some space between bottom of entry and bottom of frame border
         grid.attach(desc_entry_hbox, 1, 1, 1, 1)
 
+        self.output_overview = gtk.CheckButton('Generate an overview file instead of seperated files')
+        grid.attach(self.output_overview, 1,2,1,1)
+
         props_frame.add(grid)
         
         vbox.pack_start(props_frame, False, False, 0)
