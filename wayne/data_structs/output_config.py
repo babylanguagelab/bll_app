@@ -12,12 +12,13 @@ class OutputConfig(DBObject):
     #  @param outputs (list) list of the Output objects that this config wraps
     #  @param created (string=None) creation timestamp string. This is set via db_insert() and db_select(), so you shouldn't often need to use it. A value of None indicates this config isn't in the DB yet.
     #  @param db_id (int=None) if this config is in the DB, this is the corresponding primary key value from the output_configs table (else it is None). This is set via db_insert() and db_select(), so you shouldn't often need to use it.
-    def __init__(self, name, desc, outputs, created=None, db_id=None):
+    def __init__(self, name, desc, outputs, created=None, db_id=None, overview=False):
         self.name = name
         self.desc = desc
         self.outputs = outputs
         self.created = created
         self.db_id = db_id
+        self.overview = overview
 
     ## See superclass description.
     def db_insert(self, db):

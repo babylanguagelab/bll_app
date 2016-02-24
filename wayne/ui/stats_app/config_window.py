@@ -129,6 +129,7 @@ class ConfigWindow():
 
             name = self.name_entry.get_text()
             desc = self.desc_entry.get_text()
+            overview = self.output_overview.get_active()
 
             db = BLLDatabase()
             created = None
@@ -138,7 +139,7 @@ class ConfigWindow():
                 self.edit_config.db_delete(db) #this will also delete any associated outputs and entries in output_configs_to_outputs
                 self.edit_config = None
                 
-            config = OutputConfig(name, desc, outputs, created)
+            config = OutputConfig(name, desc, outputs, created, overview=True)
             config.db_insert(db)
             db.close()
 
