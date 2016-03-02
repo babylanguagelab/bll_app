@@ -158,7 +158,9 @@ class Output(DBObject):
         csv_writer.writerow([''])
         self.output_calc.write_csv_rows(self.chained, csv_writer)
         csv_writer.writerow(['------------------'])
-        
+
+    def get_summary(self):
+        col_name = self.name
 
     ## See superclass description.
     @staticmethod

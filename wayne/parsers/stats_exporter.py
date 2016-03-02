@@ -11,10 +11,11 @@ class StatsExporter(object):
     ## Constructor
     #  @param self
     #  @param config (Configuration) The output configuration to write to the csv file.
-    def __init__(self, config, trs_filename, export_filename):
+    def __init__(self, config, trs_filename, export_filename, summary_filename=None):
         self.config = config
         self.trs_filename = trs_filename
         self.export_filename = export_filename
+        self.summary_filename = summary_filename
         
         if not self.export_filename.lower().endswith('.csv'):
             self.export_filename += '.csv'
@@ -44,6 +45,7 @@ class StatsExporter(object):
         segs = trs_parser.parse(progress_update_fcn, progress_next_phase_fcn, validate=False)
         chains = None #this is populated on demand, then cached
 
+        summary_row = []
         #iterate through all outputs in the configuration, adding segments/chains to each one, then writing the output to the spreadsheet file
         i = 0
         while i < len(self.config.outputs):
@@ -71,8 +73,17 @@ class StatsExporter(object):
 
             #grab the output's results and write them to the file
             cur_output.write_csv_rows(csv_writer)
+
+            # get summary from output
+            summary_row += cur_output.get_summary()
+
             csv_writer.writerow([''])
             
             i += 1
-
         export_file.close()
+
+        if len(self.summary_filename) > 0:
+            with open(self.summary_filename, 'wt') as fp:
+                summary_writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
+                for row in summary_row:
+                    summary_writer.writerow(row)

@@ -211,7 +211,8 @@ class ViewConfigsWindow():
                     dialog.show()
 
                     for j in range(len(trs_filenames)):
-                        exporter = StatsExporter(config, trs_filenames[j], export_filenames[j])
+                        exporter = StatsExporter(config, trs_filenames[j], export_filenames[j],
+                                                 summary_filename=export_folder+"/summary.csv")
                         exporter.export()
                         dialog.set_fraction(1.0)
                         if j < len(trs_filenames) - 1:
