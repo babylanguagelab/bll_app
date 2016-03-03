@@ -46,8 +46,8 @@ class StatsExporter(object):
         segs = trs_parser.parse(progress_update_fcn, progress_next_phase_fcn, validate=False)
         chains = None #this is populated on demand, then cached
 
-        summary_row = []
-        summary_head = []
+        summary_row = [os.path.basename(self.trs_filename)[:-4]]
+        summary_head = ["TRS file"]
         #iterate through all outputs in the configuration, adding segments/chains to each one, then writing the output to the spreadsheet file
         i = 0
         while i < len(self.config.outputs):
@@ -86,9 +86,12 @@ class StatsExporter(object):
         export_file.close()
 
         if len(self.summary_filename) > 0:
+            need_head = False
             # check the existence of file, decide the header
-            with open(self.summary_filename, 'wt') as fp:
+            if not os.path.isfile(self.summary_filename):
+                need_head = True
+            with open(self.summary_filename, 'at') as fp:
                 summary_writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
-                if not os.path.isfile(self.summary_filename):
+                if need_head:
                     summary_writer.writerow(summary_head)
-                summary_writer.writerow(row)
+                summary_writer.writerow(summary_row)
