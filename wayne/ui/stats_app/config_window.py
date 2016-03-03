@@ -61,7 +61,7 @@ class ConfigWindow():
         #table.attach(desc_entry_hbox, 1, 2, 1, 2)#, ypadding=3) #ypadding adds some space between bottom of entry and bottom of frame border
         grid.attach(desc_entry_hbox, 1, 1, 1, 1)
 
-        self.output_overview = gtk.CheckButton('Generate an overview file instead of seperated files')
+        self.output_overview = gtk.CheckButton('Generate an overview file as well')
         grid.attach(self.output_overview, 1,2,1,1)
 
         props_frame.add(grid)
@@ -139,7 +139,7 @@ class ConfigWindow():
                 self.edit_config.db_delete(db) #this will also delete any associated outputs and entries in output_configs_to_outputs
                 self.edit_config = None
                 
-            config = OutputConfig(name, desc, outputs, created, overview=True)
+            config = OutputConfig(name, desc, outputs, created, overview)
             config.db_insert(db)
             db.close()
 

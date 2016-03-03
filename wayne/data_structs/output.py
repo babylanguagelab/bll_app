@@ -160,7 +160,7 @@ class Output(DBObject):
         csv_writer.writerow(['------------------'])
 
     def get_summary(self):
-        col_name = self.name
+        return self.output.calc.summary_result
 
     ## See superclass description.
     @staticmethod

@@ -72,9 +72,7 @@ class CountOutputCalc(OutputCalc):
         self.count_type = count_type
         self.max_count = max_count
         self._init_data_structs()
-        self.count = 0 # count how many utterances in all
-        self.sum = 0 # get sum of words in all utterances
-        self.average = 0.0 # average number of words in each utterance, equal to sum / count
+        self.summary_result = 0 # count how many utterances in all
 
     ## Initializes internal data structures used to record items added to this OutputCalc.
     #  @param self
@@ -185,7 +183,7 @@ class CountOutputCalc(OutputCalc):
         #append the total count in a row at the bottom
         csv_writer.writerow([''])
         csv_writer.writerow(['Total:', '', '', total])
-        self.count = len(utter_list)
+        self.summary_result = len(utter_list)
 
     ## Writes out the count results for an 'average across items' count.
     #  This consists of a single row with the average count.
@@ -198,7 +196,7 @@ class CountOutputCalc(OutputCalc):
         if counts:
             total = reduce(lambda accum, x: accum + x, counts, 0)
             avg = float(total) / float(len(counts))
-            self.average = avg
+            self.summary_result = avg 
 
             csv_writer.writerow(['Avg:', '%0.3f' % (avg)])
         else:
@@ -212,7 +210,7 @@ class CountOutputCalc(OutputCalc):
     def _write_sum_across_segs(self, chained, csv_writer):
         counts = self.chain_dict.values() if chained else self.utter_dict.values()
         total = reduce(lambda accum, x: accum + x, counts, 0)
-        self.sum = total
+        self.summary_result = total
 
         csv_writer.writerow(['Sum:', total])
 

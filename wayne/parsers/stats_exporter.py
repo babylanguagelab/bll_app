@@ -3,6 +3,7 @@
 from utils.ui_utils import UIUtils
 from parsers.trs_parser import TRSParser
 from parsers.filter_manager import FilterManager
+import os.path
 
 import csv
 
@@ -46,6 +47,7 @@ class StatsExporter(object):
         chains = None #this is populated on demand, then cached
 
         summary_row = []
+        summary_head = []
         #iterate through all outputs in the configuration, adding segments/chains to each one, then writing the output to the spreadsheet file
         i = 0
         while i < len(self.config.outputs):
@@ -75,7 +77,8 @@ class StatsExporter(object):
             cur_output.write_csv_rows(csv_writer)
 
             # get summary from output
-            summary_row += cur_output.get_summary()
+            summary_head += [cur_output.name]
+            summary_row += [cur_output.get_summary()]
 
             csv_writer.writerow([''])
             
@@ -83,7 +86,9 @@ class StatsExporter(object):
         export_file.close()
 
         if len(self.summary_filename) > 0:
+            # check the existence of file, decide the header
             with open(self.summary_filename, 'wt') as fp:
                 summary_writer = csv.writer(fp, quoting=csv.QUOTE_ALL)
-                for row in summary_row:
-                    summary_writer.writerow(row)
+                if not os.path.isfile(self.summary_filename):
+                    summary_writer.writerow(summary_head)
+                summary_writer.writerow(row)
