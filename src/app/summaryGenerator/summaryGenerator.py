@@ -1,6 +1,6 @@
 # Description: main entry point
 # Author: zhangh15@myumanitoba.ca
-# Date: 2016-07-17
+# Date: 2016-01-17
 
 import logging as lg
 import gi
@@ -19,6 +19,7 @@ class mainWindow(object):
         self.window = builder.get_object("win_main")
 
         self.init_ADEX_dialog(builder)
+        # comment dialog
         self.init_CMT_dialog(builder)
         self.init_config_dialog(builder)
 
