@@ -1,13 +1,13 @@
 # Description: main entry point
 # Author: zhangh15@myumanitoba.ca
-# Date: 2016-01-17
+# Date: 2015-11-17
 
-import logging as lg
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from myUtils.debug import init_debug
+from debug import init_debug
 from controller import controller
+# import logging as lg
 
 
 class mainWindow(object):
@@ -19,7 +19,7 @@ class mainWindow(object):
         self.window = builder.get_object("win_main")
 
         self.init_ADEX_dialog(builder)
-        # comment dialog
+        # CMT for comment
         self.init_CMT_dialog(builder)
         self.init_config_dialog(builder)
 
