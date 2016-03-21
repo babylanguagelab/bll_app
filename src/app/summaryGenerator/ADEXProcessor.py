@@ -8,7 +8,6 @@ import os
 import time
 import ConfigParser as mParser
 from database import Database
-from debug import init_debug
 
 HEAD_NAME_LIST = [['File_Name'          ,'TEXT'],
                   ['Number_Recordings'  ,'INT'],
@@ -46,17 +45,19 @@ def second_to_timestr(second):
 
 
 class ADEXProcessor:
-    def __init__(self):
-        self.config = {'f30mins' : False,
-                       'partialRec' : False,
-                       'naptime' : False,
-                       'last2rows' : False,
-                       'timeInterval': 30} # seconds
+    def __init__(self, database):
+        self.config = {'f30mins' : True,
+                       'partial_records' : False,
+                       'naptime' : True,
+                       'last2rows' : True,
+                       'time_interval': 600, # seconds
+                       'adex_dirs' : [],
+                       'DB': database}
         self.naptime = ("/tmp/test/bll_db.db", {})
         self.child = {}
-        self.switches = (('AWC', True), ('Turn_Count', True), ('Child_Voc_Count', True),
-                         ('CHN', True), ('FAN', True), ('MAN', True), ('CXN', True),
-                         ('OLN', True), ('TVN', True), ('NON', True), ('SIL', True))
+        self.switches = [['AWC', True], ['Turn_Count', True], ['Child_Voc_Count', True],
+                         ['CHN', True], ['FAN', True], ['MAN', True], ['CXN', True],
+                         ['OLN', True], ['TVN', True], ['NON', True], ['SIL', True]]
 
         item_list = [x[0] for x in self.switches if x[1] is True]
         self.output = (['ChildID', 'Age', 'Gender', 'Recordings'] + item_list, [])
@@ -82,8 +83,8 @@ class ADEXProcessor:
             else:
                 self.naptime[1][child_id] += [(date, entry[1], entry[2])]
 
-    def get_average(self, DB):
-        childID_list = DB.select('sqlite_sequence', ['name'], order_by='name ASC')
+    def get_average(self):
+        childID_list = self.config['DB'].select('sqlite_sequence', ['name'], order_by='name ASC')
         childID_list = [x[0] for x in childID_list]
         item_list = [x[0] for x in self.switches if x[1] is True]
 
@@ -91,10 +92,10 @@ class ADEXProcessor:
 
         # generate average values for each ID (all files)
         for child_id in childID_list:
-            result = list(DB.select(child_id, avg_param)[0])
+            result = list(self.config['DB'].select(child_id, avg_param)[0])
             tmp = self.child[child_id]
             result  = [child_id] + [x for x in tmp] + result
-            DB.insert("ADEX_summary", self.output[0], result)
+            self.config['DB'].insert("adex_summary", self.output[0], result)
 
             # format to show only two digits
             # for i in range(len(result)):
@@ -116,7 +117,7 @@ class ADEXProcessor:
             result.insert(0, head_list)
             #mParser.excel_writer(filename, child_id, result)
 
-    def run(self, dir_list):
+    def run(self):
         if self.config['naptime']:
             self.read_naptime()
 
@@ -124,19 +125,16 @@ class ADEXProcessor:
         # if not os.path.exists(result_dir):
         #     os.mkdir(result_dir)
 
-        #current_DB = Database(":memory:")
-        current_DB = Database("db.sqlite3")
- 
-        if current_DB.select('sqlite_master', ['name'],
-                             where="type='table' AND name='ADEX_summary'") is None:
+        if self.config['DB'].select('sqlite_master', ['name'],
+                             where="type='table' AND name='adex_summary'") is None:
 
             param = self.output[0]
             #param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
             param = ",".join(param)
-            sql = "CREATE TABLE ADEX_summary" + "(" + param + ",PRIMARY KEY (ChildID)" + ")"
-            current_DB.execute_script(sql)
+            sql = "CREATE TABLE adex_summary" + "(" + param + ",PRIMARY KEY (ChildID)" + ")"
+            self.config['DB'].execute_script(sql)
 
-        for path in dir_list:
+        for path in self.config['adex_dirs']:
             file_list = os.listdir(path)
 
             for ADEX_file in file_list:
@@ -155,17 +153,17 @@ class ADEXProcessor:
                 if self.config['naptime']:
                     mADEX.remove_naptime(self.naptime[1])
 
-                if self.config['partialRec']:
-                    interval_sec = int(self.config['timeInterval'])
+                if self.config['partial_records']:
+                    interval_sec = int(self.config['time_interval'])
                     mADEX.remove_partial_time(interval_sec)
 
                 if self.config['last2rows']:
                     mADEX.remove_last2rows()
 
-                mADEX.save_DB(current_DB)
+                mADEX.save_DB(self.config['DB'])
 
             # self.save_middle_results(current_DB)
-            self.get_average(current_DB)
+            self.get_average()
 
 
 # read ADEX csv files with required columns only
@@ -287,6 +285,6 @@ class ADEXFileProcessor:
         DB.insert_table(self.child_id, self.heads, self.content)
 
 # for test
-init_debug()
-ADEX_proc = ADEXProcessor()
-ADEX_proc.run(["/tmp/test/data/"])
+# init_debug()
+# ADEX_proc = ADEXProcessor()
+# ADEX_proc.run(["/tmp/test/data/"])
