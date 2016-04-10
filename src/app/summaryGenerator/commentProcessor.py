@@ -104,8 +104,8 @@ class CommentProcessor(object):
 
 
 # for test
-mCP = CommentProcessor("test")
-mCP.config['filename'] = "/tmp/test/test.xlsx"
-mCP.open_comment_file()
-options = mCP.get_options()
-print(options["Child Sick"])
+#mCP = CommentProcessor("test")
+#mCP.config['filename'] = "/tmp/test/test.xlsx"
+#mCP.open_comment_file()
+#options = mCP.get_options()
+#print(options["Child Sick"])

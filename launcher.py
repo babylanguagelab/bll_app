@@ -40,7 +40,7 @@ os.chdir(module_path)
 
 # attempt to dynamically import the module corresponding to
 # the app we are launching
-module = __import__(module_name)
-main_class = getattr(module, "main")
+module = __import__("main")
+main_class = getattr(module, "Main")
 mApp = main_class()
 mApp.run()
