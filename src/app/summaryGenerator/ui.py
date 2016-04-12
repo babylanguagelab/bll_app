@@ -15,11 +15,9 @@ class MainWindow(object):
         builder = Gtk.Builder()
         builder.add_from_file("UI.glade")
         self.window = builder.get_object("win_main")
-        self.dialog_adex = ADEXDialog(builder, self.con)
-        self.dialog_comment = CommentDialog(builder, self.con)
 
-        #self.init_CMT_dialog(builder)
-        #self.init_config_dialog(builder)
+        self.adex = ADEXDialog(builder, self.con)
+        self.comment = CommentDialog(builder, self.con)
 
         self.connect_signals(builder)
 
@@ -45,67 +43,27 @@ class MainWindow(object):
 
         self.list_configs.append((1, "Adex's config", "Sample Description"))
 
-
     def connect_signals(self, gbuilder):
-        adex_handlers = self.dialog_adex.get_signals_handlers()
-
-        mHandlers = {
+        signal_handlers = {
             "quit_main": Gtk.main_quit,
-            "show_ADEX_dialog": self.dialog_adex.show,
-            "show_CMT_dialog": self.dialog_comment.show,
+            "check_ADEX_toggled_cb": self.toggle_ADEX,
+            "show_ADEX_dialog": self.adex.show,
+            "show_CMT_dialog": self.comment.show,
+            "check_CMT_toggled_cb": self.toggle_CMT,
             "show_config_dialog": self.show_config_dialog,
             "run": self.run
         }
 
-        mHandlers.update(adex_handlers)
-        gbuilder.connect_signals(mHandlers)
+        adex_handlers = self.adex.get_signals_handlers()
+        signal_handlers.update(adex_handlers)
 
+        gbuilder.connect_signals(signal_handlers)
+
+    def toggle_ADEX(self, button):
+        self.con.config['ADEX'] = button.get_active()
 
     def toggle_CMT(self, button):
-        self.con.enable_CMT = button.get_active()
-
-    def show_CMT_dialog(self, button):
-        if len(self.con.CMT_file) == 0:
-            self.add_CMT_file()
-
-        self.list_CMT_conf.clear()
-
-        options = self.con.CMT_proc.get_options()
-        self.liststore_CMT_all = []
-
-        for key in self.con.CMT_proc.heads:
-            self.list_CMT_conf.append([key, options[key][0]])
-            liststore_CMT_one = Gtk.ListStore(str)
-            for item in options[key]:
-                liststore_CMT_one.append([item])
-            self.liststore_CMT_all.append(liststore_CMT_one)
-
-        self.dialog_CMT.run()
-
-        Gtk.Widget.hide(self.dialog_CMT)
-
-    def change_CMT_cursor(self, widget):
-        path = int(widget.get_cursor()[0].to_string())
-        self.CMT_combo_render2.set_property("model",
-                                            self.liststore_CMT_all[path])
-
-    def on_CMT_combo_changed(self, widget, path, text):
-        self.list_CMT_conf[path][1] = text
-
-    def add_CMT_file(self):
-        file_dialog = Gtk.FileChooserDialog("Please choose special case file",
-                                            self.window,
-                                            Gtk.FileChooserAction.SAVE,
-                                            (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
-        file_dialog.set_local_only(True)
-        response = file_dialog.run()
-
-        if response == Gtk.ResponseType.ACCEPT:
-            self.con.CMT_file = file_dialog.get_filename()
-            self.con.CMT_proc.open_comment_file(self.con.CMT_file)
-
-        file_dialog.destroy()
+        self.con.config['Comment'] = button.get_active()
 
     def show_config_dialog(self, button):
         self.dialog_config.run()
@@ -113,14 +71,13 @@ class MainWindow(object):
 
     def run(self, button):
         #self.con.ADEX_folders=['/home/hao/Develop/projects/bll/bll_app/test/sample']
-        if (len(self.con.ADEX_folders) == 0):
-            dialog = Gtk.MessageDialog(self.window,
-                                       Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                       Gtk.MessageType.INFO, Gtk.ButtonsType.OK,
-                                       "Please choose ADEX folders first!")
-            dialog.run()
-            dialog.destroy()
-            return
+        if self.con.config['ADEX']:
+            if len(self.con.adex.config['adex_dirs']) == 0:
+                self.con.adex.config['adex_dirs'] = self.adex.choose_folders()
+
+        if self.con.config['Comment']:
+            if len(self.con.com.config['filename']) == 0:
+                self.comment.choose_file()
 
         if len(self.con.config['output_file']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
@@ -145,7 +102,7 @@ class MainWindow(object):
 class ADEXDialog(object):
     def __init__(self, gbuilder, controller):
         self.mdialog = gbuilder.get_object("dialog_ADEX")
-        self.mCon = controller
+        self.control = controller
 
         self.list_adex_switch = gbuilder.get_object("list_ADEX_switch")
 
@@ -178,42 +135,44 @@ class ADEXDialog(object):
 
     def get_signals_handlers(self):
         handlers = {
+            "stop_delete_window": self.stop_delete_window,
             "toggle_ADEX_30mins": self.toggle_adex_f30mins,
             "toggle_ADEX_partial": self.toggle_partial_records,
             "toggle_ADEX_naptime": self.toggle_naptime,
             "toggle_ADEX_last2": self.toggle_last2,
-            "stop_ADEX_delete": self.stop_delete,
             "hidex_adex_dialog": self.hide,
             "combo_ADEX_time_changed_cb": self.change_partial_time
         }
         return handlers
 
+    # hide the window instead of deleting
+    def stop_delete_window(self, widget, data):
+        Gtk.Widget.hide(widget)
+        return True
+
     # change ADEX configurations
     def toggle_switches(self, widget, path):
         self.list_adex_switch[path][1] = not self.list_adex_switch[path][1]
-        self.mCon.adex.switches[int(path)][1] = self.list_adex_switch[path][1]
+        self.control.adex.switches[int(path)][1] = self.list_adex_switch[path][1]
 
     def toggle_naptime(self, button):
-        self.mCon.adex.config['naptime'] = button.get_active()
+        self.control.adex.config['naptime'] = button.get_active()
 
     def toggle_adex_f30mins(self, button):
-        self.mCon.adex.config['f30mins'] = button.get_active()
+        self.control.adex.config['f30mins'] = button.get_active()
 
     def toggle_partial_records(self, button):
-        self.mCon.adex.config['partial_records'] = button.get_active()
+        self.control.adex.config['partial_records'] = button.get_active()
 
     def change_partial_time(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()
             ptime = int(model[tree_iter][0].split(' ')[0])
-            self.mCon.adex.config['time_interval'] = ptime * 60
+            self.control.adex.config['time_interval'] = ptime * 60
 
     def toggle_last2(self, button):
-        self.mCon.adex.config['last2rows'] = button.get_active()
-
-    def stop_delete(self, widget, data):
-        return True
+        self.control.adex.config['last2rows'] = button.get_active()
 
     # ADEX folders choose dialog
     def choose_folders(self):
@@ -235,20 +194,20 @@ class ADEXDialog(object):
 
     # ADEX configuration dialog
     def show(self, button):
-        if len(self.mCon.adex.config['adex_dirs']) == 0:
-            self.mCon.adex.config['adex_dirs'] = self.choose_folders()
+        if len(self.control.adex.config['adex_dirs']) == 0:
+            self.control.adex.config['adex_dirs'] = self.choose_folders()
 
         # sync data
         self.list_adex_switch.clear()
-        for i in self.mCon.adex.switches:
+        for i in self.control.adex.switches:
             self.list_adex_switch.append(i)
 
-        self.f30mins_toggle.set_active(self.mCon.adex.config['f30mins'])
-        self.partial_toggle.set_active(self.mCon.adex.config['partial_records'])
-        self.naptime_toggle.set_active(self.mCon.adex.config['naptime'])
-        self.last2r_toggle.set_active(self.mCon.adex.config['last2rows'])
+        self.f30mins_toggle.set_active(self.control.adex.config['f30mins'])
+        self.partial_toggle.set_active(self.control.adex.config['partial_records'])
+        self.naptime_toggle.set_active(self.control.adex.config['naptime'])
+        self.last2r_toggle.set_active(self.control.adex.config['last2rows'])
 
-        time_interval = self.mCon.adex.config['time_interval']
+        time_interval = self.control.adex.config['time_interval']
         if time_interval == 300:
             self.combo_time.set_active(0)
         elif time_interval == 600:
@@ -266,83 +225,35 @@ class ADEXDialog(object):
 
 class CommentDialog(object):
     def __init__(self, gbuilder, controller):
-        self.mDialog = gbuilder.get_object("dialog_comment")
-        self.mCon = controller
+        self.com_dialog = gbuilder.get_object("dialog_comment")
+        self.contro = controller
 
-        self.record_type = gbuilder.get_object("checkbutton1")
-        self.record_type_toggle = gbuilder.get_object("comboboxtext1")
+    def get_signals_handlers(self):
+        handlers = {
+            "stop_delete_window": self.stop_delete_window
+        }
+        return handlers
 
-        self.its = gbuilder.get_object("checkbutton2")
+    def stop_delete_window(self, widget, data):
+        Gtk.Widget.hide(widget)
+        return True
 
-        self.notes_in = gbuilder.get_object("checkbutton4")
-        self.notes_in_toggle = gbuilder.get_object("comboboxtext8")
+    def choose_file(self):
+        file_dialog = Gtk.FileChooserDialog("Please choose special case file",
+                                            self.com_dialog,
+                                            Gtk.FileChooserAction.SAVE,
+                                            (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+        file_dialog.set_local_only(True)
+        response = file_dialog.run()
 
-        self.PRecord = gbuilder.get_object("checkbutton5")
-        self.PRecord_toggle = gbuilder.get_object("comboboxtext6")
-
-        self.language = gbuilder.get_object("checkbutton6")
-        self.language_toggle = gbuilder.get_object("comboboxtext2")
-
-        self.sick = gbuilder.get_object("checkbutton7")
-        self.sick_toggle = gbuilder.get_object("comboboxtext3")
-
-        self.develop = gbuilder.get_object("checkbutton8")
-        self.develop_toggle = gbuilder.get_object("comboboxtext4")
-
-        self.withdraw = gbuilder.get_object("checkbutton9")
-        self.withdraw_toggle = gbuilder.get_object("comboboxtext5")
-
+        if response == Gtk.ResponseType.ACCEPT:
+            self.contro.com.config['filename'] = file_dialog.get_filename()
 
     def show(self, button):
-        if len(self.mCon.com.config['filename']) == 0:
-            file_dialog = Gtk.FileChooserDialog("Please choose special case file",
-                                                self.mDialog,
-                                                Gtk.FileChooserAction.SAVE,
-                                                (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                                                 Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
-            file_dialog.set_local_only(True)
-            response = file_dialog.run()
+        # if len(self.contro.com.config['filename']) == 0:
+        #     self.choose_file()
 
-            if response == Gtk.ResponseType.ACCEPT:
-                self.mCon.com.config['filename'] = file_dialog.get_filename()
-                self.mCon.com.open_comment_file()
+        #self.contro.com.open_comment_file()
 
-            options = self.mCon.com.get_options_from_title("Recording Type")
-            for x in options:
-                self.record_type_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Recording Notes/Errors?")
-            for x in options:
-                self.notes_in_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Paired Recording")
-            for x in options:
-                self.PRecord_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Language Other than English")
-            for x in options:
-                self.language_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Child Sick")
-            for x in options:
-                self.sick_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Child Development Concern")
-            for x in options:
-                self.develop_toggle.append(None, x)
-
-            options = self.mCon.com.get_options_from_title("Withdrew from Study")
-            for x in options:
-                self.withdraw_toggle.append(None, x)
-
-            file_dialog.destroy()
-
-        self.record_type_toggle.set_active(0)
-        self.notes_in_toggle.set_active(0)
-        self.PRecord_toggle.set_active(0)
-        self.language_toggle.set_active(0)
-        self.sick_toggle.set_active(0)
-        self.develop_toggle.set_active(0)
-        self.withdraw_toggle.set_active(0)
-
-        self.mDialog.show()
+        self.com_dialog.show()
