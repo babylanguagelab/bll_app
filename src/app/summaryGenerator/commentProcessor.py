@@ -73,7 +73,7 @@ class CommentProcessor(object):
            title == "Child Sick" or \
            title == "Child Development Concern" or \
            title == "Withdrew from Study":
-            CMT_options = ["Yes", "No", "Both"]
+            CMT_options = ["Yes", "No"]
 
         elif title == "Language Other than English":
             CMT_options.append("English")

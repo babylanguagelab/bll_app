@@ -64,7 +64,7 @@ THE SOFTWARE.
   <object class="GtkWindow" id="win_main">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">summary generator</property>
-    <property name="window_position">center-always</property>
+    <property name="window_position">center-on-parent</property>
     <property name="default_width">525</property>
     <property name="default_height">395</property>
     <property name="icon_name">package-x-generic</property>
@@ -84,17 +84,11 @@ THE SOFTWARE.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkCheckButton" id="checkbutton13">
+                  <object class="GtkCheckButton">
                     <property name="label" translatable="yes">ADEX Filter</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="focus_on_click">False</property>
                     <property name="receives_default">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="margin_left">6</property>
-                    <property name="xalign">0.019999999552965164</property>
-                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="check_ADEX_toggled_cb" swapped="no"/>
                   </object>
@@ -133,22 +127,17 @@ THE SOFTWARE.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkCheckButton" id="check_CMT">
+                  <object class="GtkCheckButton">
                     <property name="label" translatable="yes">Special Cases Filter</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="margin_left">6</property>
-                    <property name="xalign">0.5</property>
-                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                     <signal name="toggled" handler="check_CMT_toggled_cb" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -179,23 +168,18 @@ THE SOFTWARE.
             <child>
               <object class="GtkBox" id="box6">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkCheckButton" id="checkbutton3">
+                  <object class="GtkCheckButton">
                     <property name="label" translatable="yes">Transcribed Data</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">center</property>
-                    <property name="margin_left">6</property>
-                    <property name="xalign">0.5</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -633,19 +617,6 @@ THE SOFTWARE.
                     <property name="row_homogeneous">True</property>
                     <child>
                       <object class="GtkCheckButton">
-                        <property name="label" translatable="yes">Study Number</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">0</property>
-                        <property name="top_attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton">
                         <property name="label" translatable="yes">Recording</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -840,6 +811,20 @@ THE SOFTWARE.
                         <property name="top_attach">7</property>
                       </packing>
                     </child>
+                    <child>
+                      <object class="GtkCheckButton">
+                        <property name="label" translatable="yes">Study Number</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="com_toggle_option" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -850,6 +835,105 @@ THE SOFTWARE.
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Output Filter:</property>
               </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkDialog" id="dialog_comment_config">
+    <property name="can_focus">False</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">dialog_comment</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">OK</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkCheckButton" id="check_comment_option">
+                <property name="label" translatable="yes">Use Result Filter:</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Please choose one or more options</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkTreeView">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
             </child>
           </object>
           <packing>

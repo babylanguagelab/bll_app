@@ -34,3 +34,7 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 
 # Transcription
 - 1. Generate the summary instead separate files.
+
+[Todo]
+	1. use time interval from ADEX Processor.
+

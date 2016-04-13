@@ -45,6 +45,7 @@ def second_to_timestr(second):
 
 
 class ADEXProcessor:
+    time_interval = [300, 600, 1800, 3600]
     def __init__(self, database):
         self.config = {'f30mins' : True,
                        'partial_records' : False,

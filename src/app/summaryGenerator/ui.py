@@ -17,7 +17,7 @@ class MainWindow(object):
         self.window = builder.get_object("win_main")
 
         self.adex = ADEXDialog(builder, self.con)
-        self.comment = CommentDialog(builder, self.con)
+        self.comt = CommentDialog(builder, self.con)
 
         self.connect_signals(builder)
 
@@ -47,15 +47,15 @@ class MainWindow(object):
         signal_handlers = {
             "quit_main": Gtk.main_quit,
             "check_ADEX_toggled_cb": self.toggle_ADEX,
-            "show_ADEX_dialog": self.adex.show,
-            "show_CMT_dialog": self.comment.show,
             "check_CMT_toggled_cb": self.toggle_CMT,
+            "show_ADEX_dialog": self.adex.show,
+            "show_CMT_dialog": self.comt.show,
             "show_config_dialog": self.show_config_dialog,
             "run": self.run
         }
 
-        adex_handlers = self.adex.get_signals_handlers()
-        signal_handlers.update(adex_handlers)
+        signal_handlers.update(self.adex.get_signals_handlers())
+        signal_handlers.update(self.comt.get_signals_handlers())
 
         gbuilder.connect_signals(signal_handlers)
 
@@ -77,7 +77,7 @@ class MainWindow(object):
 
         if self.con.config['Comment']:
             if len(self.con.com.config['filename']) == 0:
-                self.comment.choose_file()
+                self.comt.choose_file()
 
         if len(self.con.config['output_file']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
@@ -226,11 +226,14 @@ class ADEXDialog(object):
 class CommentDialog(object):
     def __init__(self, gbuilder, controller):
         self.com_dialog = gbuilder.get_object("dialog_comment")
+        self.com_config = gbuilder.get_object("dialog_comment_config")
+        self.com_config_enable = gbuilder.get_object("check_comment_option")
         self.contro = controller
 
     def get_signals_handlers(self):
         handlers = {
-            "stop_delete_window": self.stop_delete_window
+            "stop_delete_window": self.stop_delete_window,
+            "com_toggle_option": self.change_option
         }
         return handlers
 
@@ -249,6 +252,13 @@ class CommentDialog(object):
 
         if response == Gtk.ResponseType.ACCEPT:
             self.contro.com.config['filename'] = file_dialog.get_filename()
+
+    def change_option(self, button):
+        if button.get_active():
+            # get option for this button label
+            # build tree view
+            # get selection, update comment configuration
+            self.com_config.show()
 
     def show(self, button):
         # if len(self.contro.com.config['filename']) == 0:
