@@ -44,7 +44,7 @@ class CommentProcessor(object):
         excel_column = {}
         for item in excel_body:
             for name in excel_head:
-                if not excel_column.has_key(name):
+                if name not in excel_column:
                     excel_column[name] = set(item[name])
                 else:
                     excel_column[name] = excel_column[name].union(set(item[name]))
@@ -84,9 +84,9 @@ class CommentProcessor(object):
         remove_its = []
 
         for item in self.content["head"]:
-            nfilter = self.content["column"] - self.switch[item]
+            nfilter = self.content["column"][item] - self.switch[item]
             for child in self.content["body"]:
-                for info in child[head]:
+                for info in child[item]:
                     if set(info).issubset(nfilter):
                         remove_its.append(child["ITS File"])
 
