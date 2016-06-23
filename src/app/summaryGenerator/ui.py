@@ -21,28 +21,6 @@ class MainWindow(object):
 
         self.connect_signals(builder)
 
-    def init_config_dialog(self, gbuilder):
-        self.dialog_config = gbuilder.get_object("save_config_dialog")
-        self.config_title = gbuilder.get_object("save_config_titile")
-        self.config_desc = gbuilder.get_object("save_config_desc")
-
-        self.list_configs = gbuilder.get_object("list_conf")
-        treeview_conf = gbuilder.get_object("treeview_conf")
-
-        text_render = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn("ID", text_render, text=0)
-        treeview_conf.append_column(column)
-
-        text_render = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn("Title", text_render, text=1)
-        treeview_conf.append_column(column)
-
-        text_render = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn("Description", text_render, text=2)
-        treeview_conf.append_column(column)
-
-        self.list_configs.append((1, "Adex's config", "Sample Description"))
-
     def connect_signals(self, gbuilder):
         signal_handlers = {
             "quit_main": Gtk.main_quit,
@@ -50,7 +28,6 @@ class MainWindow(object):
             "check_CMT_toggled_cb": self.toggle_CMT,
             "show_ADEX_dialog": self.adex.show,
             "show_CMT_dialog": self.comt.show,
-            "show_config_dialog": self.show_config_dialog,
             "run": self.run
         }
 
@@ -65,10 +42,6 @@ class MainWindow(object):
     def toggle_CMT(self, button):
         self.con.config['Comment'] = button.get_active()
 
-    def show_config_dialog(self, button):
-        self.dialog_config.run()
-        Gtk.Widget.hide(self.dialog_config)
-
     def run(self, button):
         #self.con.ADEX_folders=['/home/hao/Develop/projects/bll/bll_app/test/sample']
         if self.con.config['ADEX']:
@@ -77,7 +50,7 @@ class MainWindow(object):
 
         if self.con.config['Comment']:
             if len(self.con.com.config['filename']) == 0:
-                self.comt.choose_file()
+                self.con.com.config['filename'] = self.comt.choose_file()
 
         if len(self.con.config['output_file']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
@@ -250,8 +223,11 @@ class CommentDialog(object):
         file_dialog.set_local_only(True)
         response = file_dialog.run()
 
+        CMT_file = ""
         if response == Gtk.ResponseType.ACCEPT:
-            self.contro.com.config['filename'] = file_dialog.get_filename()
+            CMT_file = file_dialog.get_filename()
+
+        return CMT_file
 
     def change_option(self, button):
         if button.get_active():

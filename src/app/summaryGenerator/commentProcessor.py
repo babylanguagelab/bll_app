@@ -19,7 +19,8 @@ class CommentProcessor(object):
         sheet = workbook.get_sheet_by_name("Special Cases")
         excel_head = [x.value for x in sheet.rows[0] if x.value is not None]
 
-        # get content list
+        # get content body list
+        # for each record is a dictionary
         excel_body = []
         for rnum in range(2, sheet.max_row):
             # sometimes the max_row number is not accurate, so I add an addition check
@@ -41,6 +42,8 @@ class CommentProcessor(object):
                                                                column=i+1).value)
 
         # get option dictionary
+        # key: item name
+        # value: item options
         excel_column = {}
         for item in excel_body:
             for name in excel_head:
@@ -73,6 +76,7 @@ class CommentProcessor(object):
 
         if content == "all":
             self.switch[item] = [True, original]
+            return
 
         if reverse:
             self.switch[item] = [True, set(original) - set(content)]
@@ -80,7 +84,7 @@ class CommentProcessor(object):
             self.switch[item] = [True, set(content)]
 
     # process switches and filter content
-    def filter_switch(self):
+    def run_switch(self):
         remove_its = []
 
         for item in self.content["head"]:
@@ -107,10 +111,12 @@ class CommentProcessor(object):
 
 
 # for test
-mCP = CommentProcessor("test")
-mCP.config['filename'] = "/tmp/test.xlsx"
-mCP.open_comment_file()
-mCP.init_switch()
-print(mCP.content['head'])
+# mCP = CommentProcessor("test")
+# mCP.config['filename'] = "/tmp/test.xlsx"
+# mCP.open_comment_file()
+# mCP.init_switch()
+# mCP.update_switch("Language Other than English", True, ["French"], True)
+# print(mCP.content['head'])
+# print(mCP.switch["Language Other than English"])
 #options = mCP.get_options()
 #print(options["Child Sick"])
