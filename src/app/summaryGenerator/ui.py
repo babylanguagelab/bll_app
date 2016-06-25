@@ -198,15 +198,15 @@ class ADEXDialog(object):
 
 class CommentDialog(object):
     def __init__(self, gbuilder, controller):
-        self.com_dialog = gbuilder.get_object("dialog_comment")
-        self.com_config = gbuilder.get_object("dialog_comment_config")
-        self.com_config_enable = gbuilder.get_object("check_comment_option")
         self.contro = controller
+
+        self.com_dialog = gbuilder.get_object("dialog_comment")
+        self.com_dialog_configs_store = gbuilder.get_object("liststore_comment")
+        self.com_dialog_configs_view = gbuilder.get_object("treeview_comment")
 
     def get_signals_handlers(self):
         handlers = {
             "stop_delete_window": self.stop_delete_window,
-            "com_toggle_option": self.change_option
         }
         return handlers
 
@@ -215,7 +215,7 @@ class CommentDialog(object):
         return True
 
     def choose_file(self):
-        file_dialog = Gtk.FileChooserDialog("Please choose special case file",
+        file_dialog = Gtk.FileChooserDialog("Please choose the special case file",
                                             self.com_dialog,
                                             Gtk.FileChooserAction.SAVE,
                                             (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
@@ -223,23 +223,17 @@ class CommentDialog(object):
         file_dialog.set_local_only(True)
         response = file_dialog.run()
 
-        CMT_file = ""
+        comment_file = ""
         if response == Gtk.ResponseType.ACCEPT:
-            CMT_file = file_dialog.get_filename()
+            comment_file = file_dialog.get_filename()
 
-        return CMT_file
+        file_dialog.destroy()
 
-    def change_option(self, button):
-        if button.get_active():
-            # get option for this button label
-            # build tree view
-            # get selection, update comment configuration
-            self.com_config.show()
+        return comment_file
 
     def show(self, button):
-        # if len(self.contro.com.config['filename']) == 0:
-        #     self.choose_file()
-
-        #self.contro.com.open_comment_file()
+        if len(self.contro.com.config['filename']) == 0:
+            self.contro.com.config['filename'] = self.choose_file()
+        self.contro.com.open_comment_file()
 
         self.com_dialog.show()

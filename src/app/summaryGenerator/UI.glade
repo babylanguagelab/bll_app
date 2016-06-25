@@ -289,7 +289,6 @@ THE SOFTWARE.
                     <property name="receives_default">True</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <signal name="clicked" handler="show_config_dialog" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -659,12 +658,21 @@ THE SOFTWARE.
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="liststore_comment"/>
+  <object class="GtkListStore" id="liststore_comment">
+    <columns>
+      <!-- column-name Enable -->
+      <column type="gboolean"/>
+      <!-- column-name Name -->
+      <column type="guchar"/>
+    </columns>
+  </object>
   <object class="GtkDialog" id="dialog_comment">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Special Case Filter</property>
     <property name="window_position">center-always</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">win_main</property>
+    <signal name="delete-event" handler="stop_delete_window" swapped="no"/>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -708,7 +716,7 @@ THE SOFTWARE.
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkTreeView">
+                  <object class="GtkTreeView" id="treeview_comment">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">liststore_comment</property>

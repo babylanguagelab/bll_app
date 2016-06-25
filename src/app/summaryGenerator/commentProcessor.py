@@ -8,7 +8,9 @@ import ConfigParser as mParser
 
 class CommentProcessor(object):
     def __init__(self, database):
-        self.content = {} # excel content info, include: head, body, column
+        # excel content info, includes: head -> table headers,
+        # body -> table content, column -> column options
+        self.content = {}
         self.config = {'DB': database, 'filename': ""}
         self.switch = {} # output info
         self.output = []
