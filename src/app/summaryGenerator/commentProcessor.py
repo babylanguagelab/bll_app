@@ -9,7 +9,7 @@ import ConfigParser as mParser
 class CommentProcessor(object):
     def __init__(self, database):
         # excel content info, includes: head -> table headers,
-        # body -> table content, column -> column options
+        # body -> table content, column -> set of column options
         self.content = {}
         self.config = {'DB': database, 'filename': ""}
         self.switch = {} # output info
@@ -58,6 +58,8 @@ class CommentProcessor(object):
         self.content["body"] = excel_body
         self.content["column"] = excel_column
 
+        self.init_switch()
+
     # switch for output options
     def init_switch(self):
         switch = {}
@@ -67,17 +69,12 @@ class CommentProcessor(object):
         self.switch = switch
 
     # update output options
-    def update_switch(self, item, enable,
-                      content="all", reverse=False):
+    def update_switch(self, item, enable, content, reverse=False):
 
         original = self.content["column"][item]
 
         if enable is False:
             self.switch[item] = [False, original]
-            return
-
-        if content == "all":
-            self.switch[item] = [True, original]
             return
 
         if reverse:
@@ -89,6 +86,7 @@ class CommentProcessor(object):
     def run_switch(self):
         remove_its = []
 
+        # match information in child
         for item in self.content["head"]:
             nfilter = self.content["column"][item] - self.switch[item]
             for child in self.content["body"]:
@@ -96,6 +94,7 @@ class CommentProcessor(object):
                     if set(info).issubset(nfilter):
                         remove_its.append(child["ITS File"])
 
+        # record the filtered child information
         new_output = []
         for child in self.content["body"]:
             for ITS in child["ITS File"]:
@@ -106,10 +105,11 @@ class CommentProcessor(object):
 
                     self.output.append(new_output)
 
+    def get_options(self, item):
+        return self.content["column"][item]
+
     def save_results(self, filename):
-        mParser.excel_writer(filename,
-                             'Special Cases',
-                             self.content)
+        mParser.excel_writer(filename, 'Special Cases', self.content)
 
 
 # for test

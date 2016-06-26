@@ -200,13 +200,14 @@ class CommentDialog(object):
     def __init__(self, gbuilder, controller):
         self.contro = controller
 
-        self.com_dialog = gbuilder.get_object("dialog_comment")
-        self.com_dialog_configs_store = gbuilder.get_object("liststore_comment")
-        self.com_dialog_configs_view = gbuilder.get_object("treeview_comment")
+        self.main_dialog = gbuilder.get_object("dialog_comment")
+        self.configs_store = gbuilder.get_object("liststore_comment")
+        self.configs_view = gbuilder.get_object("treeview_comment")
 
     def get_signals_handlers(self):
         handlers = {
             "stop_delete_window": self.stop_delete_window,
+            "hide_dialog_comment": self.hide
         }
         return handlers
 
@@ -216,7 +217,7 @@ class CommentDialog(object):
 
     def choose_file(self):
         file_dialog = Gtk.FileChooserDialog("Please choose the special case file",
-                                            self.com_dialog,
+                                            self.main_dialog,
                                             Gtk.FileChooserAction.SAVE,
                                             (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                                              Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
@@ -233,7 +234,98 @@ class CommentDialog(object):
 
     def show(self, button):
         if len(self.contro.com.config['filename']) == 0:
-            self.contro.com.config['filename'] = self.choose_file()
-        self.contro.com.open_comment_file()
+            # for test
+            self.contro.com.config['filename'] = "/home/hao/Develop/bll/bll_app/test/Special Cases Tab 2016.01.28.xlsx"
+            #self.contro.com.config['filename'] = self.choose_file()
+            self.contro.com.open_comment_file()
 
-        self.com_dialog.show()
+            for item in self.contro.com.content['head']:
+                self.configs_store.append([self.contro.com.switch[item][0], item])
+
+            renderer_toggle = Gtk.CellRendererToggle()
+            renderer_toggle.connect("toggled", self.update_rows)
+            column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
+            self.configs_view.append_column(column_toggle)
+
+            renderer_text = Gtk.CellRendererText()
+            column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
+            self.configs_view.append_column(column_text)
+
+        self.main_dialog.show()
+
+    def hide(self, button):
+        Gtk.Widget.hide(self.main_dialog)
+
+    def update_rows(self, widget, path):
+        self.configs_store[path][0] = not self.configs_store[path][0]
+
+        # for the specific item: name, enable, list, inverse)
+        self.configs = []
+        entry_name = self.contro.com.content["head"][int(path)]
+        entry_list = self.contro.com.content["column"][entry_name]
+
+        if self.configs_store[path][0]:
+            entry_dialog = self.create_entry_dialog(entry_name, entry_list)
+            entry_dialog.run()
+            result_list = []
+            treeiter = self.entry_liststore.get_iter_first()
+            while treeiter != None:
+                if self.entry_liststore[treeiter][0]:
+                    result_list.append(self.entry_liststore[treeiter][1])
+                treeiter = self.entry_liststore.iter_next(treeiter)
+            self.contro.com.update_switch(entry_name, True, result_list, self.entry_inverse)
+            entry_dialog.destroy()
+        else:
+            self.contro.com.update_switch(entry_name, False, "")
+
+    def create_entry_dialog(self, entry_name, entry_list):
+        entry_dialog = Gtk.Dialog("Config Dialog", self.main_dialog,
+                                   0, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
+        vbox = entry_dialog.get_content_area()
+
+        l2_box = Gtk.Box(Gtk.Orientation.HORIZONTAL)
+        vbox.pack_start(l2_box, False, False, 0)
+
+        label = Gtk.Label("Entry Name:" + entry_name)
+        l2_box.pack_start(label, True, True, 10)
+
+        inverse_button = Gtk.ToggleButton("Inverse")
+        inverse_button.connect("toggled", self.update_entry_inverse, "1")
+        l2_box.pack_start(inverse_button, False, False, 0)
+        self.entry_inverse = False
+
+        tmp_list = list(zip([True] * len(entry_list), entry_list))
+        self.entry_liststore = Gtk.ListStore(bool, str)
+        for i in tmp_list:
+            self.entry_liststore.append(list(i))
+
+        config_treeview = Gtk.TreeView(model=self.entry_liststore)
+
+        renderer_toggle = Gtk.CellRendererToggle()
+        renderer_toggle.connect("toggled", self.update_entry_config)
+        column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
+        column_toggle = Gtk.TreeViewColumn("Toggle", renderer_toggle, active=0)
+        config_treeview.append_column(column_toggle)
+
+        renderer_text = Gtk.CellRendererText()
+        column_text = Gtk.TreeViewColumn("Text", renderer_text, text=1)
+        config_treeview.append_column(column_text)
+
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        scrolled_window.add_with_viewport(config_treeview)
+
+        vbox.pack_start(scrolled_window, True, True, 0)
+        vbox.show_all()
+
+        return entry_dialog
+
+    def update_entry_config(self, widget, path):
+        self.entry_liststore[path][0] = not self.entry_liststore[path][0]
+
+    def update_entry_inverse(self, button, name):
+        if button.get_active():
+            self.entry_inverse = True
+        else:
+            self.entry_inverse = False
