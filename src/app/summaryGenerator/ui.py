@@ -234,9 +234,9 @@ class CommentDialog(object):
 
     def show(self, button):
         if len(self.contro.com.config['filename']) == 0:
-            # for test
-            self.contro.com.config['filename'] = "/home/hao/Develop/bll/bll_app/test/Special Cases Tab 2016.01.28.xlsx"
-            #self.contro.com.config['filename'] = self.choose_file()
+            # # for test
+            # self.contro.com.config['filename'] = "/home/hao/Develop/bll/bll_app/test/Special Cases Tab 2016.01.28.xlsx"
+            self.contro.com.config['filename'] = self.choose_file()
             self.contro.com.open_comment_file()
 
             for item in self.contro.com.content['head']:

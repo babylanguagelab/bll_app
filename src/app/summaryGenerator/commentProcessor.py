@@ -83,7 +83,7 @@ class CommentProcessor(object):
             self.switch[item] = [True, set(content)]
 
     # process switches and filter content
-    def run_switch(self):
+    def run(self):
         remove_its = []
 
         # match information in child
@@ -110,15 +110,3 @@ class CommentProcessor(object):
 
     def save_results(self, filename):
         mParser.excel_writer(filename, 'Special Cases', self.content)
-
-
-# for test
-# mCP = CommentProcessor("test")
-# mCP.config['filename'] = "/tmp/test.xlsx"
-# mCP.open_comment_file()
-# mCP.init_switch()
-# mCP.update_switch("Language Other than English", True, ["French"], True)
-# print(mCP.content['head'])
-# print(mCP.switch["Language Other than English"])
-#options = mCP.get_options()
-#print(options["Child Sick"])

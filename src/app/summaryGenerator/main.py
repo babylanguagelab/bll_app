@@ -23,7 +23,7 @@ class Controller(object):
         self.com = CommentProcessor(self.config['DB'])
 
     def run(self):
-        lg.debug("Done!")
+        lg.debug("Start!")
 
     # def export_output(self, filename):
     #     self.adex_proc.save_results(filename)
