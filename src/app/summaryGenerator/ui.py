@@ -21,6 +21,18 @@ class MainWindow(object):
 
         self.connect_signals(builder)
 
+        toggle_ADEX = builder.get_object("toggle_ADEX")
+        if self.con.config['ADEX']:
+            toggle_ADEX.set_active(True)
+
+        toggle_COM = builder.get_object("toggle_COM")
+        if self.con.config['Comment']:
+            toggle_COM.set_active(True)
+
+        toggle_TRANS = builder.get_object("toggle_TRANS")
+        if self.con.config['Transcribe']:
+            toggle_TRANS.set_active(True)
+
     def connect_signals(self, gbuilder):
         signal_handlers = {
             "quit_main": Gtk.main_quit,
