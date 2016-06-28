@@ -44,6 +44,7 @@ def csv_dict_reader(filename, header):
             content.append(new_row)
     return content
 
+# write a list of rows to excel
 def excel_writer(filename, sheetname, data):
     if os.path.isfile(filename):
         wb = openpyxl.load_workbook(filename)

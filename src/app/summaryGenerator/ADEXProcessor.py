@@ -45,33 +45,34 @@ def second_to_timestr(second):
 
 
 class ADEXProcessor:
-    time_interval = [300, 600, 1800, 3600]
     def __init__(self, database):
-        self.config = {'f30mins' : True,
-                       'partial_records' : False,
-                       'naptime' : True,
-                       'last2rows' : True,
-                       'time_interval': 600, # seconds
-                       'adex_dirs' : [],
-                       'DB': database}
-        self.naptime = ("/tmp/test/bll_db.db", {})
+        self.config = {'DB': database,
+                       'adex_dirs': "",
+                       'naptime_file': "/tmp/test/bll_db.db",
+                       # seconds, could be 600, 1800, 3600
+                       'time_interval': 600}
+        for i in ['f30mins', 'partial_records', 'naptime', 'last2rows']:
+            self.config[i] = False
+
+        self.switches = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN', 'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
+        self.naptime = {}
         self.child = {}
-        self.switches = [['AWC', True], ['Turn_Count', True], ['Child_Voc_Count', True],
-                         ['CHN', True], ['FAN', True], ['MAN', True], ['CXN', True],
-                         ['OLN', True], ['TVN', True], ['NON', True], ['SIL', True]]
+        self.output = [['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches]
 
-        item_list = [x[0] for x in self.switches if x[1] is True]
-        self.output = (['ChildID', 'Age', 'Gender', 'Recordings'] + item_list, [])
+        # call from controller later
+        self.set_configs()
 
-    def set_switches(self, switches):
-        for i, item in enumerate(switches):
-            self.switches[i][1] = item
+    def set_configs(self, configs=null, switches=null):
+        if configs is not null:
+            for i,j in configs:
+                self.config[i] = j
 
-        item_list = [x[0] for x in self.switches if x[1] is True]
-        self.output[0] = ['ChildID', 'Age', 'Gender', 'Recordings'] + item_list
+        if switches is not null:
+            self.switches = switches
+            self.output[0] = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
 
     def read_naptime(self):
-        naptime_db = Database(self.naptime[0])
+        naptime_db = Database(self.config['naptime_file'])
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
         naptime_db.close()
 
@@ -79,10 +80,10 @@ class ADEXProcessor:
             child_id = entry[0].split('_')[0].lower()
             date = entry[0].split('_')[1]
 
-            if child_id not in self.naptime[1][child_id]:
-                self.naptime[1][child_id] = [(date, entry[1], entry[2])]
+            if child_id not in self.naptime[child_id]:
+                self.naptime[child_id] = [(date, entry[1], entry[2])]
             else:
-                self.naptime[1][child_id] += [(date, entry[1], entry[2])]
+                self.naptime[child_id] += [(date, entry[1], entry[2])]
 
     def get_average(self):
         childID_list = self.config['DB'].select('sqlite_sequence', ['name'], order_by='name ASC')
@@ -96,7 +97,7 @@ class ADEXProcessor:
             result = list(self.config['DB'].select(child_id, avg_param)[0])
             tmp = self.child[child_id]
             result  = [child_id] + [x for x in tmp] + result
-            self.config['DB'].insert("adex_summary", self.output[0], result)
+            self.config['DB'].insert("ADEX_file", self.output[0], result)
 
             # format to show only two digits
             # for i in range(len(result)):
@@ -106,7 +107,7 @@ class ADEXProcessor:
             #                      self.child[child_id][0],
             #                      self.child[child_id][1]] + result)
 
-    # preliminary results for references
+    # save intermediate results to DB
     def save_middle_results(self, DB):
         id_list = DB.select('sqlite_sequence', ['name'], order_by='name ASC')
         id_list = [x[0] for x in id_list]
@@ -118,21 +119,21 @@ class ADEXProcessor:
             result.insert(0, head_list)
             #mParser.excel_writer(filename, child_id, result)
 
+    # save intermediate results to file
+    def save_file(self, filename):
+        mParser.excel_writer(filename, "ADEX", [])
+
     def run(self):
         if self.config['naptime']:
             self.read_naptime()
 
-        # result_dir = os.path.dirname(result_file) + "/report"
-        # if not os.path.exists(result_dir):
-        #     os.mkdir(result_dir)
-
         if self.config['DB'].select('sqlite_master', ['name'],
-                             where="type='table' AND name='adex_summary'") is None:
+                             where="type='table' AND name='ADEX_file'") is None:
 
             param = self.output[0]
             #param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
             param = ",".join(param)
-            sql = "CREATE TABLE adex_summary" + "(" + param + ",PRIMARY KEY (ChildID)" + ")"
+            sql = "CREATE TABLE ADEX_file" + "(" + param + ",PRIMARY KEY (ChildID)" + ")"
             self.config['DB'].execute_script(sql)
 
         for path in self.config['adex_dirs']:
@@ -146,13 +147,13 @@ class ADEXProcessor:
                 if mADEX.child_id not in self.child:
                     self.child[mADEX.child_id] = (mADEX.get_ChildAge(),
                                                   mADEX.get_ChildGender(),
-                                                  mADEX.get_NumRecording())
+                                                  mADEX.get_numRecording())
 
                 if self.config['f30mins']:
                     mADEX.remove_30mins()
 
                 if self.config['naptime']:
-                    mADEX.remove_naptime(self.naptime[1])
+                    mADEX.remove_naptime(self.naptime)
 
                 if self.config['partial_records']:
                     interval_sec = int(self.config['time_interval'])
@@ -167,8 +168,9 @@ class ADEXProcessor:
             self.get_average()
 
 
-# read ADEX csv files with required columns only
-# then save these columns to DB
+# read an ADEX csv file with required columns only
+# filter out information and then
+# save processed data to DB
 class ADEXFileProcessor:
     def __init__(self, ADEX_file):
         lg.debug(ADEX_file)
@@ -233,7 +235,7 @@ class ADEXFileProcessor:
         index = self.heads.index('Child_Gender')
         return self.content[0][index].lower()
 
-    def get_NumRecording(self):
+    def get_numRecording(self):
         index = self.heads.index('Number_Recordings')
         return self.content[0][index].lower()
 
@@ -251,6 +253,7 @@ class ADEXFileProcessor:
 
     def remove_time(self, start_time, end_time):
         lg.debug("removing naptime...")
+
         time_start = 0
         time_end = len(self.content)
         count = 0
@@ -285,7 +288,3 @@ class ADEXFileProcessor:
         # insert content into DB
         DB.insert_table(self.child_id, self.heads, self.content)
 
-# for test
-# init_debug()
-# ADEX_proc = ADEXProcessor()
-# ADEX_proc.run(["/tmp/test/data/"])

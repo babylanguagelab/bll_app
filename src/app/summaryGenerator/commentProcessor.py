@@ -10,6 +10,7 @@ class CommentProcessor(object):
     def __init__(self, database):
         # excel content info, includes: head -> table headers,
         # body -> table content, column -> set of column options
+        # body structure: [child_ID] => {head:[values]}
         self.content = {}
         self.config = {'DB': database, 'filename': ""}
         self.switch = {} # output info
@@ -60,6 +61,9 @@ class CommentProcessor(object):
 
         self.init_switch()
 
+    def get_options(self, item):
+        return self.content["column"][item]
+
     # switch for output options
     def init_switch(self):
         switch = {}
@@ -82,7 +86,7 @@ class CommentProcessor(object):
         else:
             self.switch[item] = [True, set(content)]
 
-    # process switches and filter content
+    # process switches and find its files to remove
     def run(self):
         remove_its = []
 
@@ -105,8 +109,7 @@ class CommentProcessor(object):
 
                     self.output.append(new_output)
 
-    def get_options(self, item):
-        return self.content["column"][item]
 
-    def save_results(self, filename):
-        mParser.excel_writer(filename, 'Special Cases', self.content)
+    def save_file(self, filename):
+        result = self.content["head"]
+        mParser.excel_writer(filename, 'Special Cases', result)

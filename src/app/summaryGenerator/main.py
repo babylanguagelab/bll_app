@@ -7,7 +7,7 @@ from debug import debug_init
 from database import Database
 from ADEXProcessor import ADEXProcessor
 from commentProcessor import CommentProcessor
-from transcribedProcessor import transcribedProcessor
+from transcribedProcessor import TranscribedProcessor
 import ui
 
 class Controller(object):
@@ -17,28 +17,24 @@ class Controller(object):
         #self.db = Database(":memory:")
         self.config = {'DB': Database("test.db"),
                        'ADEX': True,
-                       'Comment': True,
-                       'Transcribe': True,
+                       'Comment': False,
+                       'Transcribe': False,
                        'output_file': ""}
         self.adex = ADEXProcessor(self.config["DB"])
         self.com = CommentProcessor(self.config["DB"])
-        self.trans = transcribedProcessor(self.config["DB"])
+        self.trans = TranscribedProcessor(self.config["DB"])
 
-    def run(self):
-        lg.debug("START!")
-
-    # def export_output(self, filename):
-    #     self.adex_proc.save_results(filename)
-    #     self.CMT_proc.save_results(filename)
-
-    # def load_configs(self):
-        # ADEX configurations
-        # CMT configurations:
-        #self.CMT_proc.set_switches([True]*14)
+    def load_configs(self):
+        lg.debug("load configs")
+        self.adex.set_configs()
 
     def save_configs(self):
-        print("save")
-    #     configs = {"ADEX":self.ADEX_proc.getConfigs()}
+        lg.debug("save configs")
+
+    def run(self):
+        lg.debug("run")
+        self.adex.run()
+
 
 class Main(object):
     def __init__(self):
@@ -46,7 +42,6 @@ class Main(object):
         self.m_win = ui.MainWindow(self.m_con)
 
     def run(self):
-        self.m_con.run()
         self.m_win.show()
 
 # for test

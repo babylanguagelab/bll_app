@@ -1,9 +1,9 @@
 import logging as lg
 import ConfigParser as mParser
 
-class transcribedProcessor(object):
+class TranscribedProcessor(object):
     def __init__(self, database):
-        self.content = {"head":[], "body":{}}
+        self.content = {"head": [], "body": {}}
         # child ID = [number of transcripts, title 1 number, title 2 number]
         self.config = {"DB": database, "filename": ""}
 
@@ -27,7 +27,3 @@ class transcribedProcessor(object):
                 tmp3_list = [sum(x) for x in zip(tmp1_list, tmp2_list)]
                 body[ID] = [body[ID][0] + 1] + tmp3_list
         self.content["body"] = body
-
-TSP = transcribedProcessor("1")
-TSP.config["filename"] = "/home/hao/Develop/bll/bll_app/test/results/summary.csv"
-TSP.open_transcribed_file()

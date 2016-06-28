@@ -139,7 +139,6 @@ class ADEXDialog(object):
         Gtk.Widget.hide(widget)
         return True
 
-    # change ADEX configurations
     def toggle_switches(self, widget, path):
         self.list_adex_switch[path][1] = not self.list_adex_switch[path][1]
         self.control.adex.switches[int(path)][1] = self.list_adex_switch[path][1]
