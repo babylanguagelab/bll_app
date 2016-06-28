@@ -26,6 +26,7 @@ class MainWindow(object):
             "quit_main": Gtk.main_quit,
             "check_ADEX_toggled_cb": self.toggle_ADEX,
             "check_CMT_toggled_cb": self.toggle_CMT,
+            "check_Trans_toggle_cb": self.toggle_Trans,
             "show_ADEX_dialog": self.adex.show,
             "show_CMT_dialog": self.comt.show,
             "run": self.run
@@ -41,6 +42,9 @@ class MainWindow(object):
 
     def toggle_CMT(self, button):
         self.con.config['Comment'] = button.get_active()
+
+    def toggle_Trans(self, button):
+        self.con.config['Transcribe'] = button.get_active()
 
     def run(self, button):
         #self.con.ADEX_folders=['/home/hao/Develop/projects/bll/bll_app/test/sample']
@@ -234,8 +238,6 @@ class CommentDialog(object):
 
     def show(self, button):
         if len(self.contro.com.config['filename']) == 0:
-            # # for test
-            # self.contro.com.config['filename'] = "/home/hao/Develop/bll/bll_app/test/Special Cases Tab 2016.01.28.xlsx"
             self.contro.com.config['filename'] = self.choose_file()
             self.contro.com.open_comment_file()
 

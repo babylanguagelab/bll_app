@@ -7,6 +7,7 @@ from debug import debug_init
 from database import Database
 from ADEXProcessor import ADEXProcessor
 from commentProcessor import CommentProcessor
+from transcribedProcessor import transcribedProcessor
 import ui
 
 class Controller(object):
@@ -19,11 +20,12 @@ class Controller(object):
                        'Comment': True,
                        'Transcribe': True,
                        'output_file': ""}
-        self.adex = ADEXProcessor(self.config['DB'])
-        self.com = CommentProcessor(self.config['DB'])
+        self.adex = ADEXProcessor(self.config["DB"])
+        self.com = CommentProcessor(self.config["DB"])
+        self.trans = transcribedProcessor(self.config["DB"])
 
     def run(self):
-        lg.debug("Start!")
+        lg.debug("START!")
 
     # def export_output(self, filename):
     #     self.adex_proc.save_results(filename)
