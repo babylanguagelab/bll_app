@@ -30,7 +30,7 @@ class Controller(object):
         lg.debug("save configs")
 
     def save_file(self):
-        filename = "/home/hao/Develop/bll/bll_app/test/summary_test/results.xlsx"
+        filename = self.config['output_file']
         if self.config['ADEX']:
             self.adex.save_file(filename)
 

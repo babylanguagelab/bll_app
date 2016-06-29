@@ -493,7 +493,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="adex_partial_check">
-                <property name="label" translatable="yes">remove the partial recording (base on time inverval)</property>
+                <property name="label" translatable="yes">remove the partial time intervals</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -509,7 +509,7 @@ THE SOFTWARE.
             </child>
             <child>
               <object class="GtkCheckButton" id="adex_naptime_check">
-                <property name="label" translatable="yes">remove the nap-time and noisy recording</property>
+                <property name="label" translatable="yes">remove the naptime and noisy periods</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>

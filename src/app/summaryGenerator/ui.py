@@ -75,10 +75,10 @@ class MainWindow(object):
             if len(self.con.trans.config['filename']) == 0:
                 self.con.trans.config['filename'] = self.trans.choose_file()
 
-        if len(self.con.config['output_file']) != 0:
+        if len(self.con.config['output_file']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
                                                 self.window,
-                                                Gtk.FileChooserAction.SAVE,
+                                                Gtk.FileChooserAction.SELECT_FOLDER,
                                                 (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                                                  Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
             save_dialog.set_local_only(True)
