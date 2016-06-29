@@ -34,7 +34,7 @@ class CommentProcessor(object):
                 child_dict = {}
                 for i, item in enumerate(excel_head):
                     if sheet.cell(row=rnum, column=i+1).value is None:
-                        child_dict[item] = []
+                        child_dict[item] = [" "]
                     else:
                         child_dict[item] = [sheet.cell(row=rnum, column=i+1).value]
                 excel_body.append(child_dict)
@@ -67,7 +67,7 @@ class CommentProcessor(object):
     # init configurations
     def set_configs(self):
         for item in self.content["head"]:
-            self.switch[item] = [False, self.content["column"][item]]
+            self.switch[item] = [True, self.content["column"][item]]
 
     # update output options
     def update_switch(self, item, enable, content="all", reverse=False):
@@ -93,27 +93,40 @@ class CommentProcessor(object):
 
         # match information in child
         for item in self.content["head"]:
-            nfilter = self.content["column"][item] - self.switch[item]
-            for child in self.content["body"]:
-                for info in child[item]:
-                    if set(info).issubset(nfilter):
-                        remove_its.append(child["ITS File"])
+            if self.switch[item][0]:
+                nfilter = self.content["column"][item] - self.switch[item][1]
+                for child in self.content["body"]:
+                    for info in child[item]:
+                        if set(info).issubset(nfilter):
+                            remove_its.append(child["ITS File"])
 
         # record the filtered child information
-        new_output = []
         for child in self.content["body"]:
-            for ITS in child["ITS File"]:
-                if ITS not in remove_its:
+            # get the number of rows for this child
+            max_len = len(child["ITS File"])
+
+            for i in range(max_len):
+                if child["ITS File"][i] not in remove_its:
+                    new_output = []
                     for item in self.content["head"]:
+                        if len(child[item]) <= i:
+                            new_output.append(" ")
+                            continue
+
                         if self.switch[item][0] is True:
-                            new_output.append(child[item])
+                            if len(child[item][i]) == 0:
+                                new_output.append(" ")
+                            else:
+                                new_output.append(child[item][i])
 
                     self.output.append(new_output)
+
 
     def save_DB(self):
         lg.debug("save DB")
 
     def save_file(self, filename):
+        lg.debug("1111111")
         results = []
         head = []
         for item in self.content["head"]:
@@ -121,4 +134,8 @@ class CommentProcessor(object):
                 head += [item]
 
         results.append(head)
+
+        for i in self.output:
+            results.append(i)
+
         mParser.excel_writer(filename, 'Special Cases', results)

@@ -15,9 +15,9 @@ class Controller(object):
         debug_init()
         #self.load_configs()
         self.config = {'DB': Database(":memory:"),
-                       'ADEX': True,
+                       'ADEX': False,
                        'Comment': False,
-                       'Transcribe': False,
+                       'Transcribe': True,
                        'output_file': ""}
         self.adex = ADEXProcessor(self.config["DB"])
         self.com = CommentProcessor(self.config["DB"])
@@ -31,11 +31,25 @@ class Controller(object):
 
     def save_file(self):
         filename = "/home/hao/Develop/bll/bll_app/test/summary_test/results.xlsx"
-        self.adex.save_file(filename)
-        self.com.save_file(filename)
+        if self.config['ADEX']:
+            self.adex.save_file(filename)
+
+        if self.config['Comment']:
+            self.com.save_file(filename)
+
+        if self.config['Transcribe']:
+            self.trans.save_file(filename)
 
     def run(self):
-        self.adex.run()
+        if self.config['ADEX']:
+            self.adex.run()
+
+        if self.config['Comment']:
+            self.com.run()
+
+        if self.config['Transcribe']:
+            self.trans.run()
+
         self.save_file()
 
 

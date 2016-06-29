@@ -42,11 +42,13 @@ class MainWindow(object):
             "check_Trans_toggle_cb": self.toggle_Trans,
             "show_ADEX_dialog": self.adex.show,
             "show_CMT_dialog": self.comt.show,
+            "show_trans_dialog": self.trans.show,
             "run": self.run
         }
 
         signal_handlers.update(self.adex.get_signals_handlers())
         signal_handlers.update(self.comt.get_signals_handlers())
+        signal_handlers.update(self.trans.get_signals_handlers())
 
         gbuilder.connect_signals(signal_handlers)
 
@@ -67,6 +69,7 @@ class MainWindow(object):
         if self.con.config['Comment']:
             if len(self.con.com.config['filename']) == 0:
                 self.con.com.config['filename'] = self.comt.choose_file()
+                self.con.com.open_comment_file()
 
         if self.con.config['Transcribe']:
             if len(self.con.trans.config['filename']) == 0:
@@ -87,6 +90,13 @@ class MainWindow(object):
             save_dialog.destroy()
 
         self.con.run()
+
+        info_dialog = Gtk.MessageDialog(self.window, Gtk.DialogFlags.MODAL,
+                                        Gtk.MessageType.WARNING,
+                                        (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT),
+                                        message_format="Job Complete!")
+        info_dialog.run()
+        info_dialog.destroy()
 
     def show(self):
         self.window.show_all()
@@ -313,7 +323,8 @@ class CommentDialog(object):
 
     def create_entry_dialog(self, entry_name, entry_list):
         entry_dialog = Gtk.Dialog("Config Dialog", self.main_dialog,
-                                   0, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+                                   Gtk.DialogFlags.MODAL,
+                                  (Gtk.STOCK_OK, Gtk.ResponseType.OK))
 
         vbox = entry_dialog.get_content_area()
 
@@ -384,6 +395,10 @@ class TransDialog(object):
     def __init__(self, gbuilder, controller):
         self.control = controller
 
+    def get_signals_handlers(self):
+        handlers = {}
+        return handlers
+
     def choose_file(self):
         file_dialog = Gtk.FileChooserDialog("Please choose the transcribed file",
                                             None,
@@ -400,3 +415,6 @@ class TransDialog(object):
         file_dialog.destroy()
 
         return trans_file
+
+    def show(self, button):
+        self.control.trans.config['filename'] = self.choose_file()

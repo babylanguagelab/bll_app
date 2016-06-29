@@ -7,11 +7,12 @@ class TranscribedProcessor(object):
         # child ID = [number of transcripts, title 1 number, title 2 number]
         self.config = {"DB": database, "filename": ""}
 
-    def open_transcribed_file(self):
+    def run(self):
         lg.debug("open transcribed file: " + self.config["filename"])
         content = mParser.csv_reader(self.config["filename"])
         # get the transcribed items
         head = content[0][1:]
+        head.insert(0, "Count")
         head.insert(0, "Child ID")
         self.content["head"] = head
 
@@ -27,3 +28,16 @@ class TranscribedProcessor(object):
                 tmp3_list = [sum(x) for x in zip(tmp1_list, tmp2_list)]
                 body[ID] = [body[ID][0] + 1] + tmp3_list
         self.content["body"] = body
+
+    def save_file(self, filename):
+        output = [self.content['head']]
+        cIDs = list(self.content['body'])
+        cIDs.sort()
+
+        for cID in cIDs:
+            output.append([cID] + self.content['body'][cID])
+
+        mParser.excel_writer(filename, 'Transcribed', output)
+
+    def save_db(self):
+        lg.debug("save db")
