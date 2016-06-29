@@ -304,6 +304,7 @@ class CommentDialog(object):
         if self.configs_store[path][0]:
             entry_dialog = self.create_entry_dialog(entry_name, entry_list)
             entry_dialog.run()
+            Gtk.Widget.hide(entry_dialog)
 
             if self.entry_all:
                 self.contro.com.update_switch(entry_name, True, "all")
