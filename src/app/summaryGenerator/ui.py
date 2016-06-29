@@ -18,6 +18,7 @@ class MainWindow(object):
 
         self.adex = ADEXDialog(builder, self.con)
         self.comt = CommentDialog(builder, self.con)
+        self.trans = TransDialog(builder, self.con)
 
         self.connect_signals(builder)
 
@@ -59,7 +60,6 @@ class MainWindow(object):
         self.con.config['Transcribe'] = button.get_active()
 
     def run(self, button):
-        #self.con.ADEX_folders=['/home/hao/Develop/projects/bll/bll_app/test/sample']
         if self.con.config['ADEX']:
             if len(self.con.adex.config['adex_dirs']) == 0:
                 self.con.adex.config['adex_dirs'] = self.adex.choose_folders()
@@ -68,7 +68,11 @@ class MainWindow(object):
             if len(self.con.com.config['filename']) == 0:
                 self.con.com.config['filename'] = self.comt.choose_file()
 
-        if len(self.con.config['output_file']) == 0:
+        if self.con.config['Transcribe']:
+            if len(self.con.trans.config['filename']) == 0:
+                self.con.trans.config['filename'] = self.trans.choose_file()
+
+        if len(self.con.config['output_file']) != 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
                                                 self.window,
                                                 Gtk.FileChooserAction.SAVE,
@@ -136,12 +140,13 @@ class ADEXDialog(object):
 
     # hide the window instead of deleting
     def stop_delete_window(self, widget, data):
+        # update switches with ADEX processor
+
         Gtk.Widget.hide(widget)
         return True
 
     def toggle_switches(self, widget, path):
         self.list_adex_switch[path][1] = not self.list_adex_switch[path][1]
-        self.control.adex.switches[int(path)][1] = self.list_adex_switch[path][1]
 
     def toggle_naptime(self, button):
         self.control.adex.config['naptime'] = button.get_active()
@@ -188,7 +193,7 @@ class ADEXDialog(object):
         # sync data
         self.list_adex_switch.clear()
         for i in self.control.adex.switches:
-            self.list_adex_switch.append(i)
+            self.list_adex_switch.append((i, True))
 
         self.f30mins_toggle.set_active(self.control.adex.config['f30mins'])
         self.partial_toggle.set_active(self.control.adex.config['partial_records'])
@@ -208,6 +213,14 @@ class ADEXDialog(object):
         self.mdialog.show()
 
     def hide(self, button):
+        # update switches with ADEX processor
+        valid_options = []
+        treeiter = self.list_adex_switch.get_iter_first()
+        while treeiter  != None:
+            if self.list_adex_switch[treeiter][1]:
+                valid_options.append(self.list_adex_switch[treeiter][0])
+            treeiter = self.list_adex_switch.iter_next(treeiter)
+
         Gtk.Widget.hide(self.mdialog)
 
 
@@ -275,17 +288,24 @@ class CommentDialog(object):
         # for the specific item: name, enable, list, inverse)
         self.configs = []
         entry_name = self.contro.com.content["head"][int(path)]
-        entry_list = self.contro.com.content["column"][entry_name]
+        entry_list = list(self.contro.com.content["column"][entry_name])
+        entry_list.sort()
 
         if self.configs_store[path][0]:
             entry_dialog = self.create_entry_dialog(entry_name, entry_list)
             entry_dialog.run()
+
+            if self.entry_all:
+                self.contro.com.update_switch(entry_name, True, "all")
+                return
+
             result_list = []
             treeiter = self.entry_liststore.get_iter_first()
             while treeiter != None:
                 if self.entry_liststore[treeiter][0]:
                     result_list.append(self.entry_liststore[treeiter][1])
                 treeiter = self.entry_liststore.iter_next(treeiter)
+
             self.contro.com.update_switch(entry_name, True, result_list, self.entry_inverse)
             entry_dialog.destroy()
         else:
@@ -303,42 +323,80 @@ class CommentDialog(object):
         label = Gtk.Label("Entry Name:" + entry_name)
         l2_box.pack_start(label, True, True, 10)
 
+        self.entry_all = True
+        all_button = Gtk.ToggleButton("All")
+        all_button.connect("toggled", self.update_entry_all, "1")
+        l2_box.pack_start(all_button, False, False, 0)
+
+        self.entry_inverse = False
         inverse_button = Gtk.ToggleButton("Inverse")
         inverse_button.connect("toggled", self.update_entry_inverse, "1")
         l2_box.pack_start(inverse_button, False, False, 0)
-        self.entry_inverse = False
 
         tmp_list = list(zip([True] * len(entry_list), entry_list))
         self.entry_liststore = Gtk.ListStore(bool, str)
         for i in tmp_list:
             self.entry_liststore.append(list(i))
 
-        config_treeview = Gtk.TreeView(model=self.entry_liststore)
+        self.config_treeview = Gtk.TreeView(model=self.entry_liststore)
 
         renderer_toggle = Gtk.CellRendererToggle()
         renderer_toggle.connect("toggled", self.update_entry_config)
         column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
         column_toggle = Gtk.TreeViewColumn("Toggle", renderer_toggle, active=0)
-        config_treeview.append_column(column_toggle)
+        self.config_treeview.append_column(column_toggle)
 
         renderer_text = Gtk.CellRendererText()
         column_text = Gtk.TreeViewColumn("Text", renderer_text, text=1)
-        config_treeview.append_column(column_text)
+        self.config_treeview.append_column(column_text)
 
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        scrolled_window.add_with_viewport(config_treeview)
+        scrolled_window.add_with_viewport(self.config_treeview)
 
         vbox.pack_start(scrolled_window, True, True, 0)
         vbox.show_all()
+
+        all_button.set_active(True)
 
         return entry_dialog
 
     def update_entry_config(self, widget, path):
         self.entry_liststore[path][0] = not self.entry_liststore[path][0]
 
+    def update_entry_all(self, button, name):
+        if button.get_active():
+            self.entry_all = True
+            self.config_treeview.set_sensitive(False)
+        else:
+            self.entry_all = False
+            self.config_treeview.set_sensitive(True)
+
     def update_entry_inverse(self, button, name):
         if button.get_active():
             self.entry_inverse = True
         else:
             self.entry_inverse = False
+
+
+
+class TransDialog(object):
+    def __init__(self, gbuilder, controller):
+        self.control = controller
+
+    def choose_file(self):
+        file_dialog = Gtk.FileChooserDialog("Please choose the transcribed file",
+                                            None,
+                                            Gtk.FileChooserAction.SAVE,
+                                            (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                                             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
+        file_dialog.set_local_only(True)
+        response = file_dialog.run()
+
+        trans_file = ""
+        if response == Gtk.ResponseType.ACCEPT:
+            trans_file = file_dialog.get_filename()
+
+        file_dialog.destroy()
+
+        return trans_file

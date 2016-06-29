@@ -14,8 +14,7 @@ class Controller(object):
     def __init__(self):
         debug_init()
         #self.load_configs()
-        #self.db = Database(":memory:")
-        self.config = {'DB': Database("test.db"),
+        self.config = {'DB': Database(":memory:"),
                        'ADEX': True,
                        'Comment': False,
                        'Transcribe': False,
@@ -25,15 +24,19 @@ class Controller(object):
         self.trans = TranscribedProcessor(self.config["DB"])
 
     def load_configs(self):
-        lg.debug("load configs")
         self.adex.set_configs()
 
     def save_configs(self):
         lg.debug("save configs")
 
+    def save_file(self):
+        filename = "/home/hao/Develop/bll/bll_app/test/summary_test/results.xlsx"
+        self.adex.save_file(filename)
+        self.com.save_file(filename)
+
     def run(self):
-        lg.debug("run")
         self.adex.run()
+        self.save_file()
 
 
 class Main(object):
@@ -42,6 +45,7 @@ class Main(object):
         self.m_win = ui.MainWindow(self.m_con)
 
     def run(self):
+        self.m_con.load_configs()
         self.m_win.show()
 
 # for test

@@ -56,20 +56,15 @@ class ADEXProcessor:
 
         self.switches = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN', 'FAN', 'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
         self.naptime = {}
-        self.child = {}
-        self.output = [['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches]
+        self.output = {}
 
-        # call from controller later
-        self.set_configs()
-
-    def set_configs(self, configs=null, switches=null):
-        if configs is not null:
+    def set_configs(self, configs=None, switches=None):
+        if configs is not None:
             for i,j in configs:
                 self.config[i] = j
 
-        if switches is not null:
+        if switches is not None:
             self.switches = switches
-            self.output[0] = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
 
     def read_naptime(self):
         naptime_db = Database(self.config['naptime_file'])
@@ -85,55 +80,28 @@ class ADEXProcessor:
             else:
                 self.naptime[child_id] += [(date, entry[1], entry[2])]
 
+    # get average for values in switches
     def get_average(self):
-        childID_list = self.config['DB'].select('sqlite_sequence', ['name'], order_by='name ASC')
-        childID_list = [x[0] for x in childID_list]
-        item_list = [x[0] for x in self.switches if x[1] is True]
-
-        avg_param = ['AVG(' + x + ')' for x in item_list]
+        cIDs = list(self.output.keys())
+        cIDs.sort()
+        avg_param = ['AVG(' + x + ')' for x in self.switches]
 
         # generate average values for each ID (all files)
-        for child_id in childID_list:
-            result = list(self.config['DB'].select(child_id, avg_param)[0])
-            tmp = self.child[child_id]
-            result  = [child_id] + [x for x in tmp] + result
-            self.config['DB'].insert("ADEX_file", self.output[0], result)
-
-            # format to show only two digits
-            # for i in range(len(result)):
-            #     result[i] = "{:.2f}".format(result[i])
-
-            # self.summary.append([child_id + self.time_interval,
-            #                      self.child[child_id][0],
-            #                      self.child[child_id][1]] + result)
-
-    # save intermediate results to DB
-    def save_middle_results(self, DB):
-        id_list = DB.select('sqlite_sequence', ['name'], order_by='name ASC')
-        id_list = [x[0] for x in id_list]
-        head_list = [x[0] for x in HEAD_NAME_LIST]
-        head_list.insert(0, "Index")
-
-        for child_id in id_list:
-            result = DB.select(child_id, '*', order_by='File_Name ASC')
-            result.insert(0, head_list)
-            #mParser.excel_writer(filename, child_id, result)
-
-    # save intermediate results to file
-    def save_file(self, filename):
-        mParser.excel_writer(filename, "ADEX", [])
+        for cID in cIDs:
+            avg_values = list(self.config['DB'].select(cID, avg_param)[0])
+            self.output[cID] += avg_values
 
     def run(self):
         if self.config['naptime']:
             self.read_naptime()
 
+        # create result table
         if self.config['DB'].select('sqlite_master', ['name'],
-                             where="type='table' AND name='ADEX_file'") is None:
+                             where="type='table' AND name='ADEX'") is None:
 
-            param = self.output[0]
-            #param.insert(0, "ID INTEGER PRIMARY KEY AUTOINCREMENT")
-            param = ",".join(param)
-            sql = "CREATE TABLE ADEX_file" + "(" + param + ",PRIMARY KEY (ChildID)" + ")"
+            param = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+            params = ",".join(param)
+            sql = "CREATE TABLE ADEX" + "(" + params + ",PRIMARY KEY (ChildID)" + ")"
             self.config['DB'].execute_script(sql)
 
         for path in self.config['adex_dirs']:
@@ -144,10 +112,12 @@ class ADEXProcessor:
                     continue
 
                 mADEX = ADEXFileProcessor(path + '/' + ADEX_file)
-                if mADEX.child_id not in self.child:
-                    self.child[mADEX.child_id] = (mADEX.get_ChildAge(),
-                                                  mADEX.get_ChildGender(),
-                                                  mADEX.get_numRecording())
+                if mADEX.child_id not in self.output:
+                    self.output[mADEX.child_id] = [mADEX.get_ChildAge(),
+                                                   mADEX.get_ChildGender(),
+                                                   1]
+                else:
+                    self.output[mADEX.child_id][2] += 1
 
                 if self.config['f30mins']:
                     mADEX.remove_30mins()
@@ -164,8 +134,34 @@ class ADEXProcessor:
 
                 mADEX.save_DB(self.config['DB'])
 
-            # self.save_middle_results(current_DB)
             self.get_average()
+
+    # save results to DB
+    def save_DB(self):
+        cIDs = list(self.output.keys())
+        cIDs.sort()
+        output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+
+        for cID in cIDs:
+            output =  [cID] + self.output[cID]
+            self.config['DB'].insert("ADEX", output_title, output)
+
+            # format to show only two digits
+            # for i in range(len(result)):
+            #     result[i] = "{:.2f}".format(result[i])
+
+
+    # save intermediate results to file
+    def save_file(self, filename):
+        cIDs = list(self.output.keys())
+        cIDs.sort()
+        output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+
+        output = [output_title]
+        for cID in cIDs:
+            output.append([cID] + self.output[cID])
+
+        mParser.excel_writer(filename, "ADEX", output)
 
 
 # read an ADEX csv file with required columns only
@@ -233,11 +229,7 @@ class ADEXFileProcessor:
 
     def get_ChildGender(self):
         index = self.heads.index('Child_Gender')
-        return self.content[0][index].lower()
-
-    def get_numRecording(self):
-        index = self.heads.index('Number_Recordings')
-        return self.content[0][index].lower()
+        return self.content[0][index].upper()
 
     def get_start_time(self):
         index = self.heads.index('Clock_Time_TZAdj')

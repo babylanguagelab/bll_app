@@ -59,26 +59,27 @@ class CommentProcessor(object):
         self.content["body"] = excel_body
         self.content["column"] = excel_column
 
-        self.init_switch()
+        self.set_configs()
 
     def get_options(self, item):
         return self.content["column"][item]
 
-    # switch for output options
-    def init_switch(self):
-        switch = {}
+    # init configurations
+    def set_configs(self):
         for item in self.content["head"]:
-            switch[item] = [True, self.content["column"][item]]
-
-        self.switch = switch
+            self.switch[item] = [False, self.content["column"][item]]
 
     # update output options
-    def update_switch(self, item, enable, content, reverse=False):
+    def update_switch(self, item, enable, content="all", reverse=False):
 
         original = self.content["column"][item]
 
         if enable is False:
             self.switch[item] = [False, original]
+            return
+
+        if content is "all":
+            self.switch[item] = [True, original]
             return
 
         if reverse:
@@ -109,7 +110,15 @@ class CommentProcessor(object):
 
                     self.output.append(new_output)
 
+    def save_DB(self):
+        lg.debug("save DB")
 
     def save_file(self, filename):
-        result = self.content["head"]
-        mParser.excel_writer(filename, 'Special Cases', result)
+        results = []
+        head = []
+        for item in self.content["head"]:
+            if self.switch[item][0] is True:
+                head += [item]
+
+        results.append(head)
+        mParser.excel_writer(filename, 'Special Cases', results)

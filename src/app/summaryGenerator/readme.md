@@ -23,23 +23,25 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 - 7. Have a column called # of recordings, and have the number of spreadsheets for that participant in that column. (i.e. C001a has 2 spreadsheets, so that number would be 2)
 
 # Progress:
-## ADEX Processor: [90%]
+## ADEX Processor: [100%]
 - 1. read one CSV file as a list of list. [V] 
 - 2. get required columns. [V]
 - 3. process filters on data. [V]
 - 4. calculate the average. [V]
 - 5. put results into database. [V]
-- 6. write results into excel.
+- 6. write results into excel. [V]
 
-## Comments Processor: [90%]
+## Comments Processor: [50%]
 - 1. filter required column. [V]
-- 2. generate output. [V]
+- 2. generate outputs. [V]
 - 3. write results into excel.
+- 4. save results to database.
 
-## Transcribed data handler [70%]
+## Transcribed data handler [50%]
 - 1. load information from csv [V]
 - 2. merge with same ID [V]
-- 3. save to database
+- 3. save to database.
+- 4. save results to excel.
 
-## load/save configuration [0%]
-## sync data in database [0%]
+## load/save configuration [30%]
+## sync data in database [30%]
