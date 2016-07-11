@@ -1,11 +1,7 @@
-# Description: main entry point
-# Author: zhangh15@myumanitoba.ca
-# Date: 2015-11-17
-
+import logging as lg
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-# import logging as lg
 
 
 class MainWindow(object):
@@ -22,17 +18,17 @@ class MainWindow(object):
 
         self.connect_signals(builder)
 
-        toggle_ADEX = builder.get_object("toggle_ADEX")
+        ADEX_toggle = builder.get_object("toggle_ADEX")
         if self.con.config['ADEX']:
-            toggle_ADEX.set_active(True)
+            ADEX_toggle.set_active(True)
 
-        toggle_COM = builder.get_object("toggle_COM")
+        Comment_toggle= builder.get_object("toggle_COM")
         if self.con.config['Comment']:
-            toggle_COM.set_active(True)
+            Comment_toggle.set_active(True)
 
-        toggle_TRANS = builder.get_object("toggle_TRANS")
+        Trans_toggle = builder.get_object("toggle_TRANS")
         if self.con.config['Transcribe']:
-            toggle_TRANS.set_active(True)
+            Trans_toggle.set_active(True)
 
     def connect_signals(self, gbuilder):
         signal_handlers = {
@@ -75,7 +71,7 @@ class MainWindow(object):
             if len(self.con.trans.config['filename']) == 0:
                 self.con.trans.config['filename'] = self.trans.choose_file()
 
-        if len(self.con.config['output_file']) == 0:
+        if len(self.con.config['output']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
                                                 self.window,
                                                 Gtk.FileChooserAction.SELECT_FOLDER,
@@ -85,7 +81,7 @@ class MainWindow(object):
             response = save_dialog.run()
 
             if response == Gtk.ResponseType.ACCEPT:
-                self.con.config['output_file'] = save_dialog.get_filename()
+                self.con.set_output(save_dialog.get_filename())
 
             save_dialog.destroy()
 
@@ -102,6 +98,7 @@ class MainWindow(object):
         self.window.show_all()
         Gtk.main()
 
+
 class ADEXDialog(object):
     def __init__(self, gbuilder, controller):
         self.mdialog = gbuilder.get_object("dialog_ADEX")
@@ -117,8 +114,8 @@ class ADEXDialog(object):
 
         render_toggle = Gtk.CellRendererToggle()
         render_toggle.connect("toggled", self.toggle_switches)
-        column_toogle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
-        treeview_adex_switch.append_column(column_toogle)
+        column_toggle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
+        treeview_adex_switch.append_column(column_toggle)
 
         self.combo_time = gbuilder.get_object("combo_ADEX_time")
         list_time_interval = gbuilder.get_object("list_ADEX_time")
@@ -150,8 +147,6 @@ class ADEXDialog(object):
 
     # hide the window instead of deleting
     def stop_delete_window(self, widget, data):
-        # update switches with ADEX processor
-
         Gtk.Widget.hide(widget)
         return True
 
@@ -169,7 +164,7 @@ class ADEXDialog(object):
 
     def change_partial_time(self, combo):
         tree_iter = combo.get_active_iter()
-        if tree_iter != None:
+        if tree_iter is not None:
             model = combo.get_model()
             ptime = int(model[tree_iter][0].split(' ')[0])
             self.control.adex.config['time_interval'] = ptime * 60
@@ -197,8 +192,7 @@ class ADEXDialog(object):
 
     # ADEX configuration dialog
     def show(self, button):
-        if len(self.control.adex.config['adex_dirs']) == 0:
-            self.control.adex.config['adex_dirs'] = self.choose_folders()
+        self.control.adex.config['adex_dirs'] = self.choose_folders()
 
         # sync data
         self.list_adex_switch.clear()
@@ -226,7 +220,7 @@ class ADEXDialog(object):
         # update switches with ADEX processor
         valid_options = []
         treeiter = self.list_adex_switch.get_iter_first()
-        while treeiter  != None:
+        while treeiter  is not None:
             if self.list_adex_switch[treeiter][1]:
                 valid_options.append(self.list_adex_switch[treeiter][0])
             treeiter = self.list_adex_switch.iter_next(treeiter)
@@ -271,21 +265,20 @@ class CommentDialog(object):
         return comment_file
 
     def show(self, button):
-        if len(self.contro.com.config['filename']) == 0:
-            self.contro.com.config['filename'] = self.choose_file()
-            self.contro.com.open_comment_file()
+        self.contro.com.config['filename'] = self.choose_file()
+        self.contro.com.open_comment_file()
 
-            for item in self.contro.com.content['head']:
-                self.configs_store.append([self.contro.com.switch[item][0], item])
+        for item in self.contro.com.content['head']:
+            self.configs_store.append([self.contro.com.switch[item][0], item])
 
-            renderer_toggle = Gtk.CellRendererToggle()
-            renderer_toggle.connect("toggled", self.update_rows)
-            column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
-            self.configs_view.append_column(column_toggle)
+        renderer_toggle = Gtk.CellRendererToggle()
+        renderer_toggle.connect("toggled", self.update_rows)
+        column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
+        self.configs_view.append_column(column_toggle)
 
-            renderer_text = Gtk.CellRendererText()
-            column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
-            self.configs_view.append_column(column_text)
+        renderer_text = Gtk.CellRendererText()
+        column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
+        self.configs_view.append_column(column_text)
 
         self.main_dialog.show()
 

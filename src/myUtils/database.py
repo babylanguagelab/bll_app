@@ -22,7 +22,7 @@ class Database:
 
     # Reads and executes a sql script file.
     def execute_script(self, sql_string):
-        lg.debug(sql_string)
+        # lg.debug(sql_string)
         try:
             self.cursor.executescript(sql_string)
             self.conn.commit()
@@ -74,7 +74,7 @@ class Database:
             sql = 'SELECT DISTINCT %s FROM %s' % (','.join(cols), table)
         else:
             sql = 'SELECT %s FROM %s' % (','.join(cols), table)
-            
+
         if where:
             sql += " WHERE %s" % (where)
 
@@ -86,7 +86,7 @@ class Database:
 
         sql += ';'
 
-        #lg.debug(sql)
+        # lg.debug(sql)
 
         try:
             self.cursor.execute(sql)
