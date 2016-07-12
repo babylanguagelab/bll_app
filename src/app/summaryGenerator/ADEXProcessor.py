@@ -44,9 +44,9 @@ def second_to_timestr(second):
 class ADEXProcessor:
     def __init__(self, database):
         self.config = {'DB': database,
-                       'adex_dirs': "",
                        'naptime_file': "/tmp/test/bll_db.db",
                        # seconds, could be 300, 600, 1800, 3600
+                       'preliminary': True,
                        'time_interval': 300}
         for i in ['f30mins', 'partial_records', 'naptime', 'last2rows']:
             self.config[i] = False
@@ -77,18 +77,8 @@ class ADEXProcessor:
             else:
                 self.naptime[child_id] += [(date, entry[1], entry[2])]
 
-    # get average for values in switches
-    def get_average(self):
-        cIDs = list(self.output.keys())
-        cIDs.sort()
-        avg_param = ['AVG(' + x + ')' for x in self.switches]
 
-        # generate average values for each ID (all files)
-        for cID in cIDs:
-            avg_values = list(self.config['DB'].select(cID, avg_param)[0])
-            self.output[cID] += avg_values
-
-    def run(self):
+    def run(self, adex_folders, output):
         if self.config['naptime']:
             self.read_naptime()
 
@@ -101,7 +91,7 @@ class ADEXProcessor:
             sql = "CREATE TABLE ADEX" + "(" + params + ",PRIMARY KEY (ChildID)" + ")"
             self.config['DB'].execute_script(sql)
 
-        for path in self.config['adex_dirs']:
+        for path in adex_folders:
             file_list = os.listdir(path)
 
             for ADEX_file in file_list:
@@ -136,23 +126,24 @@ class ADEXProcessor:
 
             self.get_average()
 
-    # save results to DB
-    def save_DB(self):
+            if self.config['preliminary']:
+                pfilename = output + "/ADEX_" + path.split("/")[-1] + ".xlsx"
+                self.save_preliminary(pfilename)
+
+
+    # get average for values in switches
+    def get_average(self):
         cIDs = list(self.output.keys())
         cIDs.sort()
-        output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+        avg_param = ['AVG(' + x + ')' for x in self.switches]
 
+        # generate average values for each ID (all files)
         for cID in cIDs:
-            output =  [cID] + self.output[cID]
-            self.config['DB'].insert("ADEX", output_title, output)
+            avg_values = list(self.config['DB'].select(cID, avg_param)[0])
+            self.output[cID] += avg_values
 
-            # format to show only two digits
-            # for i in range(len(result)):
-            #     result[i] = "{:.2f}".format(result[i])
-
-
-    # save intermediate results to file
-    def save_file(self, filename):
+    # save intermediate results to a file named as directory name
+    def save_preliminary(self, filename):
         cIDs = list(self.output.keys())
         cIDs.sort()
         output_title = ['File_Name'] + self.switches
@@ -181,10 +172,27 @@ class ADEXProcessor:
                                                             + '\'' + j + '\'')
                     for i in child_values:
                         output.append(i)
-
                     output.append([" "])
 
+            output.append(["Average:"])
+            output.append([" "] + self.output[cID][3:])
+
             mParser.excel_writer(filename, cID, output)
+
+
+    # save results to DB
+    def save_DB(self):
+        cIDs = list(self.output.keys())
+        cIDs.sort()
+        output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+
+        for cID in cIDs:
+            output =  [cID] + self.output[cID]
+            self.config['DB'].insert("ADEX", output_title, output)
+
+            # format to show only two digits
+            # for i in range(len(result)):
+            #     result[i] = "{:.2f}".format(result[i])
 
 
 # read an ADEX csv file with required columns only

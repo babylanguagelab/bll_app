@@ -31,6 +31,7 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 - 5. put results into database. [V]
 - 6. write results into excel. [V]
 - 7. get filenames from other processors to exclude.
+- 8. save preliminary results.
 
 ## Comments Processor: [75%]
 - 1. filter required column. [V]

@@ -59,8 +59,8 @@ class MainWindow(object):
 
     def run(self, button):
         if self.con.config['ADEX']:
-            if len(self.con.adex.config['adex_dirs']) == 0:
-                self.con.adex.config['adex_dirs'] = self.adex.choose_folders()
+            if len(self.con.config['ADEX_folders']) == 0:
+                self.con.config['ADEX_folders'] = self.adex.choose_folders()
 
         if self.con.config['Comment']:
             if len(self.con.com.config['filename']) == 0:
@@ -192,7 +192,7 @@ class ADEXDialog(object):
 
     # ADEX configuration dialog
     def show(self, button):
-        self.control.adex.config['adex_dirs'] = self.choose_folders()
+        self.control.config['ADEX_folders'] = self.choose_folders()
 
         # sync data
         self.list_adex_switch.clear()
