@@ -121,12 +121,10 @@ class CommentProcessor(object):
 
                     self.output.append(new_output)
 
-
     def save_DB(self):
         lg.debug("save DB")
 
     def save_file(self, filename):
-        lg.debug("1111111")
         results = []
         head = []
         for item in self.content["head"]:

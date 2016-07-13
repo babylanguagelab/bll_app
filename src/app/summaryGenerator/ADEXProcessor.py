@@ -44,7 +44,7 @@ def second_to_timestr(second):
 class ADEXProcessor:
     def __init__(self, database):
         self.config = {'DB': database,
-                       'naptime_file': "/tmp/test/bll_db.db",
+                       'naptime_file': "/tmp/bll_db.db",
                        # seconds, could be 300, 600, 1800, 3600
                        'preliminary': True,
                        'time_interval': 300}
@@ -194,6 +194,13 @@ class ADEXProcessor:
             # for i in range(len(result)):
             #     result[i] = "{:.2f}".format(result[i])
 
+    # save results to summary file
+    def save_file(self, filename):
+        output = []
+        for cID in cIDs:
+            output = [cID] + self.output[cID]
+
+        mParser.excel_writer(filename, "ADEX", output)
 
 # read an ADEX csv file with required columns only
 # filter out information and then
