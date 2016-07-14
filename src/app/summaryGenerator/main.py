@@ -36,6 +36,9 @@ class Controller(object):
 
         self.config['output'] = output_folder
 
+    def generate_summary(self, filename):
+        lg.debug("summary!" + filename)
+
     def run(self):
         if self.config['Comment']:
             self.com.run()
@@ -45,6 +48,8 @@ class Controller(object):
 
         if self.config['Transcribe']:
             self.trans.run()
+
+        self.generate_summary(self.config['output'] + '/overview.xlsx')
 
 
 class Main(object):

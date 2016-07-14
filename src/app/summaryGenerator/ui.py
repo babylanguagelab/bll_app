@@ -117,17 +117,6 @@ class ADEXDialog(object):
         column_toggle = Gtk.TreeViewColumn("Choose", render_toggle, active=1)
         treeview_adex_switch.append_column(column_toggle)
 
-        self.combo_time = gbuilder.get_object("combo_ADEX_time")
-        list_time_interval = gbuilder.get_object("list_ADEX_time")
-        list_time_interval.append(["5 minutes"])
-        list_time_interval.append(["10 minutes"])
-        list_time_interval.append(["30 minutes"])
-        list_time_interval.append(["60 minutes"])
-
-        renderer_text = Gtk.CellRendererText()
-        self.combo_time.pack_start(renderer_text, True)
-        self.combo_time.add_attribute(renderer_text, "text", 0)
-
         self.f30mins_toggle = gbuilder.get_object("adex_30mins_check")
         self.partial_toggle = gbuilder.get_object("adex_partial_check")
         self.naptime_toggle = gbuilder.get_object("adex_naptime_check")
@@ -141,7 +130,6 @@ class ADEXDialog(object):
             "toggle_ADEX_naptime": self.toggle_naptime,
             "toggle_ADEX_last2": self.toggle_last2,
             "hidex_adex_dialog": self.hide,
-            "combo_ADEX_time_changed_cb": self.change_partial_time
         }
         return handlers
 
@@ -161,13 +149,6 @@ class ADEXDialog(object):
 
     def toggle_partial_records(self, button):
         self.control.adex.config['partial_records'] = button.get_active()
-
-    def change_partial_time(self, combo):
-        tree_iter = combo.get_active_iter()
-        if tree_iter is not None:
-            model = combo.get_model()
-            ptime = int(model[tree_iter][0].split(' ')[0])
-            self.control.adex.config['time_interval'] = ptime * 60
 
     def toggle_last2(self, button):
         self.control.adex.config['last2rows'] = button.get_active()
@@ -203,16 +184,6 @@ class ADEXDialog(object):
         self.partial_toggle.set_active(self.control.adex.config['partial_records'])
         self.naptime_toggle.set_active(self.control.adex.config['naptime'])
         self.last2r_toggle.set_active(self.control.adex.config['last2rows'])
-
-        time_interval = self.control.adex.config['time_interval']
-        if time_interval == 300:
-            self.combo_time.set_active(0)
-        elif time_interval == 600:
-            self.combo_time.set_active(1)
-        elif time_interval == 1800:
-            self.combo_time.set_active(2)
-        elif time_interval == 3600:
-            self.combo_time.set_active(3)
 
         self.mdialog.show()
 

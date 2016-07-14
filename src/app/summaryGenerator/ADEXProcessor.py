@@ -1,8 +1,10 @@
 import logging as lg
 import os
+import re
 import time
 import ConfigParser as mParser
 from database import Database
+from collections import Counter
 
 HEAD_NAME_LIST = [['File_Name'          ,'TEXT'],
                   ['Number_Recordings'  ,'INT'],
@@ -91,6 +93,11 @@ class ADEXProcessor:
             sql = "CREATE TABLE ADEX" + "(" + params + ",PRIMARY KEY (ChildID)" + ")"
             self.config['DB'].execute_script(sql)
 
+        # find previous result, remove it
+        previous = [x for x in os.listdir(output) if x.startswith('ADEX_')]
+        for i in previous:
+            os.remove(output + "/" + i)
+
         for path in adex_folders:
             file_list = os.listdir(path)
 
@@ -116,8 +123,7 @@ class ADEXProcessor:
                     mADEX.remove_naptime(self.naptime)
 
                 if self.config['partial_records']:
-                    interval_sec = int(self.config['time_interval'])
-                    mADEX.remove_partial_time(interval_sec)
+                    mADEX.remove_partial_time()
 
                 if self.config['last2rows']:
                     mADEX.remove_last2rows()
@@ -147,12 +153,13 @@ class ADEXProcessor:
         cIDs = list(self.output.keys())
         cIDs.sort()
         output_title = ['File_Name'] + self.switches
-        output = []
 
         for cID in cIDs:
-            output.append([cID])
-            output.append(["age", self.output[cID][0]])
-            output.append(["gender", self.output[cID][1]])
+            output = []
+            output.append(["child ID", cID])
+            output.append(["child age", self.output[cID][0]])
+            output.append(["child gender", self.output[cID][1]])
+            output.append([" "])
             output.append(output_title)
 
             # if there are more than 1 file, save separately
@@ -172,10 +179,8 @@ class ADEXProcessor:
                                                             + '\'' + j + '\'')
                     for i in child_values:
                         output.append(i)
-                    output.append([" "])
 
-            output.append(["Average:"])
-            output.append([" "] + self.output[cID][3:])
+            output.append(["Average:"] + self.output[cID][3:])
 
             mParser.excel_writer(filename, cID, output)
 
@@ -236,11 +241,16 @@ class ADEXFileProcessor:
 
     # find any time duration not up to the time interval
     # remove 1 row before and 1 row after
-    def remove_partial_time(self, interval_sec):
+    def remove_partial_time(self):
         index = self.heads.index('Audio_Duration')
         clock_index = self.heads.index('Clock_Time_TZAdj')
         start_time = 0
         end_time = 0
+
+        # find the right time interval (most common)
+        durations = [float(x[index]) for x in self.content]
+        count = Counter(durations)
+        interval_sec = float(count.most_common()[0][0])
 
         for row in self.content:
             value = float(row[index])
@@ -301,6 +311,7 @@ class ADEXFileProcessor:
 
         del self.content[time_start : time_end]
 
+    # save child information to database
     def save_DB(self, DB):
         sql = ""
 
