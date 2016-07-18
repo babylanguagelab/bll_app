@@ -48,12 +48,13 @@ class ADEXProcessor:
         self.config = {'DB': database,
                        'naptime_file': "/tmp/bll_db.db",
                        # seconds, could be 300, 600, 1800, 3600
-                       'preliminary': True,
+                       'preliminary': False,
                        'time_interval': 300}
         for i in ['f30mins', 'partial_records', 'naptime', 'last2rows']:
             self.config[i] = False
         self.switches = ['AWC', 'Turn_Count', 'Child_Voc_Count', 'CHN', 'FAN',
                          'MAN', 'CXN', 'OLN', 'TVN', 'NON', 'SIL']
+        self.filtered_files = []
         self.naptime = {}
         self.output = {}
 
@@ -65,6 +66,9 @@ class ADEXProcessor:
         if switches is not None:
             self.switches = switches
 
+    def set_filts_to_filter(self, file_list):
+        self.filtered_files = [x + ".csv" for x in file_list]
+
     def read_naptime(self):
         naptime_db = Database(self.config['naptime_file'])
         naptime_list = naptime_db.select('naptime', ['child_cd', 'start', 'end'])
@@ -74,7 +78,7 @@ class ADEXProcessor:
             child_id = entry[0].split('_')[0].lower()
             date = entry[0].split('_')[1]
 
-            if child_id not in self.naptime[child_id]:
+            if child_id not in self.naptime:
                 self.naptime[child_id] = [(date, entry[1], entry[2])]
             else:
                 self.naptime[child_id] += [(date, entry[1], entry[2])]
@@ -94,9 +98,9 @@ class ADEXProcessor:
             self.config['DB'].execute_script(sql)
 
         # find previous result, remove it
-        previous = [x for x in os.listdir(output) if x.startswith('ADEX_')]
+        previous = [x for x in os.listdir(os.path.dirname(output)) if x.startswith('ADEX_')]
         for i in previous:
-            os.remove(output + "/" + i)
+            os.remove(os.path.dirname(output) + "/" + i)
 
         for path in adex_folders:
             file_list = os.listdir(path)
@@ -105,7 +109,9 @@ class ADEXProcessor:
                 if not ADEX_file.endswith(".csv"):
                     continue
 
-                #[TODO] check remove list
+                # filtered from other processors
+                if ADEX_file.lower() in self.filtered_files:
+                    continue
 
                 mADEX = ADEXFileProcessor(path + '/' + ADEX_file)
                 if mADEX.child_id not in self.output:
@@ -119,26 +125,28 @@ class ADEXProcessor:
                 if self.config['f30mins']:
                     mADEX.remove_30mins()
 
+                if self.config['last2rows']:
+                    mADEX.remove_last2rows()
+
                 if self.config['naptime']:
                     mADEX.remove_naptime(self.naptime)
 
                 if self.config['partial_records']:
                     mADEX.remove_partial_time()
 
-                if self.config['last2rows']:
-                    mADEX.remove_last2rows()
-
                 mADEX.save_DB(self.config['DB'])
 
             self.get_average()
 
             if self.config['preliminary']:
-                pfilename = output + "/ADEX_" + path.split("/")[-1] + ".xlsx"
+                pfilename = os.path.dirname(output) + "/ADEX_" + path.split("/")[-1] + ".xlsx"
                 self.save_preliminary(pfilename)
 
+        self.save_summary(output)
 
     # get average for values in switches
     def get_average(self):
+        lg.debug("getting average")
         cIDs = list(self.output.keys())
         cIDs.sort()
         avg_param = ['AVG(' + x + ')' for x in self.switches]
@@ -150,6 +158,7 @@ class ADEXProcessor:
 
     # save intermediate results to a file named as directory name
     def save_preliminary(self, filename):
+        lg.debug("saving preliminary...")
         cIDs = list(self.output.keys())
         cIDs.sort()
         output_title = ['File_Name'] + self.switches
@@ -165,7 +174,7 @@ class ADEXProcessor:
             # if there are more than 1 file, save separately
             child_file = set(self.config['DB'].select(cID, ['File_Name'], distinct=True))
 
-            if len(child_file) is 1:
+            if len(child_file) == 1:
                 child_values = self.config['DB'].select(cID, ['File_Name'] + self.switches)
                 for i in child_values:
                     output.append(i)
@@ -200,10 +209,15 @@ class ADEXProcessor:
             #     result[i] = "{:.2f}".format(result[i])
 
     # save results to summary file
-    def save_file(self, filename):
-        output = []
+    def save_summary(self, filename):
+        lg.debug("saving summary")
+        cIDs = list(self.output.keys())
+        cIDs.sort()
+        output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.switches
+        output = [output_title]
+
         for cID in cIDs:
-            output = [cID] + self.output[cID]
+            output.append([cID] + self.output[cID])
 
         mParser.excel_writer(filename, "ADEX", output)
 
@@ -212,7 +226,7 @@ class ADEXProcessor:
 # save processed data to DB
 class ADEXFileProcessor:
     def __init__(self, ADEX_file):
-        lg.debug(ADEX_file)
+        lg.debug("processing " + ADEX_file)
         self.heads = [x[0] for x in HEAD_NAME_LIST]
         self.content = mParser.csv_dict_reader(ADEX_file, self.heads)
         self.child_id = self.get_ChildID()
@@ -235,6 +249,7 @@ class ADEXFileProcessor:
         self.content = self.content[final_start:]
 
     def remove_last2rows(self):
+        lg.debug("removing last two...")
         final_end = len(self.content) - 2
         if final_end > 0:
             self.content = self.content[:final_end]
@@ -242,6 +257,7 @@ class ADEXFileProcessor:
     # find any time duration not up to the time interval
     # remove 1 row before and 1 row after
     def remove_partial_time(self):
+        lg.debug("removing partial time...")
         index = self.heads.index('Audio_Duration')
         clock_index = self.heads.index('Clock_Time_TZAdj')
         start_time = 0
@@ -284,16 +300,16 @@ class ADEXFileProcessor:
         return timestr_to_second(self.content[0][index])
 
     def remove_naptime(self, naptime_dict):
+        lg.debug("removing naptime...")
         if self.child_id in naptime_dict:
             start_date = time.strftime('%Y%m%d', time.localtime(self.start_time))
             for i in naptime_dict[self.child_id]:
+                # if same date
                 if i[0] == start_date:
                     self.remove_time(self.start_time + i[1],
                                      self.start_time + i[2])
 
     def remove_time(self, start_time, end_time):
-        lg.debug("removing naptime...")
-
         time_start = 0
         time_end = len(self.content)
         count = 0

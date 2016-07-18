@@ -1,7 +1,7 @@
 import logging as lg
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 
 class MainWindow(object):
@@ -36,9 +36,7 @@ class MainWindow(object):
             "check_ADEX_toggled_cb": self.toggle_ADEX,
             "check_CMT_toggled_cb": self.toggle_CMT,
             "check_Trans_toggle_cb": self.toggle_Trans,
-            "show_ADEX_dialog": self.adex.show,
-            "show_CMT_dialog": self.comt.show,
-            "show_trans_dialog": self.trans.show,
+            "save_preliminary": self.save_preliminary,
             "run": self.run
         }
 
@@ -51,11 +49,23 @@ class MainWindow(object):
     def toggle_ADEX(self, button):
         self.con.config['ADEX'] = button.get_active()
 
+        if self.con.config['ADEX']:
+            self.adex.show()
+
     def toggle_CMT(self, button):
         self.con.config['Comment'] = button.get_active()
 
+        if self.con.config['Comment']:
+            self.comt.show()
+
     def toggle_Trans(self, button):
         self.con.config['Transcribe'] = button.get_active()
+
+        if self.con.config['Transcribe']:
+            self.trans.show()
+
+    def save_preliminary(self, button):
+        self.con.set_preliminary(button.get_active())
 
     def run(self, button):
         if self.con.config['ADEX']:
@@ -63,9 +73,8 @@ class MainWindow(object):
                 self.con.config['ADEX_folders'] = self.adex.choose_folders()
 
         if self.con.config['Comment']:
-            if len(self.con.com.config['filename']) == 0:
-                self.con.com.config['filename'] = self.comt.choose_file()
-                self.con.com.open_comment_file()
+            if len(self.con.com.config['special_case_file']) == 0:
+                self.con.com.open_comment_file(self.comt.choose_file())
 
         if self.con.config['Transcribe']:
             if len(self.con.trans.config['filename']) == 0:
@@ -172,7 +181,7 @@ class ADEXDialog(object):
         return result
 
     # ADEX configuration dialog
-    def show(self, button):
+    def show(self):
         self.control.config['ADEX_folders'] = self.choose_folders()
 
         # sync data
@@ -206,6 +215,7 @@ class CommentDialog(object):
         self.main_dialog = gbuilder.get_object("dialog_comment")
         self.configs_store = gbuilder.get_object("liststore_comment")
         self.configs_view = gbuilder.get_object("treeview_comment")
+        self.configs = []
 
     def get_signals_handlers(self):
         handlers = {
@@ -235,61 +245,76 @@ class CommentDialog(object):
 
         return comment_file
 
-    def show(self, button):
-        self.contro.com.config['filename'] = self.choose_file()
-        self.contro.com.open_comment_file()
+    def show(self):
+        if len(self.contro.com.config['special_case_file'])  == 0:
+            self.contro.com.open_comment_file(self.choose_file())
 
-        for item in self.contro.com.content['head']:
-            self.configs_store.append([self.contro.com.switch[item][0], item])
+            for item in self.contro.com.content['head']:
+                self.configs_store.append([self.contro.com.switch[item][0],
+                                           item,
+                                           False])
 
-        renderer_toggle = Gtk.CellRendererToggle()
-        renderer_toggle.connect("toggled", self.update_rows)
-        column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
-        self.configs_view.append_column(column_toggle)
+            renderer_toggle = Gtk.CellRendererToggle()
+            renderer_toggle.connect("toggled", self.update_rows)
+            column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
+            self.configs_view.append_column(column_toggle)
 
-        renderer_text = Gtk.CellRendererText()
-        column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
-        self.configs_view.append_column(column_text)
+            renderer_text = Gtk.CellRendererText()
+            column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
+            self.configs_view.append_column(column_text)
+
+            renderer_toggle2 = Gtk.CellRendererToggle()
+            column_toggle2 = Gtk.TreeViewColumn("Details", renderer_toggle2, active=2)
+            renderer_toggle2.connect("toggled", self.update_details)
+            self.configs_view.append_column(column_toggle2)
 
         self.main_dialog.show()
 
     def hide(self, button):
         Gtk.Widget.hide(self.main_dialog)
 
+    # update categories
     def update_rows(self, widget, path):
         self.configs_store[path][0] = not self.configs_store[path][0]
 
+    # update details
+    def update_details(self, widget, path):
         # for the specific item: name, enable, list, inverse)
         self.configs = []
         entry_name = self.contro.com.content["head"][int(path)]
         entry_list = list(self.contro.com.content["column"][entry_name])
         entry_list.sort()
 
-        if self.configs_store[path][0]:
-            entry_dialog = self.create_entry_dialog(entry_name, entry_list)
-            entry_dialog.run()
-            Gtk.Widget.hide(entry_dialog)
+        if not self.configs_store[path][0]:
+            self.configs_store[path][0] = not self.configs_store[path][0]
 
-            if self.entry_all:
-                self.contro.com.update_switch(entry_name, True, "all")
-                return
+        entry_dialog = self.create_entry_dialog(entry_name, entry_list)
+        entry_dialog.run()
+        Gtk.Widget.hide(entry_dialog)
 
-            result_list = []
-            treeiter = self.entry_liststore.get_iter_first()
-            while treeiter != None:
-                if self.entry_liststore[treeiter][0]:
-                    result_list.append(self.entry_liststore[treeiter][1])
-                treeiter = self.entry_liststore.iter_next(treeiter)
+        if self.entry_all:
+            self.contro.com.update_switch(entry_name, True, "all")
+            return
 
+        result_list = []
+        treeiter = self.entry_liststore.get_iter_first()
+        while treeiter != None:
+            if self.entry_liststore[treeiter][0]:
+                result_list.append(self.entry_liststore[treeiter][1])
+            treeiter = self.entry_liststore.iter_next(treeiter)
+
+        entry_dialog.destroy()
+        if self.entry_inverse:
             self.contro.com.update_switch(entry_name, True, result_list, self.entry_inverse)
-            entry_dialog.destroy()
         else:
             self.contro.com.update_switch(entry_name, False, "")
 
+    # create details dialog
     def create_entry_dialog(self, entry_name, entry_list):
         entry_dialog = Gtk.Dialog("Config Dialog", self.main_dialog,
                                    Gtk.DialogFlags.MODAL,
                                   (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        entry_dialog.resize(480, 640)
 
         vbox = entry_dialog.get_content_area()
 
@@ -381,5 +406,5 @@ class TransDialog(object):
 
         return trans_file
 
-    def show(self, button):
+    def show(self):
         self.control.trans.config['filename'] = self.choose_file()

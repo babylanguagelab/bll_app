@@ -3,29 +3,31 @@
 
 import logging as lg
 import openpyxl
+import os
 import ConfigParser as mParser
 
 
 class CommentProcessor(object):
-    def __init__(self, database):
+    def __init__(self):
         # excel content info, includes: head -> table headers,
         # body -> table content, column -> set of column options
         # body structure: [child_ID] => {head:[values]}
+        self.config = {'special_case_file':"", 'preliminary': True}
         self.content = {}
-        self.config = {'DB': database, 'filename': ""}
         self.switch = {} # output info
-        self.output = []
+        self.its_to_remove = []
 
-    def open_comment_file(self):
-        lg.debug("open comment file: " + self.config['filename'])
-        workbook = openpyxl.load_workbook(self.config['filename'])
+    def open_comment_file(self, filename):
+        self.config['special_case_file'] = filename
+        lg.debug("open comment file: " + self.config['special_case_file'])
+        workbook = openpyxl.load_workbook(self.config['special_case_file'])
         sheet = workbook.get_sheet_by_name("Special Cases")
         excel_head = [x.value for x in sheet.rows[0] if x.value is not None]
 
         # get content body list
         # for each record is a dictionary
         excel_body = []
-        for rnum in range(2, sheet.max_row):
+        for rnum in range(2, sheet.max_row+1):
             # sometimes the max_row number is not accurate, so I add an addition check
             if sheet.cell(row=rnum, column=2).value is None:
                 break
@@ -65,9 +67,17 @@ class CommentProcessor(object):
         return self.content["column"][item]
 
     # init configurations
-    def set_configs(self):
-        for item in self.content["head"]:
-            self.switch[item] = [True, self.content["column"][item]]
+    def set_configs(self, configs=None, switches=None):
+        if configs:
+            for i,j in configs:
+                self.config[i] = j
+
+        if switches is None:
+            for item in self.content["head"]:
+                self.switch[item] = [False, self.content["column"][item]]
+        else:
+            for i,j in switches:
+                self.switch[i] = j
 
     # update output options
     def update_switch(self, item, enable, content="all", reverse=False):
@@ -88,17 +98,46 @@ class CommentProcessor(object):
             self.switch[item] = [True, set(content)]
 
     # process switches and find its files to remove
-    def run(self):
+    def run(self, output):
+        lg.debug("generating to remove list...")
         remove_its = []
 
         # match information in child
+        # get to remove list
         for item in self.content["head"]:
             if self.switch[item][0]:
                 nfilter = self.content["column"][item] - self.switch[item][1]
                 for child in self.content["body"]:
-                    for info in child[item]:
-                        if set(info).issubset(nfilter):
+                    if item == "Study Number":
+                        if set(child["Study Number"]).issubset(nfilter):
                             remove_its.append(child["ITS File"])
+                    else:
+                        k = 0
+                        for info in child[item]:
+                            if set([info]).issubset(nfilter):
+                                remove_its.append((child["ITS File"][k], item))
+                            k += 1
+
+        self.its_to_remove = [x[0].lower() for x in remove_its]
+
+        if self.config['preliminary']:
+            pfilename = os.path.dirname(output) + "/Special_Case.xlsx"
+            self.save_preliminary(pfilename)
+
+    def save_preliminary(self, filename):
+        lg.debug("generating contents after filtering...")
+
+        if os.path.isfile(filename):
+            os.remove(filename)
+
+        output = []
+        head = [item for item in self.content['head'][1:] if self.switch[item][0]]
+
+        # the first column is mandatory
+        head = ["Study Number"] + head
+        output.append(head)
+
+        its_removed_list =[x[0] for x in self.its_to_remove]
 
         # record the filtered child information
         for child in self.content["body"]:
@@ -106,34 +145,22 @@ class CommentProcessor(object):
             max_len = len(child["ITS File"])
 
             for i in range(max_len):
-                if child["ITS File"][i] not in remove_its:
+                if child["ITS File"][i] not in its_removed_list:
                     new_output = []
-                    for item in self.content["head"]:
-                        if len(child[item]) <= i:
-                            new_output.append(" ")
-                            continue
-
-                        if self.switch[item][0] is True:
+                    new_output.append(child["Study Number"][0].lower())
+                    for item in self.content["head"][1:]:
+                        if self.switch[item][0]:
                             if len(child[item][i]) == 0:
                                 new_output.append(" ")
                             else:
                                 new_output.append(child[item][i])
+                    output.append(new_output)
 
-                    self.output.append(new_output)
+        filter_output = []
+        filter_output.append(["filtered files", "selected filter"])
+        for i in self.its_to_remove:
+            filter_output.append(i)
 
-    def save_DB(self):
-        lg.debug("save DB")
+        mParser.excel_writer(filename, 'final', output)
+        mParser.excel_writer(filename, 'filtered', filter_output)
 
-    def save_file(self, filename):
-        results = []
-        head = []
-        for item in self.content["head"]:
-            if self.switch[item][0] is True:
-                head += [item]
-
-        results.append(head)
-
-        for i in self.output:
-            results.append(i)
-
-        mParser.excel_writer(filename, 'Special Cases', results)

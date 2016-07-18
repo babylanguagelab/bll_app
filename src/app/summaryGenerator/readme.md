@@ -28,22 +28,18 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 - 2. get required columns. [V]
 - 3. process filters on data. [V]
 - 4. calculate the average. [V]
-- 5. put results into database. [V]
-- 6. write results into excel. [V]
-- 7. get filenames from other processors to exclude.
-- 8. save preliminary results.
+- 5. write results into excel. [V]
+- 6. get filenames from other processors to exclude.
+- 7. save preliminary results. [V]
 
-## Comments Processor: [75%]
+## Comments Processor:
 - 1. filter required column. [V]
 - 2. generate outputs. [V]
 - 3. write results into excel. [V]
-- 4. save results to database.
 
 ## Transcribed data handler [50%]
 - 1. load information from csv [V]
 - 2. merge with same ID [V]
-- 3. save to database.
-- 4. save results to excel. [V]
+- 3. save results to excel. [V]
 
 ## load/save configuration [30%]
-## sync data in database [50%]
