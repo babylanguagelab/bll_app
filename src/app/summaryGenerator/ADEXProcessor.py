@@ -48,7 +48,7 @@ class ADEXProcessor:
         self.config = {'DB': database,
                        'naptime_file': "/tmp/bll_db.db",
                        # seconds, could be 300, 600, 1800, 3600
-                       'preliminary': False,
+                       'preliminary': True,
                        'time_interval': 300}
         for i in ['f30mins', 'partial_records', 'naptime', 'last2rows']:
             self.config[i] = False
@@ -65,9 +65,6 @@ class ADEXProcessor:
 
         if switches is not None:
             self.switches = switches
-
-    def set_filts_to_filter(self, file_list):
-        self.filtered_files = [x + ".csv" for x in file_list]
 
     def read_naptime(self):
         naptime_db = Database(self.config['naptime_file'])
@@ -110,7 +107,7 @@ class ADEXProcessor:
                     continue
 
                 # filtered from other processors
-                if ADEX_file.lower() in self.filtered_files:
+                if ADEX_file[:-4].lower() in self.filtered_files:
                     continue
 
                 mADEX = ADEXFileProcessor(path + '/' + ADEX_file)
@@ -142,7 +139,7 @@ class ADEXProcessor:
                 pfilename = os.path.dirname(output) + "/ADEX_" + path.split("/")[-1] + ".xlsx"
                 self.save_preliminary(pfilename)
 
-        self.save_summary(output)
+        #self.save_summary(output)
 
     # get average for values in switches
     def get_average(self):

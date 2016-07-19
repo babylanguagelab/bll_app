@@ -23,11 +23,11 @@ class MainWindow(object):
             ADEX_toggle.set_active(True)
 
         Comment_toggle= builder.get_object("toggle_COM")
-        if self.con.config['Comment']:
+        if self.con.config['comment']:
             Comment_toggle.set_active(True)
 
         Trans_toggle = builder.get_object("toggle_TRANS")
-        if self.con.config['Transcribe']:
+        if self.con.config['transcribed']:
             Trans_toggle.set_active(True)
 
     def connect_signals(self, gbuilder):
@@ -53,32 +53,29 @@ class MainWindow(object):
             self.adex.show()
 
     def toggle_CMT(self, button):
-        self.con.config['Comment'] = button.get_active()
+        self.con.config['comment'] = button.get_active()
 
-        if self.con.config['Comment']:
+        if self.con.config['comment']:
             self.comt.show()
 
     def toggle_Trans(self, button):
-        self.con.config['Transcribe'] = button.get_active()
+        self.con.config['transcribed'] = button.get_active()
 
-        if self.con.config['Transcribe']:
+        if self.con.config['transcribed']:
             self.trans.show()
 
     def save_preliminary(self, button):
         self.con.set_preliminary(button.get_active())
 
     def run(self, button):
-        if self.con.config['ADEX']:
-            if len(self.con.config['ADEX_folders']) == 0:
-                self.con.config['ADEX_folders'] = self.adex.choose_folders()
+        if self.con.config['ADEX'] and len(self.con.config['ADEX_folders']) == 0:
+            self.adex.choose_folders()
 
-        if self.con.config['Comment']:
-            if len(self.con.com.config['special_case_file']) == 0:
-                self.con.com.open_comment_file(self.comt.choose_file())
+        if self.con.config['comment'] and len(self.con.config['special_case_file']) == 0:
+            self.comt.choose_file()
 
-        if self.con.config['Transcribe']:
-            if len(self.con.trans.config['filename']) == 0:
-                self.con.trans.config['filename'] = self.trans.choose_file()
+        if self.con.config['transcribed'] and len(self.con.config['transcribed_file']) == 0:
+            self.trans.choose_file()
 
         if len(self.con.config['output']) == 0:
             save_dialog = Gtk.FileChooserDialog("Please choose where to save output",
@@ -178,11 +175,12 @@ class ADEXDialog(object):
             result = dialog.get_filenames()
 
         dialog.destroy()
-        return result
+
+        self.control.config['ADEX_folders'] = result
 
     # ADEX configuration dialog
     def show(self):
-        self.control.config['ADEX_folders'] = self.choose_folders()
+        self.choose_folders()
 
         # sync data
         self.list_adex_switch.clear()
@@ -210,7 +208,7 @@ class ADEXDialog(object):
 
 class CommentDialog(object):
     def __init__(self, gbuilder, controller):
-        self.contro = controller
+        self.control = controller
 
         self.main_dialog = gbuilder.get_object("dialog_comment")
         self.configs_store = gbuilder.get_object("liststore_comment")
@@ -243,14 +241,15 @@ class CommentDialog(object):
 
         file_dialog.destroy()
 
-        return comment_file
+        self.control.config['special_case_file'] = comment_file
+        self.control.com.open_comment_file(comment_file)
 
     def show(self):
-        if len(self.contro.com.config['special_case_file'])  == 0:
-            self.contro.com.open_comment_file(self.choose_file())
+        if len(self.control.config['special_case_file'])  == 0:
+            self.choose_file()
 
-            for item in self.contro.com.content['head']:
-                self.configs_store.append([self.contro.com.switch[item][0],
+            for item in self.control.com.content['head']:
+                self.configs_store.append([self.control.com.switch[item][0],
                                            item,
                                            False])
 
@@ -281,8 +280,8 @@ class CommentDialog(object):
     def update_details(self, widget, path):
         # for the specific item: name, enable, list, inverse)
         self.configs = []
-        entry_name = self.contro.com.content["head"][int(path)]
-        entry_list = list(self.contro.com.content["column"][entry_name])
+        entry_name = self.control.com.content["head"][int(path)]
+        entry_list = list(self.control.com.content["column"][entry_name])
         entry_list.sort()
 
         if not self.configs_store[path][0]:
@@ -293,7 +292,7 @@ class CommentDialog(object):
         Gtk.Widget.hide(entry_dialog)
 
         if self.entry_all:
-            self.contro.com.update_switch(entry_name, True, "all")
+            self.control.com.update_switch(entry_name, True, "all")
             return
 
         result_list = []
@@ -304,10 +303,7 @@ class CommentDialog(object):
             treeiter = self.entry_liststore.iter_next(treeiter)
 
         entry_dialog.destroy()
-        if self.entry_inverse:
-            self.contro.com.update_switch(entry_name, True, result_list, self.entry_inverse)
-        else:
-            self.contro.com.update_switch(entry_name, False, "")
+        self.control.com.update_switch(entry_name, True, result_list, self.entry_inverse)
 
     # create details dialog
     def create_entry_dialog(self, entry_name, entry_list):
@@ -380,18 +376,29 @@ class CommentDialog(object):
             self.entry_inverse = False
 
 
-
 class TransDialog(object):
     def __init__(self, gbuilder, controller):
         self.control = controller
+        self.main_dialog= gbuilder.get_object("dialog_transcribed")
+
+        self.average_button = gbuilder.get_object("transcribed_average_button")
+        self.average_button.connect("toggled", self.button_toggled, "1")
+
+        self.sum_button = gbuilder.get_object("transcribed_sum_button")
+        self.sum_button.connect("toggled", self.button_toggled, "2")
 
     def get_signals_handlers(self):
-        handlers = {}
+        handlers = {"stop_delete_window": self.stop_delete_window,
+                    "hide_dialog": self.hide}
         return handlers
+
+    def stop_delete_window(self, widget, data):
+        Gtk.Widget.hide(widget)
+        return True
 
     def choose_file(self):
         file_dialog = Gtk.FileChooserDialog("Please choose the transcribed file",
-                                            None,
+                                            self.main_dialog,
                                             Gtk.FileChooserAction.SAVE,
                                             (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                                              Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
@@ -403,8 +410,20 @@ class TransDialog(object):
             trans_file = file_dialog.get_filename()
 
         file_dialog.destroy()
+        self.control.config['transcribed_file'] = trans_file
 
-        return trans_file
+    def button_toggled(self, button, name):
+        if button.get_active():
+            if name == "1":
+                self.control.trans.config['calc_type'] = 1
+            else:
+                self.control.trans.config['calc_type'] = 2
+
+    def hide(self, button):
+        Gtk.Widget.hide(self.main_dialog)
 
     def show(self):
-        self.control.trans.config['filename'] = self.choose_file()
+        if len(self.control.config['transcribed_file']) == 0:
+            self.choose_file()
+
+        self.main_dialog.show()

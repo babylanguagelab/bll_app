@@ -18,6 +18,9 @@ class CommentProcessor(object):
         self.its_to_remove = []
 
     def open_comment_file(self, filename):
+        if filename == None:
+            return
+
         self.config['special_case_file'] = filename
         lg.debug("open comment file: " + self.config['special_case_file'])
         workbook = openpyxl.load_workbook(self.config['special_case_file'])
@@ -74,7 +77,7 @@ class CommentProcessor(object):
 
         if switches is None:
             for item in self.content["head"]:
-                self.switch[item] = [False, self.content["column"][item]]
+                self.switch[item] = [True, self.content["column"][item]]
         else:
             for i,j in switches:
                 self.switch[i] = j
@@ -103,7 +106,7 @@ class CommentProcessor(object):
         remove_its = []
 
         # match information in child
-        # get to remove list
+        # get need to remove list
         for item in self.content["head"]:
             if self.switch[item][0]:
                 nfilter = self.content["column"][item] - self.switch[item][1]
@@ -118,7 +121,7 @@ class CommentProcessor(object):
                                 remove_its.append((child["ITS File"][k], item))
                             k += 1
 
-        self.its_to_remove = [x[0].lower() for x in remove_its]
+        self.its_to_remove = remove_its
 
         if self.config['preliminary']:
             pfilename = os.path.dirname(output) + "/Special_Case.xlsx"

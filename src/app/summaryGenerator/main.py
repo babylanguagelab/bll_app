@@ -1,6 +1,7 @@
 import logging as lg
 import os
 from debug import debug_init
+import ConfigParser as mParser
 from database import Database
 from ADEXProcessor import ADEXProcessor
 from commentProcessor import CommentProcessor
@@ -13,15 +14,14 @@ class Controller(object):
         debug_init()
         self.config = {'DB': Database(":memory:"),
                        #self.config = {'DB': Database("test.db"),
-                       'ADEX': False,
-                       'ADEX_folders': [],
-                       'Comment': False,
-                       'Transcribe': False,
+                       'ADEX': False, 'ADEX_folders': [],
+                       'comment': False, 'special_case_file': "",
+                       'transcribed': False, 'transcribed_file': "",
                        'output': "",
                        'preliminary': False}
         self.adex = ADEXProcessor(self.config["DB"])
         self.com = CommentProcessor()
-        self.trans = TranscribedProcessor(self.config["DB"])
+        self.trans = TranscribedProcessor()
 
     def load_configs(self):
         self.adex.set_configs()
@@ -42,20 +42,52 @@ class Controller(object):
     def set_preliminary(self, toggle):
         self.adex.set_configs(configs=[('preliminary', toggle)])
         self.com.set_configs(configs=[('preliminary', toggle)])
+        self.trans.set_configs(configs=[('preliminary', toggle)])
 
     def run(self):
-        if self.config['Comment']:
+        if self.config['comment']:
             self.com.run(self.config['output'])
-            self.adex.filtered_files = self.com.its_to_remove
+            self.adex.filtered_files = [x[0].lower() for x in self.com.its_to_remove]
+            self.trans.filtered_files = [x[0].lower() for x in self.com.its_to_remove]
 
         if self.config['ADEX']:
             self.adex.run(self.config['ADEX_folders'], self.config['output'])
 
-        if self.config['Transcribe']:
-            self.trans.run()
+        if self.config['transcribed']:
+            self.trans.run(self.config['transcribed_file'], self.config['output'])
+
+        self.save(self.config['output'])
 
         lg.debug("Done!")
 
+    def save(self, summary):
+        output = [['LENA ADEX']]
+        ADEX_CIDs = list(self.adex.output.keys())
+        ADEX_CIDs.sort()
+        ADEX_output_title = ['ChildID', 'Age', 'Gender', 'Recordings'] + self.adex.switches
+        output.append(ADEX_output_title)
+
+        if self.config['transcribed']:
+            output[0] = output[0] + [' '] * (len(ADEX_output_title) - 1) + ["transcribed data"]
+            output[1] = output[1] + self.trans.content['head'][1:]
+
+        for ACID in ADEX_CIDs:
+            if not self.config['transcribed']:
+                output.append([ACID] + self.adex.output[ACID])
+            else:
+                if ACID in self.trans.output:
+                    output.append([ACID] + self.adex.output[ACID] +
+                                  self.trans.output[ACID])
+
+        if self.config['transcribed']:
+            TCIDs = set(self.trans.output.keys()) - set(ADEX_CIDs)
+
+            for TCID in TCIDs:
+                output.append([TCID] +
+                              [' '] * len(ADEX_output_title) +
+                              self.trans.output[TCID])
+
+        mParser.excel_writer(summary, "summary", output)
 
 class Main(object):
     def __init__(self):
