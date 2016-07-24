@@ -69,7 +69,14 @@ class Controller(object):
 
         if self.config['transcribed']:
             output[0] = output[0] + [' '] * (len(ADEX_output_title) - 1) + ["transcribed data"]
-            output[1] = output[1] + self.trans.content['head'][1:]
+            trans_head  = [' ', self.trans.content['head'][1]]
+            for i in self.trans.content['head'][2:]:
+                if self.trans.switches[i] == 1:
+                    trans_head.append(i + " (avg)")
+                else:
+                    trans_head.append(i + " (sum)")
+
+            output[1] = output[1] + trans_head
 
         for ACID in ADEX_CIDs:
             if not self.config['transcribed']:

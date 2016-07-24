@@ -339,7 +339,6 @@ class CommentDialog(object):
 
         renderer_toggle = Gtk.CellRendererToggle()
         renderer_toggle.connect("toggled", self.update_entry_config)
-        column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
         column_toggle = Gtk.TreeViewColumn("Toggle", renderer_toggle, active=0)
         self.config_treeview.append_column(column_toggle)
 
@@ -379,13 +378,26 @@ class CommentDialog(object):
 class TransDialog(object):
     def __init__(self, gbuilder, controller):
         self.control = controller
+
+        self.configs_store = gbuilder.get_object("liststore_transcribed")
+        self.configs_view = gbuilder.get_object("treeview_transcribed")
         self.main_dialog= gbuilder.get_object("dialog_transcribed")
 
-        self.average_button = gbuilder.get_object("transcribed_average_button")
-        self.average_button.connect("toggled", self.button_toggled, "1")
+        renderer_text = Gtk.CellRendererText()
+        column_text = Gtk.TreeViewColumn("Name", renderer_text, text=0)
+        self.configs_view.append_column(column_text)
 
-        self.sum_button = gbuilder.get_object("transcribed_sum_button")
-        self.sum_button.connect("toggled", self.button_toggled, "2")
+        renderer_toggle1 = Gtk.CellRendererToggle()
+        renderer_toggle1.set_radio(True)
+        renderer_toggle1.connect("toggled", self.update_entry_config)
+        column_toggle1 = Gtk.TreeViewColumn("Average", renderer_toggle1, active=1)
+        self.configs_view.append_column(column_toggle1)
+
+        renderer_toggle2 = Gtk.CellRendererToggle()
+        renderer_toggle2.set_radio(True)
+        renderer_toggle2.connect("toggled", self.update_entry_config)
+        column_toggle2 = Gtk.TreeViewColumn("Sum", renderer_toggle2, active=2)
+        self.configs_view.append_column(column_toggle2)
 
     def get_signals_handlers(self):
         handlers = {"stop_delete_window": self.stop_delete_window,
@@ -395,6 +407,27 @@ class TransDialog(object):
     def stop_delete_window(self, widget, data):
         Gtk.Widget.hide(widget)
         return True
+
+    def sync_liststore(self):
+        items = self.control.trans.content['head'][2:]
+        self.configs_store.clear()
+
+        for i in items:
+            isaverage = self.control.trans.switches[i] == 1
+            issum = self.control.trans.switches[i] == 2
+            self.configs_store.append([i, isaverage, issum])
+
+    def update_entry_config(self, widget, path):
+        item = self.configs_store[path][0]
+
+        if self.configs_store[path][1]:
+            self.configs_store[path][2] = True
+            self.configs_store[path][1] = False
+            self.control.trans.switches[item] = 2
+        else:
+            self.configs_store[path][2] = False
+            self.configs_store[path][1] = True
+            self.control.trans.switches[item] = 1
 
     def choose_file(self):
         file_dialog = Gtk.FileChooserDialog("Please choose the transcribed file",
@@ -412,12 +445,8 @@ class TransDialog(object):
         file_dialog.destroy()
         self.control.config['transcribed_file'] = trans_file
 
-    def button_toggled(self, button, name):
-        if button.get_active():
-            if name == "1":
-                self.control.trans.config['calc_type'] = 1
-            else:
-                self.control.trans.config['calc_type'] = 2
+        self.control.trans.parse_file(trans_file)
+        self.sync_liststore()
 
     def hide(self, button):
         Gtk.Widget.hide(self.main_dialog)

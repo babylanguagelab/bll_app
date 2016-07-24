@@ -37,9 +37,9 @@ C:\Experimental Data\Daycare Study\ADEX Output\Elizabeth\June 2014 ADEX Analysis
 - 2. generate outputs. [V]
 - 3. write results into excel. [V]
 
-## Transcribed data handler [50%]
+## Transcribed data handler:
 - 1. load information from csv [V]
 - 2. merge with same ID [V]
 - 3. save results to excel. [V]
 
-## load/save configuration [30%]
+## load/save configuration:

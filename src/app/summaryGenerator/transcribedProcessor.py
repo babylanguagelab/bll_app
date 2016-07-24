@@ -5,19 +5,24 @@ import ConfigParser as mParser
 class TranscribedProcessor(object):
     def __init__(self):
         self.config = {'trans_file': "",
-                       'calc_type': 1, # calc_type: 1 for avg, 2 for sum
                        'preliminary': True}
-        self.content = {"head": [], "body": {}}
+        self.content = {'head': [], 'body': {}}
+        self.switches = {} # calc_type: 1 for avg, 2 for sum
         self.filtered_files = []
         self.output = {}
 
     # init configurations
-    def set_configs(self, configs=None):
+    def set_configs(self, configs=None, switches=None):
         if configs:
-            for i,j in configs:
+            for i, j in configs:
                 self.config[i] = j
 
-    def parse_file(self):
+        if switches is not None:
+            for i, j in switches:
+                self.switches[i] = j
+
+    def parse_file(self, filename):
+        self.config['trans_file'] = filename
         lg.debug("open transcribed file: " + self.config['trans_file'])
 
         content = mParser.csv_reader(self.config['trans_file'])
@@ -39,11 +44,14 @@ class TranscribedProcessor(object):
                 body[ID].append([file_name] + [float(x) for x in record[1:]])
         self.content['body'] = body
 
+        for i in self.content['head'][2:]:
+            self.switches[i] = 1
+
     def cal_sum(self):
         lg.debug("calculating sum...")
-        CIDs = self.content['body'].keys()
+        CIDs = list(self.content['body'].keys())
         output = {}
-        
+
         for cid in CIDs:
             sum_values = []
             length = 0
@@ -61,30 +69,28 @@ class TranscribedProcessor(object):
 
             if len(sum_values) > 0:
                 output[cid] = [length] + sum_values
-
         return output
 
-    def cal_average(self):
-        lg.debug("calculating average...")
+    def cal_final(self):
+        lg.debug("calculating final...")
         output = self.cal_sum()
-        CIDs = output.keys()
+        CIDs = list(output.keys())
 
+        # calculate average
         for cid in CIDs:
             count = output[cid][0]
             for i in range(len(output[cid][1:])):
-                if output[cid][1+i] != 0:
+                head = self.content['head'][i + 2]
+                if self.switches[head] == 1:
                     output[cid][1+i] = output[cid][1+i] / count
 
         return output
 
     def run(self, filename, output):
-        self.config['trans_file'] = filename
-        self.parse_file()
+        if len(self.config['trans_file']) == 0:
+            self.parse_file(filename)
 
-        if self.config['calc_type'] == 1:
-            self.output = self.cal_average()
-        else:
-            self.output = self.cal_sum()
+        self.output = self.cal_final()
 
         if self.config['preliminary']:
             pfilename = os.path.dirname(output) + "/Transcribed.xlsx"
@@ -96,13 +102,15 @@ class TranscribedProcessor(object):
         if os.path.isfile(filename):
             os.remove(filename)
 
-        output = [self.content['head']]
-        if self.config['calc_type'] == 1:
-            output.append(['calc type', "average"])
-        else:
-            output.append(['calc type', "sum"])
+        new_head = self.content['head'][:2]
+        for i in self.content['head'][2:]:
+            if self.switches[i] == 1:
+                new_head.append(i + " (avg)")
+            else:
+                new_head.append(i + " (sum)")
+        output = [new_head]
 
-        CIDs = self.output.keys()
+        CIDs = list(self.output.keys())
         CIDs.sort()
 
         for cid in CIDs:
