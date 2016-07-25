@@ -41,13 +41,26 @@ class CommentProcessor(object):
                     if sheet.cell(row=rnum, column=i+1).value is None:
                         child_dict[item] = [" "]
                     else:
-                        child_dict[item] = [sheet.cell(row=rnum, column=i+1).value]
+                        if item == "Recording":
+                            child_dict[item] = [str(sheet.cell(row=rnum, column=i+1).value)]
+                        elif item == "Recording Dates":
+                            child_dict[item] = [sheet.cell(row=rnum, column=i+1).value.strftime("%Y-%m-%d")]
+                        else:
+                            child_dict[item] = [sheet.cell(row=rnum, column=i+1).value]
                 excel_body.append(child_dict)
             else:
+                # next record for the same child
                 for i, item in enumerate(excel_head):
                     if sheet.cell(row=rnum, column=i+1).value is not None:
-                        excel_body[-1][item].append(sheet.cell(row=rnum,
-                                                               column=i+1).value)
+                        if item == "Recording":
+                            excel_body[-1][item].append(str(sheet.cell(row=rnum,
+                                                                       column=i+1).value))
+                        elif item == "Recording Dates":
+                            excel_body[-1][item].append(str(sheet.cell(row=rnum,
+                                                                       column=i+1).value.strftime("%Y-%m-%d")))
+                        else:
+                            excel_body[-1][item].append(sheet.cell(row=rnum,
+                                                                   column=i+1).value)
 
         # get option dictionary
         # key: item name
@@ -153,7 +166,7 @@ class CommentProcessor(object):
                     new_output.append(child["Study Number"][0].lower())
                     for item in self.content["head"][1:]:
                         if self.switch[item][0]:
-                            if len(child[item][i]) == 0:
+                            if len(child[item]) <= i or len(child[item][i]) == 0:
                                 new_output.append(" ")
                             else:
                                 new_output.append(child[item][i])

@@ -213,7 +213,22 @@ class CommentDialog(object):
         self.main_dialog = gbuilder.get_object("dialog_comment")
         self.configs_store = gbuilder.get_object("liststore_comment")
         self.configs_view = gbuilder.get_object("treeview_comment")
-        self.configs = []
+
+        renderer_toggle = Gtk.CellRendererToggle()
+        renderer_toggle.connect("toggled", self.update_rows)
+        column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
+        self.configs_view.append_column(column_toggle)
+
+        renderer_text = Gtk.CellRendererText()
+        column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
+        self.configs_view.append_column(column_text)
+
+        renderer_toggle2 = Gtk.CellRendererToggle()
+        renderer_toggle2.set_radio(True)
+        column_toggle2 = Gtk.TreeViewColumn("Details", renderer_toggle2, active=2)
+        renderer_toggle2.connect("toggled", self.update_details)
+        self.configs_view.append_column(column_toggle2)
+
 
     def get_signals_handlers(self):
         handlers = {
@@ -248,24 +263,11 @@ class CommentDialog(object):
         if len(self.control.config['special_case_file'])  == 0:
             self.choose_file()
 
+            self.configs_store.clear()
             for item in self.control.com.content['head']:
                 self.configs_store.append([self.control.com.switch[item][0],
                                            item,
                                            False])
-
-            renderer_toggle = Gtk.CellRendererToggle()
-            renderer_toggle.connect("toggled", self.update_rows)
-            column_toggle = Gtk.TreeViewColumn("Enable", renderer_toggle, active=0)
-            self.configs_view.append_column(column_toggle)
-
-            renderer_text = Gtk.CellRendererText()
-            column_text = Gtk.TreeViewColumn("Name", renderer_text, text=1)
-            self.configs_view.append_column(column_text)
-
-            renderer_toggle2 = Gtk.CellRendererToggle()
-            column_toggle2 = Gtk.TreeViewColumn("Details", renderer_toggle2, active=2)
-            renderer_toggle2.connect("toggled", self.update_details)
-            self.configs_view.append_column(column_toggle2)
 
         self.main_dialog.show()
 
@@ -278,8 +280,8 @@ class CommentDialog(object):
 
     # update details
     def update_details(self, widget, path):
+        self.configs_store[path][2] = True
         # for the specific item: name, enable, list, inverse)
-        self.configs = []
         entry_name = self.control.com.content["head"][int(path)]
         entry_list = list(self.control.com.content["column"][entry_name])
         entry_list.sort()
