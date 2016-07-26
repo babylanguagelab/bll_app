@@ -126,7 +126,7 @@ class CommentProcessor(object):
                 for child in self.content["body"]:
                     if item == "Study Number":
                         if set(child["Study Number"]).issubset(nfilter):
-                            remove_its.append(child["ITS File"])
+                            remove_its += child["ITS File"]
                     else:
                         k = 0
                         for info in child[item]:
