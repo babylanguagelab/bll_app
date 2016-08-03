@@ -136,7 +136,11 @@ class ADEXProcessor:
             self.get_average()
 
             if self.config['preliminary']:
-                pfilename = os.path.dirname(output) + "/ADEX_" + path.split("/")[-1] + ".xlsx"
+                pfilename = os.path.dirname(output) + \
+                            "/ADEX_" + \
+                            os.path.basename(os.path.dirname(output)) + \
+                            ".xlsx"
+
                 self.save_preliminary(pfilename)
 
         #self.save_summary(output)
