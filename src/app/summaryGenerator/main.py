@@ -79,7 +79,7 @@ class Controller(object):
             output[1] = output[1] + trans_head
 
         for ACID in ADEX_CIDs:
-            if not self.config['transcribed']:
+            if not self.config['transcribed'] or ACID not in self.trans.output:
                 output.append([ACID] + self.adex.output[ACID])
             else:
                 if ACID in self.trans.output:
