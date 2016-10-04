@@ -40,4 +40,6 @@ class MainWindow(Gtk.Window):
             newFile = os.path.splitext(origFile)[0]
             self.control.saveResults(newFile)
 
+        self.label.set_text("Complete!")
+
         dialog.destroy()

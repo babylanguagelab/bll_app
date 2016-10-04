@@ -14,6 +14,10 @@ class AudicityFinder(object):
             for line in fp:
                 context = line.split()
                 xmin = float(context[0])
+                print(xmin)
+                if xmin < 0:
+                    xmin = 0.00
+
                 xmax = float(context[1])
                 text = context[2]
 
