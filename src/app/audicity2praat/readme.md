@@ -1,0 +1,1 @@
+A TextGrid object consists of a number of tiers. There are two kinds of tiers: an interval tier is a connected sequence of labelled intervals, with boundaries in between. A point tier is a sequence of labelled points.
