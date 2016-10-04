@@ -1,14 +1,27 @@
-from audicityFinder import audicityFinder
+from audicityFinder import AudicityFinder
 from TextGrid import TextGrid
+import ui
+
+class Controller(object):
+    def __init__(self):
+        self.audicity = AudicityFinder()
+        self.tg = TextGrid()
+
+    def parseAudicity(self, filename):
+        self.audicity.parseFile(filename)
+
+    def saveResults(self, filename):
+        labels = self.audicity.getIntervals()
+        self.tg.addItem("IntervalTier", "dialog", labels)
+        self.tg.output(filename+".TextGrid")
 
 class Main(object):
-    def run(self):
-        audicity = audicityFinder("Label Track.txt")
-        labels =audicity.getIntervals()
+    def __init__(self):
+        self.control = Controller()
+        self.mWin = ui.MainWindow(self.control)
 
-        tg = TextGrid()
-        tg.addItem("IntervalTier", "dialog", labels)
-        tg.output("results.TextGrid")
+    def run(self):
+        self.mWin.toShow()
 
 m = Main()
 m.run()

@@ -1,10 +1,16 @@
-class audicityFinder(object):
+class AudicityFinder(object):
     size = 0
     intervals = []
 
-    def __init__(self, filename):
+    def __init__(self, filename=None):
+        if filename is not None:
+            self.parseFile(filename)
+
+    def parseFile(self, filename):
+        self.intervals.clear()
         with open(filename, 'rt') as fp:
             lastMax = 0.00
+
             for line in fp:
                 context = line.split()
                 xmin = float(context[0])
