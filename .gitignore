@@ -49,10 +49,6 @@ Temporary Items
 icons/
 *.db
 
-# Spreadsheet files
-*.csv
-*.xlsx
-
 # Log files
 logs/
 
