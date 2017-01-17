@@ -1,0 +1,24 @@
+{
+  "lab_key": "1111111111",
+  "lab_name": "Lab",
+
+  "group_num": 1,
+
+  "server_urls": {
+    "get_block_url": "http://127.0.0.1:8080/v1/get-block/",
+    "get_specific_block_url": "http://127.0.0.1:8080/v1/get-specific-block/",
+    "get_block_list_url": "http://127.0.0.1:8080/v1/get-block-list/",
+    "delete_block_url": "http://127.0.0.1:8080/v1/delete-block/",
+    "delete_user_url": "http://127.0.0.1:8080/v1/delete-user/",
+    "lab_info_url": "http://127.0.0.1:8080/v1/lab-info/",
+    "all_lab_info_url": "http://127.0.0.1:8080/v1/all-lab-info/",
+    "add_user_url": "http://127.0.0.1:8080/v1/add-user/",
+    "submit_labels_url": "http://127.0.0.1:8080/v1/submit-labels/",
+    "get_labels_url": "http://127.0.0.1:8080/v1/get-labels/",
+    "get_lab_labels_url": "http://127.0.0.1:8080/v1/get-lab-labels/",
+    "get_all_labels_url": "http://127.0.0.1:8080/v1/get-all-labels/",
+    "get_train_labels_url": "http://127.0.0.1:8080/v1/get-train-labels/",
+    "get_relia_labels_url": "http://127.0.0.1:8080/v1/get-relia-labels/",
+    "send_back_blocks_url": "http://127.0.0.1:8080/v1/submit-wo-labels/"
+  }
+}

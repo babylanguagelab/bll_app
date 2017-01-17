@@ -1,0 +1,10 @@
+{
+ "admin_key": "0000000000",
+ "work_map_loaded": true,
+ "labs": [
+  "1111111111"
+ ],
+ "labs_db_path": "db/labs.db",
+ "work_db_path": "db/work.db",
+ "labels_db_path": "db/labels.db"
+}
