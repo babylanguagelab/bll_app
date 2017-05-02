@@ -1,0 +1,51 @@
+Convolabel is a simple program that allows percentage-based labelling of conversational blocks.
+
+---------------- HOW TO RUN (if you are on Windows): 
+
+The program requires one additional python module - PyAudio. You can check whether you have it by typing 'pip freeze' in the command prompt. If PyAudio is on the list, great! If it does not appear, you can install it by typing 'python -m pip install pyaudio' in the command prompt (see https://people.csail.mit.edu/hubert/pyaudio/).
+
+After you have unzipped the folder,  just double-click on the 'convolabel.py' icon. If that does not work, you might need to associate python files with python executable (see https://docs.python.org/2/using/windows.html#executing-scripts). 
+
+If you do not want the black console window to pop up when you open the program, add 'w' to the extension of the file name (so that it becomes 'convolabel.pyw')
+
+---------------- HOW IT WORKS: 
+
+a) When the program opens, first thing is you need to type in the coder's name. The labels will be saved under this name. Several coders can label the same block.
+
+b) Then, click 'Load' to pull up the conversational blocks. Select the folder that contains the blocks. The program assumes that you have already spliced the whole recording into blocks. The folder for the recording should contain folders for blocks with one or more '.wav' files in them.
+
+c) Select a block and click 'Play' to listen to the whole block. 
+
+d) Type in percentages in the windows below. The labels are organised in the following way:
+
+Adult-directed speech   |-- Mother -----------|-- Directed at target child --|-- Directive
+Child-directed speech --|-- Other females(s)  |-- Directed at other child    |-- Nondirective
+Other child speech      |-- Male(s)
+Junk                    |-- Unsure
+Sensitive
+
+Percentages in the first column do not have to add up to 100. In all other columns, they must.
+
+e) After you have finished labelling a block, click 'Submit'. This will store the lables in the memory, but will not save the data on the hard drive! Select another block by clicking on its name in the list. Blocks that have been labelled will appear grey in the list.
+
+f) When you finish, click 'Save and Exit'. This will save the labels in the data file and close the program window. The 'ExperimentData.pkl' file will appear in the program folder. All labels are stored in this file. Do not delete or move it to another location (unless you want to reset the data).
+
+Note that you have to submit the labels after each block, but you only need to click 'Save and Exit' once you have finished a session and want to exit.
+
+g) If you want to export the data in an Excel file, click 'Export'. This will export the latest state of the progress in an excel spreadsheet. You can export as often as you want and delete these Excel data sheets. They do not matter for the functioning of the program.
+
+
+---------------- HOT KEYS:
+
+- space			= play the selected block
+- control + s		= submit the labels to the memory
+- arrow up or left	= select previous block
+- arrow down or right	= select next block
+
+---------------- 
+
+If you have any questions or suggestions, or if something does not work, contact me (Roman) at belenyar@myumanitoba.ca
+
+The program was tested on:
+- Windows 10 64-bit, Python 2.7.13 64-bit
+- Windows 7 64-bit, Python 2.7.12 32-bit
