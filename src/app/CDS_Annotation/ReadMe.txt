@@ -8,8 +8,9 @@ Prerequisites:
 This application runs on Python 2.7 and requires PyAudio and ffmpeg.
 You can find out what version of Python your computer has by opening the terminal (Mac or Linux) or command prompt (Windows) and typing 'python' > enter.
 You can get the latest version of Python from https://www.python.org/downloads/ (make sure that version 2.7 is insatlled)
-Install PyAudio from https://people.csail.mit.edu/hubert/pyaudio/
-Install ffmpeg from https://ffmpeg.org/
+If you don't arleady also have PyAudio and ffmpeg, you can install:
+PyAudio from https://people.csail.mit.edu/hubert/pyaudio/
+ffmpeg from https://ffmpeg.org/
 
 Initial Set-up:
 Once you have all these programs on your computer, you will need to set up your project directory. Name this directory something useful, like "CDS Annotation Project". 
@@ -24,8 +25,9 @@ makeblocks.py --> a program that takes the files in the input directory, and mak
 utils.py --> contains some methods required by CDSAnnotator.py
 
 How to Make Blocks:
-The CDSAnnotator works with conversational blocks that have been cut into separate segments, and lets you code information about these segments. But first, you need to take the information provided by LENA in .cha files, and divide the corresponding .wav recording into blocks that contain FAN, MAN, and CHN speech segments.
-To make the blocks, find a .wav recording and the corresponfing .cha file for a participant. Make a new folder for this participant and insert both files there. Then, put the participant's folder into the 'input' sub-directory in your project directory. You can have up to 10 participant folders in the 'input' directory at once (too many participants at once will take a very long time for the make blocks program to process, or possibly make the program crash, depending on your computer).
+The CDSAnnotator works with conversational blocks that have been cut into separate segments, and lets you code information about these segments. But first, you need to take the information provided by LENA in .cha files, and divide the corresponding .wav recording into blocks that contain at least one FAN (female adult near), MAN (male adult near), or CHN (child near) speech segment.
+Before you can make blocks, you must first process the .cha files with CLAN. Instructions for how to do this are in the LENA help manuals. 
+To make the blocks, find a .wav recording and the corresponding processed .cha file for a participant. Make a new folder for this participant and insert both files there. Then, put the participant's folder into the 'input' sub-directory in your project directory. You can have up to 10 participant folders in the 'input' directory at once (too many participants at once will take a very long time for the make blocks program to process, or possibly make the program crash, depending on your computer).
 Next, open CDSAnnotator5.0.py and in the dropdown menu, select 'Make blocks'. The program will start processing the data. Once it is done, a message will appear and the recordings will show up in the 'Recordings' listbox. It might take about 20 minutes to process 10 recordings, so budget your time accordingly. Participant folders containing the finished blocks will appear in the 'output' folder.
 Note: once a participant's recordings have appeared as blocks in the 'output' folder, you can remove that participant's .wav and .cha files from the 'input' folder and make more blocks with new participants without loosing the blocks that you have already made.
 
