@@ -1,19 +1,16 @@
-Last updated on 11 September 2017
 
 # Convolabel
-is a simple program that allows percentage-based labelling of conversational blocks. Essentially, it is a modified version of IDSLabel to label conversations instead of speech segments.
+is a simple program that allows percentage-based labelling of conversational blocks. Essentially, it is a modified version of [IDSLabel](https://github.com/babylanguagelab/bll_app/tree/master/src/app/IDSLabel/client) to label conversations instead of speech segments.
 
 ## Installation (for Windows):
 
 The program requires three additional python modules - [PyAudio](https://people.csail.mit.edu/hubert/pyaudio/), [Matplotlib](https://matplotlib.org/) and [Numpy](http://www.numpy.org/). These can be installed via python's package manager Pip with the following in the command prompt:
 ```
-pip install pyaudio
-pip install matplotlib
-pip install numpy
+pip install pyaudio matplotlib numpy
 ```
 To start the program, double-click on the `convolabel.py` icon. If that does not work, you might need to [associate python files with python executable](https://docs.python.org/2/using/windows.html#executing-scripts).
 
-Alteratively, open the program folder -> `Shift` + `right-click` -> `Open command window here`. In the command window, type: `python convolabel.py`
+Alteratively, open the program folder -> `Shift + right-click` -> `Open command window here`. In the command window, type: `python convolabel.py`
 
 Optional: if you do not want the black console window to pop up when you open the program, add 'w' to the extension of the file name (so that it becomes `convolabel.pyw`)
 
@@ -25,11 +22,11 @@ Optional: if you do not want the black console window to pop up when you open th
 
 3. Select a block and click `Play` to listen to the whole block.
 
-   * If the block is too long, label its parts separately. Each part is at least 15 seconds long and stops at the segment boundaries.
+   * If the block is too long, label its parts separately. Each part is 15 seconds long or less and stops at the segment boundaries.
    * If you choose to label block parts, you can't label whole block any more
-   * The labelled parts will appear in the exported Excel sheet as `block`.`part`
+   * The labelled parts will appear in the exported Excel sheet as `block_n-part_n`
 
-4. Type in percentages in the windows below. The labels are organised in the following way:
+4. Type in labels in the windows below. The labels are organised in the following way:
 
    * Adult-directed speech
    * Child-directed speech
@@ -57,7 +54,7 @@ Optional: if you do not want the black console window to pop up when you open th
    | 3 | Most | 67 - 99 |
    | 4 | All | 100 |
 
-   Note that if you are labelling *Child-directed speech*, and most (category 3) of it is coming from a *Mother*, then some (category 1) of that speech must come from *Other female(s)*, *Male(s)* or from other good folks who you're *Unsure* about.
+   Note that if you are labelling *Child-directed speech*, and most (category 3) of it is coming from a *Mother*, then some (category 1) of that speech must come from *Other female(s)*, *Male(s)* or from other folks who you're *Unsure* about.
 
    Another scenario: *Mother* speaks half (category 2) of *Child-directed speech* in a block, and the rest is divided (not necessarily equally) between *Another female* (category 1) and a *Male* (category 1). In total, there is 2 (half) + 1 (some) + 1 (some) = 4 (all).
 
@@ -94,26 +91,21 @@ Other options:
 
 ## Backups
 
-To make sure that no data is lost by mistake, the program makes a number of backups. Each time a coder clicks 'Submit' when labelling a block, the labels for that block are saved as plain text in a log file, which can be found under the 'backups' folder. Each coder has separate log file.
-
-Also, when saving the data, a backup of the most recent data is stored in the 'backups' directory. In case of emergency, the data can be restored from these log files and the data backups.
-
-To avoid confusion, make sure to click 'Save' button before exporting to an Excel file. If you do not save, the program will export the data only up to the last time you have saved it.
-
+To make sure that no data is lost by mistake, the program saves all block entries in the `Name.db` file under the `labelled_data` folder. This is a simple database file that is intended to keep track of data changes every time a coder clicks `Submit` button. If a program crushes unexpectedly or if a coder forgets to save, it is possible to recover most of the data from these files. It is possible to open and explore these files by istalling [Sqlite browser](http://sqlitebrowser.org/) app.
 
 
 ## Hot keys
 
 - `space`			        = play the seected block
 - `control` + `s`		    = submit the labels to the memory
-- `arrow up` or `left`	    = select previous block/recording
-- `arrow down` or `right`	= select next block/recording
+- `arrow up`        	    = select previous block/recording
+- `arrow down`				= select next block/recording
 
 ----------------------------------------------------------------------
 
 If you have any questions or suggestions, or if something does not work, contact me (Roman) at belenyar@myumanitoba.ca
 
 The program was tested on:
-- Windows 10 64-bit, Python 2.7.13
-- Ubuntu 17.04, Python 2.7.13
-- Windows 7 64-bit, Python 2.7.12
+- Windows 10 Python 2.7.13
+- Ubuntu 17.04 Python 2.7.13
+- Windows 7 Python 2.7.12
