@@ -23,6 +23,11 @@ from matplotlib.figure import Figure
 import utils
 import makeblocks
 
+FOLDERS = ['./input', './labelled_data', './output']
+for FOLDER in FOLDERS:
+	if not os.path.isdir(FOLDER):
+		os.mkdir(FOLDER)
+
 
 class Convolabel(object):
 
@@ -57,7 +62,7 @@ class Convolabel(object):
 		self.submenu.add_command(label = 'Set CDS sample', command = lambda self = self, kind = 'cds': self.set_sample(kind))
 		readme_link = 'https://github.com/babylanguagelab/bll_app/tree/master/src/app/convolabel#how-it-works'
 		self.submenu.add_command(label = 'Help', command = lambda: webbrowser.open_new(readme_link))
-		
+
 		# Recordings list box
 		tk.Label(self.frame, text = 'Recordings:').grid(row = 2, column = 0, padx = 0, pady = 0, sticky = 'W')
 		self.recs_list = tk.Listbox(self.frame, width = 20, height = 15, exportselection = False, relief = tk.FLAT)
