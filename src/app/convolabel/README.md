@@ -2,6 +2,8 @@
 # Convolabel
 is a simple program that allows percentage-based labelling of conversational blocks. Essentially, it is a modified version of [IDSLabel](https://github.com/babylanguagelab/bll_app/tree/master/src/app/IDSLabel/client) to label conversations instead of speech segments.
 
+![convolabel screenshot](https://github.com/babylanguagelab/bll_app/blob/master/src/app/convolabel/screenshot.PNG?raw=true "Example")
+
 ## Installation (for Windows):
 
 The program requires three additional python modules - [PyAudio](https://people.csail.mit.edu/hubert/pyaudio/), [Matplotlib](https://matplotlib.org/) and [Numpy](http://www.numpy.org/). These can be installed via python's package manager Pip with the following in the command prompt:
