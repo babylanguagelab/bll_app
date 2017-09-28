@@ -6,7 +6,7 @@ is a simple program that allows percentage-based labelling of conversational blo
 
 ## Installation (for Windows):
 
-The program requires three additional python modules - [PyAudio](https://people.csail.mit.edu/hubert/pyaudio/), [Matplotlib](https://matplotlib.org/) and [Numpy](http://www.numpy.org/). These can be installed via python's package manager Pip with the following in the command prompt:
+The program requires three additional python modules - [PyAudio](https://people.csail.mit.edu/hubert/pyaudio/), [Matplotlib](https://matplotlib.org/) and [Numpy](http://www.numpy.org/). These can be installed via python's package manager Pip with the following in the command prompt (~ 30 MB installation size):
 ```
 pip install pyaudio matplotlib numpy
 ```

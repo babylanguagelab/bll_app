@@ -71,7 +71,12 @@ class Convolabel(object):
 		self.recs_list.config(yscrollcommand = self.recs_scrollbar.set)
 		self.recs_scrollbar.grid(row = 3, column = 0, rowspan = 10, sticky = 'NSE')
 		self.recs_list.grid(row = 3, column = 0, rowspan = 10, padx = (0, 5), pady = 0, sticky = 'W')
-
+		
+		
+		################################################### REMOVE
+		# tk.Label(self.frame, text = 'This is the new program haha', fg = 'blue').grid(row = 0, column = 1, padx = 20, pady = (0, 20), columnspan = 5) 
+		#####################################################
+		
 		# Blocks list box
 		tk.Label(self.frame, text = 'Blocks:').grid(row = 2, column = 1, padx = 5, pady = 0, sticky = 'W')
 		self.blocks_list = tk.Listbox(self.frame, width = 15, height = 15, exportselection = False, relief = tk.FLAT)
@@ -309,14 +314,13 @@ class Convolabel(object):
 		if not file:
 			return
 		file = os.path.abspath(file)
-		# coder = self.coder_name.get()
 		rec = self.current_rec
-
-		if kind == 'ads':
-			self.data.db[rec]['_ads_sample'] = file
-		elif kind == 'cds':
-			self.data.db[rec]['_cds_sample'] = file
-
+		kind = '_' + kind + '_sample'
+		
+		if rec not in self.data.db:
+			self.data.db[rec] = {}
+		
+		self.data.db[rec][kind] = file
 		self.data_is_saved(False)
 
 
@@ -324,11 +328,9 @@ class Convolabel(object):
 
 		coder = self.coder_name.get()
 		rec = self.current_rec
-
-		if kind == 'ads':
-			f = wave.open(self.data.db[rec]['_ads_sample'])
-		elif kind == 'cds':
-			f = wave.open(self.data.db[rec]['_cds_sample'])
+		kind = '_' + kind + '_sample' # kind is '_ads_sample' or '_cds_sample'
+		
+		f = wave.open(self.data.db[rec][kind])
 
 		audio = f.readframes(-1)
 		n_channels, sample_width, sample_rate, _, _, _ = f.getparams()
