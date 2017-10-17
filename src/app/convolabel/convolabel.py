@@ -71,12 +71,7 @@ class Convolabel(object):
 		self.recs_list.config(yscrollcommand = self.recs_scrollbar.set)
 		self.recs_scrollbar.grid(row = 3, column = 0, rowspan = 10, sticky = 'NSE')
 		self.recs_list.grid(row = 3, column = 0, rowspan = 10, padx = (0, 5), pady = 0, sticky = 'W')
-		
-		
-		################################################### REMOVE
-		# tk.Label(self.frame, text = 'This is the new program haha', fg = 'blue').grid(row = 0, column = 1, padx = 20, pady = (0, 20), columnspan = 5) 
-		#####################################################
-		
+
 		# Blocks list box
 		tk.Label(self.frame, text = 'Blocks:').grid(row = 2, column = 1, padx = 5, pady = 0, sticky = 'W')
 		self.blocks_list = tk.Listbox(self.frame, width = 15, height = 15, exportselection = False, relief = tk.FLAT)
@@ -228,11 +223,16 @@ class Convolabel(object):
 		nondirective_entry = tk.Entry(self.labels_frame, entry_params)
 		nondirective_entry.grid(entry_grid_params, row = 1, column = 7)
 
+		# Uncertain
+		tk.Label(self.labels_frame, text = 'Uncertain:').grid(label_grid_params, row = 2, column = 6)
+		uncertain_entry = tk.Entry(self.labels_frame, entry_params)
+		uncertain_entry.grid(entry_grid_params, row = 2, column = 7)
 
+		uncertain =    Variable('uncertain', uncertain_entry)
 		nondirective = Variable('nondirective', nondirective_entry)
 		directive =    Variable('directive', directive_entry)
 		other_child =  Variable('other_child', other_child_entry)
-		target_child = Variable('target_child', target_child_entry, directive, nondirective)
+		target_child = Variable('target_child', target_child_entry, directive, nondirective, uncertain)
 		unsure =       Variable('unsure', unsure_entry)
 		male =         Variable('male', male_entry)
 		other_fem =    Variable('other_fem', other_fem_entry)
@@ -258,7 +258,8 @@ class Convolabel(object):
 			'target_child': target_child,
 			'other_child':  other_child,
 			'directive':    directive,
-			'nondirective': nondirective
+			'nondirective': nondirective,
+			'uncertain':    uncertain
 		}
 
 		# Comments box
@@ -314,13 +315,14 @@ class Convolabel(object):
 		if not file:
 			return
 		file = os.path.abspath(file)
+		# coder = self.coder_name.get()
 		rec = self.current_rec
-		kind = '_' + kind + '_sample'
-		
-		if rec not in self.data.db:
-			self.data.db[rec] = {}
-		
-		self.data.db[rec][kind] = file
+
+		if kind == 'ads':
+			self.data.db[rec]['_ads_sample'] = file
+		elif kind == 'cds':
+			self.data.db[rec]['_cds_sample'] = file
+
 		self.data_is_saved(False)
 
 
@@ -328,9 +330,11 @@ class Convolabel(object):
 
 		coder = self.coder_name.get()
 		rec = self.current_rec
-		kind = '_' + kind + '_sample' # kind is '_ads_sample' or '_cds_sample'
-		
-		f = wave.open(self.data.db[rec][kind])
+
+		if kind == 'ads':
+			f = wave.open(self.data.db[rec]['_ads_sample'])
+		elif kind == 'cds':
+			f = wave.open(self.data.db[rec]['_cds_sample'])
 
 		audio = f.readframes(-1)
 		n_channels, sample_width, sample_rate, _, _, _ = f.getparams()
@@ -750,7 +754,7 @@ class Convolabel(object):
 			writer.writerow(['Date coded', 'Coder', 'Recording', 'Block', 'Length (s)', 'Junk', 'Sensitive',
 							'Other language', 'Adult-directed speech', 'Child-directed speech', 'Other child speech',
 							'Mother', 'Other female(s)', 'Male(s)', 'Unsure', 'Directed at target child',
-							'Directed at other child', 'Directive', 'Nondirective', 'Comments'])
+							'Directed at other child', 'Directive', 'Nondirective', 'Uncertain', 'Comments'])
 			for coder_name, coder in d.items():
 				for rec_name, rec in coder.items():
 					for block_name, block in rec.items():
@@ -777,6 +781,7 @@ class Convolabel(object):
 									part['other_child'],
 									part['directive'],
 									part['nondirective'],
+									part['uncertain'],
 									part['comments'],
 									]
 							writer.writerow(row)
