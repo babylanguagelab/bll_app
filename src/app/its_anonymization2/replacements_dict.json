@@ -1,0 +1,44 @@
+{
+    "PrimaryChild": {
+        "DOB": "1000-01-01",
+        "Gender": "A",
+        "ChildKey": "9A99AAA999999A99"
+    },
+    "TransferTime": {
+        "TimeZone": "AAA",
+        "UTCTime": "1000-01-01T00:00:00",
+        "LocalTime": "1000-01-01T00:00:00"
+    },
+    "ChildInfo": {
+        "dob": "1000-01-01",
+        "gender": "A"
+    },
+    "SRDInfo": {
+        "SerialNumber": "9999"
+    },
+    "Child": {
+        "DOB": "1000-01-01",
+        "Gender": "A",
+        "EnrollDate": "1000-01-01",
+        "id": "A999",
+        "ChildKey": "9A99AAA999999A99"
+    },
+    "Bar": {
+        "startClockTime": "1000-01-01T00:00:00"
+    },
+    "BarSummary": {
+        "leftBoundaryClockTime": "1000-01-01T00:00:00",
+        "rightBoundaryClockTime": "1000-01-01T00:00:00"
+    },
+    "Recording": {
+        "startClockTime": "1000-01-01T00:00:00",
+        "endClockTime": "1000-01-01T00:00:00"
+    },
+    "FiveMinuteSection": {
+        "startClockTime": "1000-01-01T00:00:00",
+        "endClockTime": "1000-01-01T00:00:00"
+    },
+    "Item": {
+        "timeStamp": "1000-01-01T00:00:00"
+    }
+}
